@@ -6,7 +6,7 @@ import { userRole } from '../user.entity';
 export class UserResponseDto {
   @ApiProperty()
   @Expose()
-  id: number;
+  id: string;
 
   @ApiProperty()
   @Expose()

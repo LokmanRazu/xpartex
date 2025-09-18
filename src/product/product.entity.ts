@@ -1,5 +1,9 @@
+import { B2b } from "src/b2b/b2b.entity";
+import { Category } from "src/category/category.entity";
+import { OrderItem } from "src/orderItem/order-item.entity";
+import { Retail } from "src/retail/retail.entity";
 import { Wholesale } from "src/wholesale/wholesale.entity";
-import { Column, CreateDateColumn, Entity, Generated, OneToMany, PrimaryColumn, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, Generated, JoinColumn, ManyToOne, OneToMany, PrimaryColumn, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 
 @Entity('product')
@@ -11,13 +15,14 @@ export class Product {
     name: string;
 
     @Column()
-    img: string
+    img: string;
 
     @Column()
     sellerId: string
 
-    @Column()
-    category: string;
+    @ManyToOne(() => Category, (category) => category.product, { onDelete: 'CASCADE' })
+    @JoinColumn({ name: "categoryId" })
+    category: Category;
 
     @Column()
     price: string
@@ -28,10 +33,27 @@ export class Product {
     @Column()
     description: string
 
+
+    @OneToMany(() => OrderItem, (orderitem) => orderitem.product, {
+        cascade: true,
+    })
+    orderitem: OrderItem[];
+
+
     @OneToMany(() => Wholesale, (wholesale) => wholesale.product, {
         cascade: true,
     })
-    wholesales: Wholesale[];
+    wholesales?: Wholesale[];
+
+    @OneToMany(() => Retail, (retail) => retail.product, {
+        cascade: true,
+    })
+    retails?: Retail[];
+
+    @OneToMany(() => B2b, (b2b) => b2b.product, {
+        cascade: true,
+    })
+    b2bs?: B2b[];
 
     @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     createdAt: Date;

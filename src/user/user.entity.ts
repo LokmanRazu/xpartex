@@ -1,7 +1,8 @@
 
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Cart } from 'src/cart/cart.entity';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany, OneToOne } from 'typeorm';
 
-export enum userRole{
+export enum userRole {
     ADMIN = 'admin',
     SELLER = 'seller',
     BUYER = 'buyer'
@@ -9,13 +10,13 @@ export enum userRole{
 
 @Entity('user')
 export class User {
-    @PrimaryGeneratedColumn() 
-    id: number;
+    @PrimaryGeneratedColumn('uuid')
+    id: string;
 
     @Column()
     firstName: string;
 
-        @Column()
+    @Column()
     lastName: string;
 
     @Column()
@@ -27,19 +28,24 @@ export class User {
     @Column()
     phoneNumber: string;
 
-   @Column({
-    type:'enum',
-    enum:userRole
-   })
-   role:userRole
+    @Column({
+        type: 'enum',
+        enum: userRole
+    })
+    role: userRole
 
-   @Column()
-   address:string
+    @Column()
+    address: string
 
-   @Column()
-   registrationdate:Date
+    @Column()
+    registrationdate: Date
 
-    @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' }) 
+    @OneToOne(() => Cart, (cart) => cart.user, {
+        cascade: true,
+    })
+    cart: Cart;
+
+    @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     createdAt: Date;
 
     @UpdateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })

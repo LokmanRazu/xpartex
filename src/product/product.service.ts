@@ -10,17 +10,20 @@ import { ProductResponseDto } from './dto/product.response-dto';
 import { plainToInstance } from 'class-transformer';
 import { CreateProductDto } from './dto/product.request-dto';
 import { UpdateProductDto } from './dto/product.update-dto';
+import { CategoryService } from 'src/category/category.service';
+import { Category } from 'src/category/category.entity';
 
 @Injectable()
 export class ProductService {
     constructor(
         @InjectRepository(Product)
         private productRepository: Repository<Product>,
+        private categoryService: CategoryService
     ) { }
 
     async findAll(): Promise<ProductResponseDto[]> {
         try {
-            const products = await this.productRepository.find();
+            const products = await this.productRepository.find({ relations: ['category'] });
             return plainToInstance(ProductResponseDto, products, {
                 enableImplicitConversion: true,
                 excludeExtraneousValues: true,
@@ -48,7 +51,19 @@ export class ProductService {
 
     async create(dto: CreateProductDto): Promise<ProductResponseDto> {
         try {
-            const product = this.productRepository.create(dto);
+
+            const { name, img, sellerId, categoryId, price, stockQuantity, description } = dto
+            const category = await this.categoryService.findOne(categoryId)
+            if (!category) throw new NotFoundException('categoey not found')
+            const product = this.productRepository.create({
+                name,
+                img,
+                sellerId,
+                category: { id: categoryId } as Category,
+                price,
+                stockQuantity,
+                description
+            });
             const savedProduct = await this.productRepository.save(product);
 
             return plainToInstance(ProductResponseDto, savedProduct, {
@@ -62,10 +77,19 @@ export class ProductService {
 
     async update(id: string, dto: UpdateProductDto): Promise<ProductResponseDto> {
         try {
-            await this.productRepository.update(id, dto);
-            const updatedProduct = await this.productRepository.findOne({ where: { id } });
+            const product = await this.productRepository.findOne({ where: { id }, relations: ['category'] });
+            if (!product) throw new NotFoundException('Product not found');
 
-            if (!updatedProduct) throw new NotFoundException('Product not found after update');
+            if (dto.categoryId) {
+                const category = await this.categoryService.findOne(dto.categoryId);
+                if (!category) throw new NotFoundException('Category not found');
+                product.category = { id: dto.categoryId } as Category;
+            }
+
+    
+            Object.assign(product, { ...dto, categoryId: undefined }); 
+
+            const updatedProduct = await this.productRepository.save(product);
 
             return plainToInstance(ProductResponseDto, updatedProduct, {
                 enableImplicitConversion: true,

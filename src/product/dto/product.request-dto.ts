@@ -20,7 +20,7 @@ export class CreateProductDto {
   @ApiProperty({ example: 'Smartphone', description: 'Category of the product' })
   @IsString({ message: 'Category must be a string' })
   @IsNotEmpty({ message: 'Category is required' })
-  category: string;
+  categoryId: string;
 
   @ApiProperty({ example: '999.99', description: 'Price of the product (string format)' })
   @IsString({ message: 'Price must be a string' })

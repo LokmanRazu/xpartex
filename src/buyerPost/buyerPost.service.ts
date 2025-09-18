@@ -2,7 +2,7 @@ import { Injectable, NotFoundException, InternalServerErrorException } from '@ne
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { plainToInstance } from 'class-transformer';
-import { BuyerPost } from './buyerPost.entity';
+import { Buyerpost } from './buyerPost.entity';
 import { BuyerPostResponseDto } from './dto/buyerPost.response-dto';
 import { CreateBuyerPostDto } from './dto/buyerPost.request-dto';
 import { UpdateBuyerPostDto } from './dto/buyerPost.update-dto';
@@ -10,8 +10,8 @@ import { UpdateBuyerPostDto } from './dto/buyerPost.update-dto';
 @Injectable()
 export class BuyerPostService {
   constructor(
-    @InjectRepository(BuyerPost)
-    private readonly buyerPostRepository: Repository<BuyerPost>,
+    @InjectRepository(Buyerpost)
+    private readonly buyerPostRepository: Repository<Buyerpost>,
   ) {}
 
   async findAll(): Promise<BuyerPostResponseDto[]> {

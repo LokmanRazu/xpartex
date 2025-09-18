@@ -29,7 +29,7 @@ export class UserService {
 
   async findOne(id: string): Promise<UserResponseDto> {
     try {
-      const user = await this.userRepository.findOne({ where: { id: Number(id) } });
+      const user = await this.userRepository.findOne({ where: { id } });
       if (!user) throw new NotFoundException('User not found');
 
       return plainToInstance(UserResponseDto, user, {
@@ -88,7 +88,7 @@ export class UserService {
   async update(id: string, dto: UpdateUserDto): Promise<UserResponseDto> {
     try {
       await this.userRepository.update(id, dto);
-      const updatedUser = await this.userRepository.findOne({ where: { id: Number(id) } });
+      const updatedUser = await this.userRepository.findOne({ where: { id } });
 
       if (!updatedUser) throw new NotFoundException('User not found after update');
 
@@ -105,7 +105,7 @@ export class UserService {
 
   async delete(id: string): Promise<UserResponseDto> {
     try {
-      const user = await this.userRepository.findOne({ where: { id: Number(id) } });
+      const user = await this.userRepository.findOne({ where: { id } }); 
       if (!user) throw new NotFoundException('User not found');
 
       await this.userRepository.delete(id);

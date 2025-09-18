@@ -2,9 +2,9 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
 
-@Entity('buyerPost')
-export class BuyerPost {
-    @PrimaryGeneratedColumn()
+@Entity('buyerpost')
+export class Buyerpost {
+    @PrimaryGeneratedColumn() 
     id: number;
 
     @Column()

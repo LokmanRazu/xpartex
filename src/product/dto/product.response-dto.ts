@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
+import { CategoryResponseDto } from 'src/category/dto/category.response-dto';
 import { WholesaleResponseDto } from 'src/wholesale/dto/wholesale.response-dto';
 
 export class ProductResponseDto {
@@ -20,8 +21,9 @@ export class ProductResponseDto {
   sellerId: string;
 
   @ApiProperty({ example: 'Smartphone', description: 'Category of the product' })
+  @Type(()=> CategoryResponseDto)
   @Expose()
-  category: string;
+  category: CategoryResponseDto;
 
   @ApiProperty({ example: '999.99', description: 'Price of the product' })
   @Expose()
