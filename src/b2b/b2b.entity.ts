@@ -6,22 +6,18 @@ export class B2b {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @Column()
-    name: string
+    @Column({ type: 'json' })
+    description?: string[]
 
     @Column()
-    description: string
+    size?: number;
 
     @Column()
-    size: number
+    moq?: number;
 
-    @Column()
-    moq: number
-
-    @ManyToOne(() => Product, (product) => product.b2bs, { onDelete: 'CASCADE' })
+    @ManyToOne(() => Product, (product) => product.wholesales, { onDelete: 'CASCADE' })
     @JoinColumn({ name: "productId" })
     product: Product;
-
 
     @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     createdAt: Date;

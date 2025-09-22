@@ -2,7 +2,7 @@
 import { Injectable, NotFoundException, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { OrderItem } from './order-item.entity';
+import { OrderItem } from './orderItem.entity';
 import { plainToInstance } from 'class-transformer';
 import { OrderItemResponseDto } from './dto/orderItem.response-dto';
 import { CreateOrderItemDto } from './dto/orderItem.request-dto';

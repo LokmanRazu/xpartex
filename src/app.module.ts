@@ -16,6 +16,7 @@ import { WholesaleModule } from './wholesale/wholesale.module';
 import { CartItemModule } from './cartItem/cartItem.module';
 import { OrderModule } from './order/order.module';
 import { OrderItemModule } from './orderItem/orderItem.module';
+import { RfqModule } from './rfq/rfq.module';
 
 @Module({
   imports: [
@@ -30,7 +31,7 @@ import { OrderItemModule } from './orderItem/orderItem.module';
       password: '',
       database: 'xpartexdb',
       autoLoadEntities: true, 
-      synchronize: false,
+      synchronize: true,
       logging: true,
     }),
 
@@ -40,7 +41,7 @@ import { OrderItemModule } from './orderItem/orderItem.module';
         port: 465,
         secure: true, 
         auth: {
-          user: 'xpartexofficial@gmail.com', 
+          user: 'xpartexofficial@gmail.com',  
           pass: 'wbphwqgwbfzzycjn', 
         },
       },
@@ -60,7 +61,8 @@ import { OrderItemModule } from './orderItem/orderItem.module';
     CartModule,
     CartItemModule,
     OrderModule,
-    OrderItemModule
+    OrderItemModule,
+    RfqModule
     
   ],
   controllers: [AppController],

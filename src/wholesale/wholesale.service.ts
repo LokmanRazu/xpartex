@@ -1,5 +1,10 @@
-// wholesale.service.ts
-import { Injectable, NotFoundException, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  InternalServerErrorException,
+  forwardRef,
+  Inject,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Wholesale } from './wholesale.entity';
@@ -14,12 +19,16 @@ import { ProductService } from 'src/product/product.service';
 export class WholesaleService {
   constructor(
     @InjectRepository(Wholesale)
-    private wholesaleRepository: Repository<Wholesale>, private productService:ProductService
+    private wholesaleRepository: Repository<Wholesale>,
+    @Inject(forwardRef(() => ProductService))
+    private productService: ProductService,
   ) {}
 
   async findAll(): Promise<WholesaleResponseDto[]> {
     try {
-      const wholesales = await this.wholesaleRepository.find({ relations: ['product'] });
+      const wholesales = await this.wholesaleRepository.find({
+        relations: ['product'],
+      });
 
       return plainToInstance(WholesaleResponseDto, wholesales, {
         enableImplicitConversion: true,
@@ -40,7 +49,7 @@ export class WholesaleService {
 
       return plainToInstance(WholesaleResponseDto, wholesale, {
         enableImplicitConversion: true,
-        excludeExtraneousValues: true, 
+        excludeExtraneousValues: true,
       });
     } catch (error) {
       throw error instanceof NotFoundException
@@ -51,17 +60,16 @@ export class WholesaleService {
 
   async create(dto: CreateWholesaleDto): Promise<WholesaleResponseDto> {
     try {
-      const { name, description, size, moq, productId } = dto;
+      const { description, size, moq, productId } = dto;
 
       const product = await this.productService.findOne(productId);
       if (!product) throw new NotFoundException('Product not found for given productId');
 
       const wholesale = this.wholesaleRepository.create({
-        name,
         description,
         size,
         moq,
-        product:{ id: dto.productId } as Product, 
+        product: { id: productId } as Product,
       });
 
       const savedWholesale = await this.wholesaleRepository.save(wholesale);
@@ -77,7 +85,10 @@ export class WholesaleService {
 
   async update(id: string, dto: UpdateWholesaleDto): Promise<WholesaleResponseDto> {
     try {
-      const wholesale = await this.wholesaleRepository.findOne({ where: { id }, relations: ['product'] });
+      const wholesale = await this.wholesaleRepository.findOne({
+        where: { id },
+        relations: ['product'],
+      });
       if (!wholesale) throw new NotFoundException('Wholesale not found');
 
       if (dto.productId) {
@@ -102,7 +113,10 @@ export class WholesaleService {
 
   async delete(id: string): Promise<WholesaleResponseDto> {
     try {
-      const wholesale = await this.wholesaleRepository.findOne({ where: { id }, relations: ['product'] });
+      const wholesale = await this.wholesaleRepository.findOne({
+        where: { id },
+        relations: ['product'],
+      });
       if (!wholesale) throw new NotFoundException('Wholesale not found');
 
       await this.wholesaleRepository.delete(id);

@@ -9,19 +9,24 @@ import { CreateOrderDto } from './dto/order.request-dto';
 import { UpdateOrderDto } from './dto/order.update-dto';
 import { ProductService } from 'src/product/product.service';
 import { Product } from 'src/product/product.entity';
+import { UserService } from 'src/user/user.service';
+import { User } from 'src/user/user.entity';
 
 @Injectable()
 export class OrderService {
   constructor(
     @InjectRepository(Order)
     private orderRepository: Repository<Order>,
-    private productService: ProductService
-    
+    private productService: ProductService,
+    private userservice: UserService
+
   ) { }
 
   async findAll(): Promise<OrderResponseDto[]> {
     try {
-      const orders = await this.orderRepository.find({ relations: ['items'] });
+      console.log('hiiiiiiii')
+      const orders = await this.orderRepository.find({ relations: ['product','user'] });
+       console.log('orderrrrrr',orders)
       return plainToInstance(OrderResponseDto, orders, {
         enableImplicitConversion: true,
         excludeExtraneousValues: true,
@@ -35,7 +40,7 @@ export class OrderService {
     try {
       const order = await this.orderRepository.findOne({
         where: { id },
-        relations: ['items'],
+        relations: ['items','product','user'],
       });
       if (!order) throw new NotFoundException('Order not found');
 
@@ -52,12 +57,15 @@ export class OrderService {
 
   async create(dto: CreateOrderDto): Promise<OrderResponseDto> {
     try {
-      const { productId, status, totalAmount } = dto;
+      const { productId, buyerId, status, totalAmount } = dto;
       const product = await this.productService.findOne(productId)
       if (!product) throw new NotFoundException('Product not found for given productId');
+      const buyer = await this.userservice.findOne(buyerId)
+      if (!buyer) throw new NotFoundException('Buyer not found for given productId');
 
       const order = this.orderRepository.create({
-        product:{ id: dto.productId } as Product, 
+        product: { id: dto.productId } as Product,
+        user: { id: dto.buyerId } as User,
         status,
         totalAmount
       });
@@ -77,8 +85,17 @@ export class OrderService {
 
   async update(id: string, dto: UpdateOrderDto): Promise<OrderResponseDto> {
     try {
-      const order = await this.orderRepository.findOne({ where: { id }, relations: ['items'] });
+      const order = await this.orderRepository.findOne({ where: { id }, relations: ['items','buyer'] });
       if (!order) throw new NotFoundException('Order not found');
+
+      if (dto.buyerId) {
+        const buyer = await this.userservice.findOne(dto.buyerId)
+        if (!buyer) throw new NotFoundException('buyer not found');
+      }
+      if(dto.productId){
+        const product = await this.productService.findOne(dto.productId)
+           if (!product) throw new NotFoundException('product not found');
+      }
 
       Object.assign(order, dto);
 

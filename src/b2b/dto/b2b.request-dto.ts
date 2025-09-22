@@ -1,26 +1,22 @@
 // b2b.request-dto.ts
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, IsNumber, IsUUID } from 'class-validator';
+import { IsNotEmpty, IsString, IsNumber, IsUUID, IsOptional } from 'class-validator';
 
 export class CreateB2bDto {
-  @ApiProperty({ example: 'Bulk T-shirt Order' })
-  @IsString({ message: 'Name must be a string' })
-  @IsNotEmpty({ message: 'Name is required' })
-  name: string;
 
   @ApiProperty({ example: 'B2b package of 100 cotton T-shirts' })
   @IsString({ message: 'Description must be a string' })
-  @IsNotEmpty({ message: 'Description is required' })
-  description: string;
+  @IsOptional({ message: 'Description is optional' })
+  description?: string[];
 
   @ApiProperty({ example: 100 })
   @IsNumber({}, { message: 'Size must be a number' })
-  @IsNotEmpty({ message: 'Size is required' })
-  size: number;
+  @IsOptional({ message: 'Size is optional' })
+  size?: number;
 
   @ApiProperty({ example: 10 })
   @IsNumber({}, { message: 'MOQ must be a number' })
-  @IsNotEmpty({ message: 'MOQ is required' })
+  @IsOptional({ message: 'MOQ is optional' })
   moq: number;
 
   @ApiProperty({ example: 'c8d8a4a7-2f4e-41e7-a6f2-1234567890ab' })

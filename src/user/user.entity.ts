@@ -1,5 +1,8 @@
 
 import { Cart } from 'src/cart/cart.entity';
+import { Order } from 'src/order/order.entity';
+import { Product } from 'src/product/product.entity';
+import { Rfq } from 'src/rfq/rfq.entity';
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany, OneToOne } from 'typeorm';
 
 export enum userRole {
@@ -44,6 +47,21 @@ export class User {
         cascade: true,
     })
     cart: Cart;
+
+    @OneToMany(() => Product, (product) => product.seller, {
+        cascade: true,
+    })
+    product: Product[];
+
+    @OneToMany(() => Rfq, (rfq) => rfq.buyer, {
+        cascade: true,
+    })
+    rfq: Rfq[];
+
+    @OneToOne(()=> Order,(order)=>order.user,{cascade:true})
+    order:Order
+
+
 
     @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     createdAt: Date;

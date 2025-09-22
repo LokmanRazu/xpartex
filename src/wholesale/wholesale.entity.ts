@@ -6,17 +6,14 @@ export class Wholesale {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @Column()
-    name: string
+    @Column({ type: 'json' })
+    description?: string[]
 
     @Column()
-    description: string
+    size?: number
 
     @Column()
-    size: number
-
-    @Column()
-    moq: number
+    moq?: number
 
     @ManyToOne(() => Product, (product) => product.wholesales, { onDelete: 'CASCADE' })
     @JoinColumn({ name: "productId" })

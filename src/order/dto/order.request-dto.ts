@@ -9,6 +9,11 @@ export class CreateOrderDto {
   @IsNotEmpty({ message: 'ProductId is required' })
   productId: string;
 
+  @ApiProperty({ example: 'c8d8a4a7-2f4e-41e7-a6f2-1234567890ab', description: 'User/Buyer linked to this order' })
+  @IsUUID('4', { message: 'BuyerId must be a valid UUID' })
+  @IsNotEmpty({ message: 'BuyerId is required' })
+  buyerId: string;
+
   @ApiProperty({
     example: 'pending',
     enum: ['pending', 'processing', 'shipped', 'delivered', 'cancelled'],
@@ -24,8 +29,8 @@ export class CreateOrderDto {
   @Min(0, { message: 'Total amount must be at least 0' })
   totalAmount: number;
 
-  @ApiProperty({ type: [CreateOrderItemDto], required: false, description: 'Items in the order' })
-  @ValidateNested({ each: true })
-  @Type(() => CreateOrderItemDto)
-  items: CreateOrderItemDto[];
+  @ApiProperty({ example: 'c8d8a4a7-2f4e-41e7-a6f2-1234567890ab', description: 'Product linked to this order' })
+  @IsUUID('4', { message: 'ProductId must be a valid UUID' })
+  @IsNotEmpty({ message: 'ProductId is required' })
+  orderItemsId: string;
 }

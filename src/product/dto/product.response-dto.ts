@@ -1,7 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
 import { CategoryResponseDto } from 'src/category/dto/category.response-dto';
+import { UserResponseDto } from 'src/user/dto/user.response-dto';
+import { User } from 'src/user/user.entity';
 import { WholesaleResponseDto } from 'src/wholesale/dto/wholesale.response-dto';
+import { productType } from '../product.entity';
 
 export class ProductResponseDto {
   @ApiProperty({ example: '123e4567-e89b-12d3-a456-426614174000', description: 'Unique product ID (UUID)' })
@@ -16,12 +19,13 @@ export class ProductResponseDto {
   @Expose()
   img: string;
 
-  @ApiProperty({ example: '987e6543-e21b-43d2-b321-526733114000', description: 'Seller ID (UUID)' })
+  @ApiProperty({ example: 'Smartphone', description: 'Category of the product' })
+  @Type(() => UserResponseDto)
   @Expose()
-  sellerId: string;
+  seller: UserResponseDto;
 
   @ApiProperty({ example: 'Smartphone', description: 'Category of the product' })
-  @Type(()=> CategoryResponseDto)
+  @Type(() => CategoryResponseDto)
   @Expose()
   category: CategoryResponseDto;
 
@@ -35,7 +39,11 @@ export class ProductResponseDto {
 
   @ApiProperty({ example: 'Latest iPhone model with titanium frame', description: 'Detailed description of the product' })
   @Expose()
-  description: string;
+  productDescription: string;
+
+  @ApiProperty({ enum: productType })
+  @Expose()
+  productType: productType;
 
   @ApiProperty({ example: '2025-09-12T10:00:00.000Z', description: 'Product creation timestamp' })
   @Expose()

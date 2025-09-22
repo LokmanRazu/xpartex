@@ -10,11 +10,7 @@ export class WholesaleResponseDto {
 
   @ApiProperty()
   @Expose()
-  name: string;
-
-  @ApiProperty()
-  @Expose()
-  description: string;
+  description: string[];
 
   @ApiProperty()
   @Expose()

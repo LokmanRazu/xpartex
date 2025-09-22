@@ -1,11 +1,16 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from "typeorm";
-import { OrderItem } from "../orderItem/order-item.entity";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn, OneToOne } from "typeorm";
+import { OrderItem } from "../orderItem/orderItem.entity";
 import { Product } from "src/product/product.entity";
+import { User } from "src/user/user.entity";
 
 @Entity('order')
 export class Order {
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @OneToOne(() => User, (user) => user.order, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: "buyerId" })
+  user: User;
 
   @ManyToOne(() => Product, (product) => product.orderitem, { onDelete: 'CASCADE' })
   @JoinColumn({ name: "productId" })
@@ -17,8 +22,8 @@ export class Order {
   @Column({ type: "decimal", precision: 10, scale: 2, default: 0 })
   totalAmount: number;
 
-  @OneToMany(() => OrderItem, (item) => item.order, { cascade: true })
-  items: OrderItem[];
+  @OneToMany(() => OrderItem, (orderItems) => orderItems.order, { cascade: true })
+  orderItems: OrderItem[];
 
   @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;

@@ -14,8 +14,8 @@ import { ProductService } from 'src/product/product.service';
 export class RetailService {
   constructor(
     @InjectRepository(Retail)
-    private retailRepository: Repository<Retail>, private productService:ProductService
-  ) {}
+    private retailRepository: Repository<Retail>, private productService: ProductService
+  ) { }
 
   async findAll(): Promise<RetailResponseDto[]> {
     try {
@@ -40,7 +40,7 @@ export class RetailService {
 
       return plainToInstance(RetailResponseDto, retail, {
         enableImplicitConversion: true,
-        excludeExtraneousValues: true, 
+        excludeExtraneousValues: true,
       });
     } catch (error) {
       throw error instanceof NotFoundException
@@ -51,17 +51,16 @@ export class RetailService {
 
   async create(dto: CreateRetailDto): Promise<RetailResponseDto> {
     try {
-      const { name, description, size, moq, productId } = dto;
+      const { size, productId } = dto;
 
       const product = await this.productService.findOne(productId);
       if (!product) throw new NotFoundException('Product not found for given productId');
 
       const retail = this.retailRepository.create({
-        name,
-        description,
+
         size,
-        moq,
-        product:{ id: dto.productId } as Product, 
+
+        product: { id: dto.productId } as Product,
       });
 
       const savedRetail = await this.retailRepository.save(retail);

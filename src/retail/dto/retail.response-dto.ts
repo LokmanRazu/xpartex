@@ -10,19 +10,7 @@ export class RetailResponseDto {
 
   @ApiProperty()
   @Expose()
-  name: string;
-
-  @ApiProperty()
-  @Expose()
-  description: string;
-
-  @ApiProperty()
-  @Expose()
-  size: number;
-
-  @ApiProperty()
-  @Expose()
-  moq: number;
+  size?: number;
 
   @ApiProperty({ type: () => ProductResponseDto })
   @Expose()

@@ -8,7 +8,7 @@ export class OrderItem {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(() => Order, (order) => order.items, { onDelete: "CASCADE" })
+  @ManyToOne(() => Order, (order) => order.orderItems, { onDelete: "CASCADE" })
   @JoinColumn({ name: "orderId" })
   order: Order;
 
@@ -25,9 +25,9 @@ export class OrderItem {
   @Column({ type: "decimal", precision: 10, scale: 2 })
   total: number;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
   updatedAt: Date;
 }

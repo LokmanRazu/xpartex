@@ -51,13 +51,12 @@ export class B2bService {
 
   async create(dto: CreateB2bDto): Promise<B2bResponseDto> {
     try {
-      const { name, description, size, moq, productId } = dto;
+      const {  description, size, moq, productId } = dto;
 
       const product = await this.productService.findOne(productId);
       if (!product) throw new NotFoundException('Product not found for given productId');
 
       const b2b = this.b2bRepository.create({
-        name,
         description,
         size,
         moq,

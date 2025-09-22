@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsPositive, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
+import { productType } from '../product.entity';
 
 export class CreateProductDto {
   @ApiProperty({ example: 'iPhone 15 Pro', description: 'Name of the product' })
@@ -36,5 +37,25 @@ export class CreateProductDto {
   @ApiProperty({ example: 'Latest iPhone model with titanium frame', description: 'Detailed description of the product' })
   @IsString({ message: 'Description must be a string' })
   @IsNotEmpty({ message: 'Description is required' })
-  description: string;
+  productDescription: string;
+
+  @ApiProperty({ required: true, enum: productType })
+  @IsNotEmpty({ message: 'productType is required' })
+  @IsEnum(productType, { message: `productType must be one of: ${Object.values(productType).join(', ')}` })
+  productType: productType;
+
+  @ApiProperty({ example: 'Latest iPhone model with titanium frame', description: 'Detailed description of the product' })
+  @IsString({ message: 'Description must be a string' })
+  @IsOptional({ message: 'Description is optional' })
+  description: string[];
+
+  @ApiProperty({ example: 100 })
+  @IsNumber({}, { message: 'Size must be a number' })
+  @IsOptional({ message: 'Size is optional' })
+  size: number;
+
+  @ApiProperty({ example: 10 })
+  @IsNumber({}, { message: 'MOQ must be a number' })
+  @IsOptional({ message: 'MOQ is optional' })
+  moq: number;
 }

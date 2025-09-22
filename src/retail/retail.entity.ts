@@ -7,16 +7,8 @@ export class Retail {
     id: string;
 
     @Column()
-    name: string
+    size?: number
 
-    @Column()
-    description: string
-
-    @Column()
-    size: number
-
-    @Column()
-    moq: number
 
     @ManyToOne(() => Product, (product) => product.retails, { onDelete: 'CASCADE' })
     @JoinColumn({ name: "productId" })
