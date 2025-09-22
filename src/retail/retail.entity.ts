@@ -7,7 +7,7 @@ export class Retail {
     id: string;
 
     @Column()
-    size?: number
+    size?: string
 
 
     @ManyToOne(() => Product, (product) => product.retails, { onDelete: 'CASCADE' })

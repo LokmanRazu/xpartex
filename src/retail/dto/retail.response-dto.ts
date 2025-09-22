@@ -10,7 +10,7 @@ export class RetailResponseDto {
 
   @ApiProperty()
   @Expose()
-  size?: number;
+  size?: string;
 
   @ApiProperty({ type: () => ProductResponseDto })
   @Expose()

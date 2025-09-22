@@ -10,9 +10,9 @@ export class CreateB2bDto {
   description?: string[];
 
   @ApiProperty({ example: 100 })
-  @IsNumber({}, { message: 'Size must be a number' })
+  @IsString( { message: 'Size must be a string' })
   @IsOptional({ message: 'Size is optional' })
-  size?: number;
+  size?: string;
 
   @ApiProperty({ example: 10 })
   @IsNumber({}, { message: 'MOQ must be a number' })

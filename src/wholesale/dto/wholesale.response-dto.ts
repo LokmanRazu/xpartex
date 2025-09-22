@@ -10,15 +10,15 @@ export class WholesaleResponseDto {
 
   @ApiProperty()
   @Expose()
-  description: string[];
+  description?: string[];
 
   @ApiProperty()
   @Expose()
-  size: number;
+  size?: string;
 
   @ApiProperty()
   @Expose()
-  moq: number;
+  moq?: number;
 
   @ApiProperty({ type: () => ProductResponseDto })
   @Expose()

@@ -13,8 +13,8 @@ export class CartResponseDto {
   @Type(() => UserResponseDto)
   user: UserResponseDto;
 
-  // @ApiProperty({ type: () => [CartItemResponseDto] })
-  // @Expose()
-  // @Type(() => CartItemResponseDto)
-  // cartItems: CartItemResponseDto[];
+  @ApiProperty({ type: () => [CartItemResponseDto] })
+  @Expose()
+  @Type(() => CartItemResponseDto)
+  cartItems: CartItemResponseDto[];
 }

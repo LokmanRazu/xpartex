@@ -52,7 +52,7 @@ export class ProductService {
 
     async findOne(id: string): Promise<ProductResponseDto> {
         try {
-            const product = await this.productRepository.findOne({ where: { id } });
+            const product = await this.productRepository.findOne({ where: { id },relations:['category', 'seller'] });
             if (!product) throw new NotFoundException('Product not found');
 
             return plainToInstance(ProductResponseDto, product, {

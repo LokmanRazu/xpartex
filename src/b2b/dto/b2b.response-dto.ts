@@ -14,11 +14,11 @@ export class B2bResponseDto {
 
   @ApiProperty()
   @Expose()
-  description: string;
+  description: string[];
 
   @ApiProperty()
   @Expose()
-  size: number;
+  size: string;
 
   @ApiProperty()
   @Expose()

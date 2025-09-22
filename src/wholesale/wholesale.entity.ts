@@ -10,7 +10,7 @@ export class Wholesale {
     description?: string[]
 
     @Column()
-    size?: number
+    size?: string
 
     @Column()
     moq?: number

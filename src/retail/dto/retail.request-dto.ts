@@ -6,9 +6,9 @@ export class CreateRetailDto {
 
 
   @ApiProperty({ example: 100 })
-  @IsNumber({}, { message: 'Size must be a number' })
+  @IsString({ message: 'Size must be a string' })
   @IsOptional({ message: 'Size is required' })
-  size?: number;
+  size?: string;
 
 
 

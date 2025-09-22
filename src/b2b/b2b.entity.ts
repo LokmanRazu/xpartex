@@ -10,7 +10,7 @@ export class B2b {
     description?: string[]
 
     @Column()
-    size?: number;
+    size?: string;
 
     @Column()
     moq?: number;
