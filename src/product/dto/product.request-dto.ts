@@ -1,6 +1,26 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
+import { 
+  IsEnum, 
+  IsNotEmpty, 
+  IsNumber, 
+  IsOptional, 
+  IsPositive, 
+  IsString, 
+  ValidateNested, 
+  IsArray 
+} from 'class-validator';
+import { Type } from 'class-transformer';
 import { productType } from '../product.entity';
+
+class ProductDescriptionDto {
+  @ApiProperty({ example: '1000' })
+  @IsString({ message: 'Title must be a string' })
+  title: string;
+
+  @ApiProperty({ example: 'Black color, 256GB' })
+  @IsString({ message: 'Value must be a string' })
+  value: string;
+}
 
 export class CreateProductDto {
   @ApiProperty({ example: 'iPhone 15 Pro', description: 'Name of the product' })
@@ -35,8 +55,8 @@ export class CreateProductDto {
   stockQuantity: number;
 
   @ApiProperty({ example: 'Latest iPhone model with titanium frame', description: 'Detailed description of the product' })
-  @IsString({ message: 'Description must be a string' })
-  @IsNotEmpty({ message: 'Description is required' })
+  @IsString({ message: 'Product description must be a string' })
+  @IsNotEmpty({ message: 'Product description is required' })
   productDescription: string;
 
   @ApiProperty({ required: true, enum: productType })
@@ -44,13 +64,15 @@ export class CreateProductDto {
   @IsEnum(productType, { message: `productType must be one of: ${Object.values(productType).join(', ')}` })
   productType: productType;
 
-  @ApiProperty({ example: 'Latest iPhone model with titanium frame', description: 'Detailed description of the product' })
-  @IsString({ message: 'Description must be a string' })
-  @IsOptional({ message: 'Description is optional' })
-  description?: string[];
+  @ApiProperty({ type: [ProductDescriptionDto], required: false })
+  @IsArray({ message: 'Description must be an array' })
+  @ValidateNested({ each: true })
+  @Type(() => ProductDescriptionDto)
+  @IsOptional()
+  description?: ProductDescriptionDto[];
 
-  @ApiProperty({ example: 100 })
-  @IsString( { message: 'Size must be a string' })
+  @ApiProperty({ example: 'XL' })
+  @IsString({ message: 'Size must be a string' })
   @IsOptional({ message: 'Size is optional' })
   size?: string;
 

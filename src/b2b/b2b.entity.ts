@@ -7,7 +7,7 @@ export class B2b {
     id: string;
 
     @Column({ type: 'json' })
-    description?: string[]
+    description?: {title:string,value:string}[]
 
     @Column()
     size?: string;

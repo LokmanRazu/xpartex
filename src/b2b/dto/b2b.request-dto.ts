@@ -1,23 +1,43 @@
 // b2b.request-dto.ts
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, IsNumber, IsUUID, IsOptional } from 'class-validator';
+import { 
+  IsNotEmpty, 
+  IsString, 
+  IsNumber, 
+  IsUUID, 
+  IsOptional, 
+  ValidateNested, 
+  IsArray 
+} from 'class-validator';
+import { Type } from 'class-transformer';
+
+class B2bDescriptionDto {
+  @ApiProperty({ example: 200 })
+  @IsString( { message: 'Price must be a number' })
+  title: string;
+
+  @ApiProperty({ example: 'Blue color, 50 pieces' })
+  @IsString({ message: 'Value must be a string' })
+  value: string;
+}
 
 export class CreateB2bDto {
+  @ApiProperty({ type: [B2bDescriptionDto], required: false })
+  @IsArray({ message: 'Description must be an array' })
+  @ValidateNested({ each: true })
+  @Type(() => B2bDescriptionDto)
+  @IsOptional()
+  description?: B2bDescriptionDto[];
 
-  @ApiProperty({ example: 'B2b package of 100 cotton T-shirts' })
-  @IsString({ message: 'Description must be a string' })
-  @IsOptional({ message: 'Description is optional' })
-  description?: string[];
-
-  @ApiProperty({ example: 100 })
-  @IsString( { message: 'Size must be a string' })
-  @IsOptional({ message: 'Size is optional' })
+  @ApiProperty({ example: 'XL' })
+  @IsString({ message: 'Size must be a string' })
+  @IsOptional()
   size?: string;
 
-  @ApiProperty({ example: 10 })
+  @ApiProperty({ example: 20 })
   @IsNumber({}, { message: 'MOQ must be a number' })
-  @IsOptional({ message: 'MOQ is optional' })
-  moq: number;
+  @IsOptional()
+  moq?: number;
 
   @ApiProperty({ example: 'c8d8a4a7-2f4e-41e7-a6f2-1234567890ab' })
   @IsUUID('4', { message: 'ProductId must be a valid UUID' })

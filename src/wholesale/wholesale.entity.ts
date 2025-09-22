@@ -7,7 +7,7 @@ export class Wholesale {
     id: string;
 
     @Column({ type: 'json' })
-    description?: string[]
+    description?: {title:string,value:string}[]
 
     @Column()
     size?: string

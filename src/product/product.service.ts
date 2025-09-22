@@ -10,7 +10,6 @@ import { Repository } from 'typeorm';
 import { Product, productType } from './product.entity';
 import { ProductResponseDto } from './dto/product.response-dto';
 import { plainToInstance } from 'class-transformer';
-import { CreateProductDto } from './dto/product.request-dto';
 import { UpdateProductDto } from './dto/product.update-dto';
 import { CategoryService } from 'src/category/category.service';
 import { Category } from 'src/category/category.entity';
@@ -20,6 +19,7 @@ import { WholesaleService } from 'src/wholesale/wholesale.service';
 import { Wholesale } from 'src/wholesale/wholesale.entity';
 import { B2b } from 'src/b2b/b2b.entity';
 import { Retail } from 'src/retail/retail.entity';
+import { CreateProductDto } from './dto/product.request-dto';
 
 @Injectable()
 export class ProductService {
