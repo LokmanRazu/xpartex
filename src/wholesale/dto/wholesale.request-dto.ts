@@ -5,7 +5,7 @@ import { Type } from 'class-transformer';
 
 class WholesaleDescriptionDto {
   @ApiProperty({ example: 100 })
-  @IsString( { message: 'Price must be a number' })
+  @IsString({ message: 'Price must be a number' })
   title: string;
 
   @ApiProperty({ example: 'Red color, 100 pieces' })
@@ -23,9 +23,10 @@ export class CreateWholesaleDto {
   description?: WholesaleDescriptionDto[];
 
   @ApiProperty({ example: 'L' })
-  @IsString({ message: 'Size must be a string' })
+  @IsArray()
+  @IsString({ each: true })
   @IsOptional()
-  size?: string;
+  size?: string[];
 
   @ApiProperty({ example: 10 })
   @IsNumber({}, { message: 'MOQ must be a number' })

@@ -28,11 +28,11 @@ export class AuthService {
     async login(dto: LoginRequestDto, res: Response): Promise<any> {
         let user = await this.userService.findOneByEmail(dto.email)
         if (!user) {
-            throw new UnauthorizedException('Invalid email or Password')
+            throw new UnauthorizedException('Invalid email')
         }
         let match = await comparePassword(user.password, dto.password)
         if (!match) {
-            throw new UnauthorizedException('Invalid email or Password')
+            throw new UnauthorizedException('Invalid pssword')
         }
         const payload = {
             sub: user.id,

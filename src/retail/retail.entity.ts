@@ -6,8 +6,8 @@ export class Retail {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @Column()
-    size?: string
+    @Column("simple-array", { nullable: true })
+    size?: string[];
 
 
     @ManyToOne(() => Product, (product) => product.retails, { onDelete: 'CASCADE' })

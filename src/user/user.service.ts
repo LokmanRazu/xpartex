@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, NotFoundException, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
@@ -44,20 +44,22 @@ export class UserService {
   }
 
   async findOneByEmail(email: string): Promise<UserResponseWithPasswordDto> {
-    try {
-      const user = await this.userRepository.findOne({ where: { email } });
-      if (!user) throw new NotFoundException('User not found');
+  try {
+    const user = await this.userRepository.findOne({ where: { email } });
+    if (!user) throw new UnauthorizedException('Invalid email');
 
-      return plainToInstance(UserResponseWithPasswordDto, user, {
-        enableImplicitConversion: true,
-        excludeExtraneousValues: true,
-      });
-    } catch (error) {
-      throw error instanceof NotFoundException
-        ? error
-        : new InternalServerErrorException('Failed to fetch user by email');
+    return plainToInstance(UserResponseWithPasswordDto, user, {
+      enableImplicitConversion: true,
+      excludeExtraneousValues: true,
+    });
+  } catch (error) {
+    if (error instanceof UnauthorizedException || error instanceof NotFoundException) {
+      throw error; // rethrow as-is
     }
+    throw new InternalServerErrorException('Failed to fetch user by email');
   }
+}
+
 
   async create(dto: CreateUserDto): Promise<UserResponseDto> {
     try {

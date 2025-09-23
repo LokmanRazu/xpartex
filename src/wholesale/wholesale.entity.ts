@@ -9,8 +9,8 @@ export class Wholesale {
     @Column({ type: 'json' })
     description?: {title:string,value:string}[]
 
-    @Column()
-    size?: string
+    @Column("simple-array", { nullable: true })
+    size?: string[];
 
     @Column()
     moq?: number
