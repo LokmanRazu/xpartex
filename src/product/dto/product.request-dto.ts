@@ -11,7 +11,7 @@ import {
   IsBoolean 
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { productType } from '../product.entity';
+import { productStatus, productType } from '../product.entity';
 
 class ProductDescriptionDto {
   @ApiProperty({ example: '1000' })
@@ -64,6 +64,11 @@ export class CreateProductDto {
   @IsNotEmpty()
   @IsEnum(productType)
   productType: productType;
+
+  @ApiProperty({ required: true, enum: productStatus,default:productStatus.PUBLISH })
+  @IsNotEmpty()
+  @IsEnum(productStatus)
+  productStatus: productStatus;
 
   @ApiProperty({ type: [ProductDescriptionDto], required: false })
   @IsArray()

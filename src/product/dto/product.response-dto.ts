@@ -5,7 +5,7 @@ import { UserResponseDto } from 'src/user/dto/user.response-dto';
 import { WholesaleResponseDto } from 'src/wholesale/dto/wholesale.response-dto';
 import { RetailResponseDto } from 'src/retail/dto/retail.response-dto';
 import { B2bResponseDto } from 'src/b2b/dto/b2b.response-dto';
-import { productType } from '../product.entity';
+import { productStatus, productType } from '../product.entity';
 
 export class ProductResponseDto {
   @ApiProperty({ example: '123e4567-e89b-12d3-a456-426614174000', description: 'Unique product ID (UUID)' })
@@ -46,12 +46,16 @@ export class ProductResponseDto {
   @Expose()
   productType: productType;
 
+  @ApiProperty({ enum: productStatus })
+  @Expose()
+  productStatus: productStatus;
+
   // ---------------- New fields ----------------
-  @ApiProperty({ example: ['https://example.com/img1.jpg','https://example.com/img2.jpg'], required: false })
+  @ApiProperty({ example: ['https://example.com/img1.jpg', 'https://example.com/img2.jpg'], required: false })
   @Expose()
   additionalImages?: string[];
 
-  @ApiProperty({ example: ['electronics','smartphone'], required: false })
+  @ApiProperty({ example: ['electronics', 'smartphone'], required: false })
   @Expose()
   tags?: string[];
 
@@ -59,7 +63,7 @@ export class ProductResponseDto {
   @Expose()
   weight?: number;
 
-  @ApiProperty({ example: ['Home Delivery','Pickup'], required: false })
+  @ApiProperty({ example: ['Home Delivery', 'Pickup'], required: false })
   @Expose()
   deliveryOptions?: string[];
 
@@ -67,7 +71,7 @@ export class ProductResponseDto {
   @Expose()
   discountPrice?: number;
 
-  @ApiProperty({ example: ['Black','Blue','Gold'], required: false })
+  @ApiProperty({ example: ['Black', 'Blue', 'Gold'], required: false })
   @Expose()
   colorVariants?: string[];
 
