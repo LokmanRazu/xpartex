@@ -30,7 +30,7 @@ export class CreateProductDto {
   @IsNotEmpty()
   name: string;
 
-  @ApiProperty({ example: 'https://example.com/images/iphone15.jpg', description: 'Product image URL' })
+  @ApiProperty({ example: 'https://example.com/images/iphone15.jpg', description: 'Product image URL',format:'binary' })
   @IsString()
   @IsNotEmpty()
   img: string;
@@ -92,7 +92,7 @@ export class CreateProductDto {
 
   // ---------------- New fields ----------------
 
-  @ApiProperty({ example: ['https://example.com/img1.jpg','https://example.com/img2.jpg'], required: false })
+  @ApiProperty({ example: ['https://example.com/img1.jpg','https://example.com/img2.jpg'], required: false, format:'binary' })
   @IsArray()
   @IsString({ each: true })
   @IsOptional()

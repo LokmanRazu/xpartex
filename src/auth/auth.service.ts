@@ -22,6 +22,9 @@ export class AuthService {
 
     async signup(dto: CreateUserDto) {
         console.log('dto', dto);
+       let otp =  await this.generateOtp(dto.email)
+       console.log('otttttpp',otp)
+     await this.sendOtp(dto.email,otp)
         await this.userService.create(dto);
     }
 
@@ -30,7 +33,7 @@ export class AuthService {
         if (!user) {
             throw new UnauthorizedException('Invalid email')
         }
-        let match = await comparePassword(user.password, dto.password)
+        let match = await comparePassword(user.password, dto.password) 
         if (!match) {
             throw new UnauthorizedException('Invalid pssword')
         }
@@ -68,8 +71,8 @@ export class AuthService {
     return otp;
   }
 
-    async verifyOtp(email: string, code: string): Promise<boolean> {
-    const otpRecord = await this.otpRepository.findOne({ where: { email, code } });
+    async verifyOtp( code: string): Promise<boolean> {
+    const otpRecord = await this.otpRepository.findOne({ where: {  code } });
 
     if (!otpRecord) throw new BadRequestException('Invalid OTP');
     if (otpRecord.expiresAt < new Date()) throw new BadRequestException('OTP expired');

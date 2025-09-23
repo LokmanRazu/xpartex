@@ -30,9 +30,8 @@ import { RfqModule } from './rfq/rfq.module';
       username: 'root',
       password: '',
       database: 'xpartexdb',
-      autoLoadEntities: true, 
+      autoLoadEntities: true,  
       synchronize: true,
-      logging: true,
     }),
 
     MailerModule.forRoot({

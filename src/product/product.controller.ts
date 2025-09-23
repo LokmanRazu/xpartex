@@ -1,10 +1,12 @@
-import { Controller, Get, Post, Patch, Delete, Param, Body, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody, ApiBearerAuth } from '@nestjs/swagger';
+import { Controller, Get, Post, Patch, Delete, Param, Body, UseGuards, UseInterceptors, UploadedFiles } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody, ApiBearerAuth, ApiConsumes } from '@nestjs/swagger';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/product.request-dto';
 import { UpdateProductDto } from './dto/product.update-dto';
 import { ProductResponseDto } from './dto/product.response-dto';
 import { AuthGuard } from '@nestjs/passport';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import { MultiFileUploadInterceptor } from 'utils/imageUpload';
 
 @ApiBearerAuth('JWT-auth')
 @UseGuards(AuthGuard('jwt'))
@@ -29,11 +31,22 @@ export class ProductController {
     }
 
     @Post()
+    @ApiConsumes('multipart/form-data')
+    @UseInterceptors(
+        MultiFileUploadInterceptor([
+            { name: 'img', maxCount: 1 },
+            { name: 'additionalImages', maxCount: 5 },
+        ]),
+    )
     @ApiOperation({ summary: 'Create a new product' })
     @ApiBody({ type: CreateProductDto })
     @ApiResponse({ status: 201, description: 'Product created', type: ProductResponseDto })
-    async create(@Body() dto: CreateProductDto): Promise<ProductResponseDto> {
-        return this.productService.create(dto);
+    async create(@Body() dto: CreateProductDto, @UploadedFiles()
+    files: {
+        img?: Express.Multer.File[];
+        additionalImages?: Express.Multer.File[];
+    },): Promise<ProductResponseDto> {
+        return this.productService.create(dto, files);
     }
 
     @Patch(':id')

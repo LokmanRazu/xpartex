@@ -64,8 +64,8 @@ export class AuthController {
       required: ['email', 'otp'],
     },
   })
-  async verifyOtp(@Body() body: { email: string; otp: string }) {
-    await this.authService.verifyOtp(body.email, body.otp);
+  async verifyOtp(@Body() body: { otp: string }) {
+    await this.authService.verifyOtp( body.otp);
     return { message: 'OTP verified successfully' };
   }
 }

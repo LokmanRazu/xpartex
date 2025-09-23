@@ -20,6 +20,7 @@ import { Wholesale } from 'src/wholesale/wholesale.entity';
 import { B2b } from 'src/b2b/b2b.entity';
 import { Retail } from 'src/retail/retail.entity';
 import { CreateProductDto } from './dto/product.request-dto';
+import { uploadImageToCloudinary } from 'utils/imageUpload';
 
 @Injectable()
 export class ProductService {
@@ -39,7 +40,7 @@ export class ProductService {
     async findAll(): Promise<ProductResponseDto[]> {
         try {
             const products = await this.productRepository.find({
-                relations: ['category', 'seller','b2bs','wholesales','retails'],
+                relations: ['category', 'seller', 'b2bs', 'wholesales', 'retails'],
             });
             return plainToInstance(ProductResponseDto, products, {
                 enableImplicitConversion: true,
@@ -52,7 +53,7 @@ export class ProductService {
 
     async findOne(id: string): Promise<ProductResponseDto> {
         try {
-            const product = await this.productRepository.findOne({ where: { id }, relations: ['category', 'seller','b2bs','wholesales','retails'] });
+            const product = await this.productRepository.findOne({ where: { id }, relations: ['category', 'seller', 'b2bs', 'wholesales', 'retails'] });
             if (!product) throw new NotFoundException('Product not found');
 
             return plainToInstance(ProductResponseDto, product, {
@@ -66,149 +67,169 @@ export class ProductService {
         }
     }
 
-    async create(dto: CreateProductDto): Promise<ProductResponseDto> {
-        const {
-            name,
-            img,
-            sellerId,
-            categoryId,
-            price,
-            stockQuantity,
-            productDescription,
-            productType,
-            description,
-            size,
-            moq,
-            additionalImages,
-            tags,
-            weight,
-            deliveryOptions,
-            discountPrice,
-            colorVariants,
-            returnPolicy,
-            packagingDetails,
-            leadTime,
-            negotiablePrice,
-            sampleAvailability,
-            customBiddingOption,
-        } = dto;
-
-        return await this.productRepository.manager
-            .transaction(async (manager) => {
-                const seller = await this.userService.findOne(sellerId);
-                if (!seller) throw new NotFoundException('Seller not found');
-
-                const category = await this.categoryService.findOne(categoryId);
-                if (!category) throw new NotFoundException('Category not found');
-
-                const product = this.productRepository.create({
-                    name,
-                    img,
-                    seller: { id: sellerId } as User,
-                    category: { id: categoryId } as Category,
-                    price,
-                    stockQuantity,
-                    productDescription,
-                    productType,
-                    // new fields
-                    additionalImages,
-                    tags,
-                    weight,
-                    deliveryOptions,
-                    discountPrice,
-                    colorVariants,
-                    returnPolicy,
-                    packagingDetails,
-                    leadTime,
-                    negotiablePrice,
-                    sampleAvailability,
-                    customBiddingOption,
-                });
-
-                const savedProduct = await this.productRepository.save(product);
-
-                if (productType === 'wholesale') {
-                    const wholesale = this.wholesaleRepository.create({
-                        product: { id: savedProduct.id } as Product,
-                        description,
-                        size,
-                        moq,
-                    });
-                    await this.wholesaleRepository.save(wholesale);
-                } else if (productType === 'b2b') {
-                    const b2b = this.b2bRepository.create({
-                        product: { id: savedProduct.id } as Product,
-                        description,
-                        size,
-                        moq,
-                    });
-                    await this.b2bRepository.save(b2b);
-                } else if (productType === 'retail') {
-                    const retail = this.retailRepository.create({
-                        product: { id: savedProduct.id } as Product,
-                        size,
-                    });
-                    await this.retailRepository.save(retail);
-                }
-
-                return plainToInstance(ProductResponseDto, savedProduct, {
-                    enableImplicitConversion: true,
-                    excludeExtraneousValues: true,
-                });
-            })
-            .catch((error) => {
-                throw new InternalServerErrorException(
-                    'Failed to create product: ' + error.message,
-                );
-            });
-    }
-
-
-
-    async update(id: string, dto: UpdateProductDto): Promise<ProductResponseDto> {
+    async create(
+        dto: CreateProductDto,
+        files: { img?: Express.Multer.File[]; additionalImages?: Express.Multer.File[] },
+    ): Promise<ProductResponseDto> {
         try {
-            const product = await this.productRepository.findOne({
-                where: { id },
-                relations: ['category'],
-            });
-            if (!product) throw new NotFoundException('Product not found');
+            const {
+                name,
+                sellerId,
+                categoryId,
+                price,
+                stockQuantity,
+                productDescription,
+                productType,
+                description,
+                size,
+                moq,
+                tags,
+                weight,
+                deliveryOptions,
+                discountPrice,
+                colorVariants,
+                returnPolicy,
+                packagingDetails,
+                leadTime,
+                negotiablePrice,
+                sampleAvailability,
+                customBiddingOption,
+            } = dto;
+            console.log('imggggggggg',files.img)
 
-            if (dto.categoryId) {
-                const category = await this.categoryService.findOne(dto.categoryId);
-                if (!category) throw new NotFoundException('Category not found');
-                product.category = { id: dto.categoryId } as Category;
+            let uploadedMain: any = null;
+            if (files.img && files.img[0]) {
+                uploadedMain = await uploadImageToCloudinary(files.img[0].path);
             }
 
-            Object.assign(product, { ...dto, categoryId: undefined });
+            let uploadedAdditional: string[] = [];
+            if (files.additionalImages && files.additionalImages.length > 0) {
+                const results = await Promise.all(
+                    files.additionalImages.map(async (file) => {
+                        const res = await uploadImageToCloudinary(file.path);
+                        return res?.secure_url; // might be undefined
+                    }),
+                );
 
-            const updatedProduct = await this.productRepository.save(product);
+                uploadedAdditional = results.filter((url): url is string => !!url);
+            }
 
-            return plainToInstance(ProductResponseDto, updatedProduct, {
+
+            const seller = await this.userService.findOne(sellerId);
+            if (!seller) throw new NotFoundException('Seller not found');
+
+            const category = await this.categoryService.findOne(categoryId);
+            if (!category) throw new NotFoundException('Category not found');
+
+            const product = this.productRepository.create({
+                name,
+                img: uploadedMain?.secure_url,
+                seller: { id: sellerId } as User,
+                category: { id: categoryId } as Category,
+                price,
+                stockQuantity,
+                productDescription,
+                productType,
+                additionalImages: uploadedAdditional,
+                tags,
+                weight,
+                deliveryOptions,
+                discountPrice,
+                colorVariants,
+                returnPolicy,
+                packagingDetails,
+                leadTime,
+                negotiablePrice,
+                sampleAvailability,
+                customBiddingOption,
+            });
+
+            const savedProduct = await this.productRepository.save(product);
+
+            if (productType === 'wholesale') {
+                const wholesale = this.wholesaleRepository.create({
+                    product: { id: savedProduct.id } as Product,
+                    description,
+                    size,
+                    moq,
+                });
+                await this.wholesaleRepository.save(wholesale);
+            } else if (productType === 'b2b') {
+                const b2b = this.b2bRepository.create({
+                    product: { id: savedProduct.id } as Product,
+                    description,
+                    size,
+                    moq,
+                });
+                await this.b2bRepository.save(b2b);
+            } else if (productType === 'retail') {
+                const retail = this.retailRepository.create({
+                    product: { id: savedProduct.id } as Product,
+                    size,
+                });
+                await this.retailRepository.save(retail);
+            }
+
+            return plainToInstance(ProductResponseDto, savedProduct, {
                 enableImplicitConversion: true,
                 excludeExtraneousValues: true,
             });
         } catch (error) {
-            throw error instanceof NotFoundException
-                ? error
-                : new InternalServerErrorException('Failed to update product');
+            throw new InternalServerErrorException(
+                'Failed to create product: ' + error.message,
+            );
         }
     }
 
-    async delete(id: string): Promise<ProductResponseDto> {
-        try {
-            const product = await this.productRepository.findOne({ where: { id } });
-            if (!product) throw new NotFoundException('Product not found');
 
-            await this.productRepository.delete(id);
 
-            return plainToInstance(ProductResponseDto, product, {
-                enableImplicitConversion: true,
-                excludeExtraneousValues: true,
-            });
+
+
+
+    async update(id: string, dto: UpdateProductDto): Promise < ProductResponseDto > {
+    try {
+        const product = await this.productRepository.findOne({
+            where: { id },
+            relations: ['category'],
+        });
+        if(!product) throw new NotFoundException('Product not found');
+
+        if(dto.categoryId) {
+    const category = await this.categoryService.findOne(dto.categoryId);
+    if (!category) throw new NotFoundException('Category not found');
+    product.category = { id: dto.categoryId } as Category;
+}
+
+Object.assign(product, { ...dto, categoryId: undefined });
+
+const updatedProduct = await this.productRepository.save(product);
+
+return plainToInstance(ProductResponseDto, updatedProduct, {
+    enableImplicitConversion: true,
+    excludeExtraneousValues: true,
+});
         } catch (error) {
-            throw error instanceof NotFoundException
-                ? error
-                : new InternalServerErrorException('Failed to delete product');
-        }
+    throw error instanceof NotFoundException
+        ? error
+        : new InternalServerErrorException('Failed to update product');
+}
     }
+
+    async delete (id: string): Promise < ProductResponseDto > {
+    try {
+        const product = await this.productRepository.findOne({ where: { id } });
+        if(!product) throw new NotFoundException('Product not found');
+
+        await this.productRepository.delete(id);
+
+        return plainToInstance(ProductResponseDto, product, {
+            enableImplicitConversion: true,
+            excludeExtraneousValues: true,
+        });
+    } catch(error) {
+        throw error instanceof NotFoundException
+            ? error
+            : new InternalServerErrorException('Failed to delete product');
+    }
+}
 }
