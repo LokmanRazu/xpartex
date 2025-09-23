@@ -10,6 +10,7 @@ import {
   IsArray 
 } from 'class-validator';
 import { Type } from 'class-transformer';
+import { productSizeRequestDto } from 'src/wholesale/dto/wholesale.request-dto';
 
 class B2bDescriptionDto {
   @ApiProperty({ example: 200 })
@@ -29,11 +30,12 @@ export class CreateB2bDto {
   @IsOptional()
   description?: B2bDescriptionDto[];
 
-  @ApiProperty({ example: 'XL' })
+  @ApiProperty({ type:[productSizeRequestDto]})
   @IsArray()
-  @IsString({ each: true })
-  @IsOptional({message:'size is optional'})
-  size?: string[];
+  @ValidateNested({ each: true })
+  @Type(() => productSizeRequestDto)
+  @IsOptional()
+  size?: productSizeRequestDto[];
 
   @ApiProperty({ example: 20 })
   @IsNumber({}, { message: 'MOQ must be a number' })

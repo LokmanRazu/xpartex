@@ -1,6 +1,7 @@
 // b2b.response-dto.ts
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
+import { ProductSizeResponseDto } from 'src/wholesale/dto/wholesale.response-dto';
 
 class B2bDescriptionResponseDto {
   @ApiProperty({ example: '200' })
@@ -22,9 +23,10 @@ export class B2bResponseDto {
   @Type(() => B2bDescriptionResponseDto)
   description?: B2bDescriptionResponseDto[];
 
-  @ApiProperty({ example: 'XL' })
+  @ApiProperty({ example: 'L', type: ProductSizeResponseDto, required: false })
+  @Type(() => ProductSizeResponseDto)
   @Expose()
-  size?: string[];
+  size?: ProductSizeResponseDto[];
 
   @ApiProperty({ example: 20 })
   @Expose()

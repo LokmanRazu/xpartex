@@ -12,6 +12,7 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { productStatus, productType } from '../product.entity';
+import { productSizeRequestDto } from 'src/wholesale/dto/wholesale.request-dto';
 
 class ProductDescriptionDto {
   @ApiProperty({ example: '1000' })
@@ -76,12 +77,13 @@ export class CreateProductDto {
   @Type(() => ProductDescriptionDto)
   @IsOptional()
   description?: ProductDescriptionDto[];
-
-  @ApiProperty({ example: ['XL','L'], required: false })
+  
+  @ApiProperty({ type:[productSizeRequestDto]})
   @IsArray()
-  @IsString({ each: true })
+  @ValidateNested({ each: true })
+  @Type(() => productSizeRequestDto)
   @IsOptional()
-  size?: string[];
+  size?: productSizeRequestDto[];
 
   @ApiProperty({ example: 10, required: false })
   @IsNumber()

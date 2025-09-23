@@ -2,15 +2,17 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose, Transform, Type } from 'class-transformer';
 import { ProductResponseDto } from 'src/product/dto/product.response-dto';
+import { ProductSizeResponseDto } from 'src/wholesale/dto/wholesale.response-dto';
 
 export class RetailResponseDto {
   @ApiProperty()
   @Expose()
   id: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: 'L', type: ProductSizeResponseDto, required: false })
+  @Type(() => ProductSizeResponseDto)
   @Expose()
-  size?: string[];
+  size?: ProductSizeResponseDto[];
 
   @ApiProperty({ type: () => ProductResponseDto })
   @Expose()

@@ -1,15 +1,18 @@
 // retail.request-dto.ts
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, IsNumber, IsUUID, IsOptional, IsArray } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsNotEmpty, IsString, IsNumber, IsUUID, IsOptional, IsArray, ValidateNested } from 'class-validator';
+import { productSizeRequestDto } from 'src/wholesale/dto/wholesale.request-dto';
 
 export class CreateRetailDto {
 
 
-  @ApiProperty({ example: 100 })
+  @ApiProperty({ type: [productSizeRequestDto] })
   @IsArray()
-  @IsString({ each: true })
-  @IsOptional({ message: 'Size is optional' })
-  size?: string[];
+  @ValidateNested({ each: true })
+  @Type(() => productSizeRequestDto)
+  @IsOptional()
+  size?: productSizeRequestDto[];
 
 
 

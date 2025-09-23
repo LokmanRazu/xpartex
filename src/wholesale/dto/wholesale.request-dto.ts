@@ -3,7 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString, IsNumber, IsUUID, IsOptional, ValidateNested, IsArray } from 'class-validator';
 import { Type } from 'class-transformer';
 
-class WholesaleDescriptionDto {
+export class WholesaleDescriptionDto {
   @ApiProperty({ example: 100 })
   @IsString({ message: 'Price must be a number' })
   title: string;
@@ -11,6 +11,16 @@ class WholesaleDescriptionDto {
   @ApiProperty({ example: 'Red color, 100 pieces' })
   @IsString({ message: 'Value must be a string' })
   value: string;
+}
+
+export class productSizeRequestDto {
+  @ApiProperty({ example: 'M' })
+  @IsString({ message: 'productsize must be a string' })
+  productsize: string;
+
+  @ApiProperty({ example: '10', })
+  @IsString({ message: 'productQuantity must be a string' })
+  productQuantity: string;
 }
 
 export class CreateWholesaleDto {
@@ -22,11 +32,12 @@ export class CreateWholesaleDto {
   @IsOptional()
   description?: WholesaleDescriptionDto[];
 
-  @ApiProperty({ example: 'L' })
+  @ApiProperty({type:[productSizeRequestDto]})
   @IsArray()
-  @IsString({ each: true })
+  @ValidateNested({ each: true })
+  @Type(() => productSizeRequestDto)
   @IsOptional()
-  size?: string[];
+  size?: productSizeRequestDto[];
 
   @ApiProperty({ example: 10 })
   @IsNumber({}, { message: 'MOQ must be a number' })

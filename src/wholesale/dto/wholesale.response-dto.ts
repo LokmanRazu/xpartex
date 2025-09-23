@@ -2,7 +2,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
 
-class WholesaleDescriptionResponseDto {
+export class WholesaleDescriptionResponseDto {
   @ApiProperty({ example: '100' })
   @Expose()
   title: string;
@@ -12,6 +12,16 @@ class WholesaleDescriptionResponseDto {
   value: string;
 }
 
+export class ProductSizeResponseDto {
+  @ApiProperty({ example: '100' })
+  @Expose()
+  productsize: string;
+
+  @ApiProperty({ example: 'Red color, 100 pieces' })
+  @Expose()
+  productQuantity: string;
+}
+
 export class WholesaleResponseDto {
   @ApiProperty({ example: 'c8d8a4a7-2f4e-41e7-a6f2-1234567890ab' })
   @Expose()
@@ -19,12 +29,13 @@ export class WholesaleResponseDto {
 
   @ApiProperty({ type: [WholesaleDescriptionResponseDto], required: false })
   @Expose()
-   @Type(() => WholesaleDescriptionResponseDto)
+  @Type(() => WholesaleDescriptionResponseDto)
   description?: WholesaleDescriptionResponseDto[];
 
-  @ApiProperty({ example: 'L' })
+  @ApiProperty({ example: 'L', type: ProductSizeResponseDto, required: false })
+  @Type(() => ProductSizeResponseDto)
   @Expose()
-  size?: string[];
+  size?: ProductSizeResponseDto[];
 
   @ApiProperty({ example: 10 })
   @Expose()

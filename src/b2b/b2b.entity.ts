@@ -9,8 +9,8 @@ export class B2b {
     @Column({ type: 'json' })
     description?: { title: string, value: string }[]
 
-    @Column("simple-array", { nullable: true })
-    size?: string[];
+    @Column("json", { nullable: true })
+    size?: {productsize:string,productQuantity:string}[];
 
     @Column()
     moq?: number;
