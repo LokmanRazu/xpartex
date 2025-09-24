@@ -51,6 +51,22 @@ export class ProductService {
         }
     }
 
+    async findAllByUser(id: string): Promise<ProductResponseDto[]> {
+        try {
+            console.log('iddddddd===', id)
+            const products = await this.productRepository.find({
+                where: { seller: { id } },
+                relations: ['category', 'seller', 'b2bs', 'wholesales', 'retails'],
+            });
+            return plainToInstance(ProductResponseDto, products, {
+                enableImplicitConversion: true,
+                excludeExtraneousValues: true,
+            });
+        } catch {
+            throw new InternalServerErrorException('Failed to fetch products');
+        }
+    }
+
     async findOne(id: string): Promise<ProductResponseDto> {
         try {
             const product = await this.productRepository.findOne({ where: { id }, relations: ['category', 'seller', 'b2bs', 'wholesales', 'retails'] });
@@ -94,9 +110,24 @@ export class ProductService {
                 negotiablePrice,
                 sampleAvailability,
                 customBiddingOption,
+                // ✅ New fields
+                productSubCategory,
+                hsnCode,
+                skuCode,
+                materialType,
+                composition,
+                gsm,
+                yarnCount,
+                pattern,
+                certifications,
+                unitOfMeasurement,
+                availableQuantity,
+                manufacturer,
+                originCountry,
+                productionCapacity,
             } = dto;
-            console.log('imggggggggg',files.img)
 
+            // ----------------- Image Upload -----------------
             let uploadedMain: any = null;
             if (files.img && files.img[0]) {
                 uploadedMain = await uploadImageToCloudinary(files.img[0].path);
@@ -107,20 +138,20 @@ export class ProductService {
                 const results = await Promise.all(
                     files.additionalImages.map(async (file) => {
                         const res = await uploadImageToCloudinary(file.path);
-                        return res?.secure_url; // might be undefined
+                        return res?.secure_url;
                     }),
                 );
-
                 uploadedAdditional = results.filter((url): url is string => !!url);
             }
 
-
+            // ----------------- Validate Relations -----------------
             const seller = await this.userService.findOne(sellerId);
             if (!seller) throw new NotFoundException('Seller not found');
 
             const category = await this.categoryService.findOne(categoryId);
             if (!category) throw new NotFoundException('Category not found');
 
+            // ----------------- Create Product -----------------
             const product = this.productRepository.create({
                 name,
                 img: uploadedMain?.secure_url,
@@ -142,10 +173,27 @@ export class ProductService {
                 negotiablePrice,
                 sampleAvailability,
                 customBiddingOption,
+
+                // ✅ New fields mapping
+                productSubCategory,
+                hsnCode,
+                skuCode,
+                materialType,
+                composition,
+                gsm,
+                yarnCount,
+                pattern,
+                certifications,
+                unitOfMeasurement,
+                availableQuantity,
+                manufacturer,
+                originCountry,
+                productionCapacity,
             });
 
             const savedProduct = await this.productRepository.save(product);
 
+            // ----------------- Handle Product Type Relations -----------------
             if (productType === 'wholesale') {
                 const wholesale = this.wholesaleRepository.create({
                     product: { id: savedProduct.id } as Product,
@@ -170,6 +218,7 @@ export class ProductService {
                 await this.retailRepository.save(retail);
             }
 
+            // ----------------- Response -----------------
             return plainToInstance(ProductResponseDto, savedProduct, {
                 enableImplicitConversion: true,
                 excludeExtraneousValues: true,
@@ -186,50 +235,51 @@ export class ProductService {
 
 
 
-    async update(id: string, dto: UpdateProductDto): Promise < ProductResponseDto > {
-    try {
-        const product = await this.productRepository.findOne({
-            where: { id },
-            relations: ['category'],
-        });
-        if(!product) throw new NotFoundException('Product not found');
 
-        if(dto.categoryId) {
-    const category = await this.categoryService.findOne(dto.categoryId);
-    if (!category) throw new NotFoundException('Category not found');
-    product.category = { id: dto.categoryId } as Category;
-}
+    async update(id: string, dto: UpdateProductDto): Promise<ProductResponseDto> {
+        try {
+            const product = await this.productRepository.findOne({
+                where: { id },
+                relations: ['category'],
+            });
+            if (!product) throw new NotFoundException('Product not found');
 
-Object.assign(product, { ...dto, categoryId: undefined });
+            if (dto.categoryId) {
+                const category = await this.categoryService.findOne(dto.categoryId);
+                if (!category) throw new NotFoundException('Category not found');
+                product.category = { id: dto.categoryId } as Category;
+            }
 
-const updatedProduct = await this.productRepository.save(product);
+            Object.assign(product, { ...dto, categoryId: undefined });
 
-return plainToInstance(ProductResponseDto, updatedProduct, {
-    enableImplicitConversion: true,
-    excludeExtraneousValues: true,
-});
+            const updatedProduct = await this.productRepository.save(product);
+
+            return plainToInstance(ProductResponseDto, updatedProduct, {
+                enableImplicitConversion: true,
+                excludeExtraneousValues: true,
+            });
         } catch (error) {
-    throw error instanceof NotFoundException
-        ? error
-        : new InternalServerErrorException('Failed to update product');
-}
+            throw error instanceof NotFoundException
+                ? error
+                : new InternalServerErrorException('Failed to update product');
+        }
     }
 
-    async delete (id: string): Promise < ProductResponseDto > {
-    try {
-        const product = await this.productRepository.findOne({ where: { id } });
-        if(!product) throw new NotFoundException('Product not found');
+    async delete(id: string): Promise<ProductResponseDto> {
+        try {
+            const product = await this.productRepository.findOne({ where: { id } });
+            if (!product) throw new NotFoundException('Product not found');
 
-        await this.productRepository.delete(id);
+            await this.productRepository.delete(id);
 
-        return plainToInstance(ProductResponseDto, product, {
-            enableImplicitConversion: true,
-            excludeExtraneousValues: true,
-        });
-    } catch(error) {
-        throw error instanceof NotFoundException
-            ? error
-            : new InternalServerErrorException('Failed to delete product');
+            return plainToInstance(ProductResponseDto, product, {
+                enableImplicitConversion: true,
+                excludeExtraneousValues: true,
+            });
+        } catch (error) {
+            throw error instanceof NotFoundException
+                ? error
+                : new InternalServerErrorException('Failed to delete product');
+        }
     }
-}
 }

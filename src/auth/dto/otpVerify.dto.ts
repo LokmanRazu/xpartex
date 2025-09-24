@@ -11,6 +11,6 @@ export class VerifyOtpRequestDto {
 
 export class SendOtpRequestDto {
   @ApiProperty({ example: 'user@example.com' })
-  email: string; 
+  email: string;
 
 }

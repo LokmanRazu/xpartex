@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
+import { Injectable, NotFoundException, InternalServerErrorException, UnauthorizedException, ConflictException, HttpException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
@@ -62,30 +62,38 @@ export class UserService {
 
 
   async create(dto: CreateUserDto): Promise<UserResponseDto> {
-    try {
-      const { firstName, lastName, email, password, phoneNumber, role, address, registrationdate } = dto;
+  try {
+    const { firstName, lastName, email, password, phoneNumber, role, address, registrationdate } = dto;
 
-      const user = this.userRepository.create({
-        firstName,
-        lastName,
-        email,
-        password: hashPassword(password), // always hash before saving
-        phoneNumber,
-        role,
-        address,
-        registrationdate,
-      });
-
-      const savedUser = await this.userRepository.save(user);
-
-      return plainToInstance(UserResponseDto, savedUser, {
-        enableImplicitConversion: true,
-        excludeExtraneousValues: true,
-      });
-    } catch {
-      throw new InternalServerErrorException('Failed to create user');
+    let existingUser = await this.userRepository.findOne({ where: { email } })
+    if (existingUser) {
+      throw new ConflictException('User with this email already exists');
     }
+
+    const user = this.userRepository.create({
+      firstName,
+      lastName,
+      email,
+      password: hashPassword(password), 
+      phoneNumber,
+      role,
+      address,
+      registrationdate,
+    });
+
+    const savedUser = await this.userRepository.save(user);
+
+    return plainToInstance(UserResponseDto, savedUser, {
+      enableImplicitConversion: true,
+      excludeExtraneousValues: true,
+    });
+  } catch (error) {
+    if (error instanceof HttpException) {
+      throw error;
+    }
+    throw new InternalServerErrorException('Failed to create user');
   }
+}
 
   async update(id: string, dto: UpdateUserDto): Promise<UserResponseDto> {
     try {

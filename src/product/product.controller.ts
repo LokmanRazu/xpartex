@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Patch, Delete, Param, Body, UseGuards, UseInterceptors, UploadedFiles } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Param, Body, UseGuards, UseInterceptors, UploadedFiles, Req } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody, ApiBearerAuth, ApiConsumes } from '@nestjs/swagger';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/product.request-dto';
@@ -9,7 +9,6 @@ import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { MultiFileUploadInterceptor } from 'utils/imageUpload';
 
 @ApiBearerAuth('JWT-auth')
-@UseGuards(AuthGuard('jwt'))
 @ApiTags('Product')
 @Controller('product')
 export class ProductController {
@@ -22,6 +21,14 @@ export class ProductController {
         return this.productService.findAll();
     }
 
+    @UseGuards(AuthGuard('jwt'))
+    @Get('/userProduct')
+    @ApiOperation({ summary: 'Get all products by user' })
+    @ApiResponse({ status: 200, description: 'List of products', type: [ProductResponseDto] })
+    async findAllByUser(@Req() req): Promise<ProductResponseDto[]> {
+        return this.productService.findAllByUser(req.user.id);
+    }
+
     @Get(':id')
     @ApiOperation({ summary: 'Get product by ID' })
     @ApiParam({ name: 'id', type: String })
@@ -30,6 +37,7 @@ export class ProductController {
         return this.productService.findOne(id);
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Post()
     @ApiConsumes('multipart/form-data')
     @UseInterceptors(
@@ -49,6 +57,7 @@ export class ProductController {
         return this.productService.create(dto, files);
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Patch(':id')
     @ApiOperation({ summary: 'Update product by ID' })
     @ApiParam({ name: 'id', type: String })
@@ -58,6 +67,7 @@ export class ProductController {
         return this.productService.update(id, dto);
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Delete(':id')
     @ApiOperation({ summary: 'Delete product by ID' })
     @ApiParam({ name: 'id', type: String })

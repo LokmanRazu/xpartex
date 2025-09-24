@@ -14,51 +14,53 @@ import { MailerService } from '@nestjs-modules/mailer';
 export class AuthService {
 
 
-    constructor(@InjectRepository(Otp) private otpRepository:Repository<Otp>,
-     private readonly jwtService: JwtService,
-      private userService: UserService,
-      private mailerService:MailerService
-    ) { }
+  constructor(@InjectRepository(Otp) private otpRepository: Repository<Otp>,
+    private readonly jwtService: JwtService,
+    private userService: UserService,
+    private mailerService: MailerService
+  ) { }
 
-    async signup(dto: CreateUserDto) {
-        console.log('dto', dto);
-       let otp =  await this.generateOtp(dto.email)
-       console.log('otttttpp',otp)
-     await this.sendOtp(dto.email,otp)
-        await this.userService.create(dto);
+  async signup(dto: CreateUserDto) {
+    console.log('dto', dto);
+    await this.userService.create(dto);
+    let otp = await this.generateOtp(dto.email)
+    console.log('otttttpp', otp)
+    await this.sendOtp(dto.email, otp)
+
+  }
+
+  async login(dto: LoginRequestDto, res: Response): Promise<any> {
+    let user = await this.userService.findOneByEmail(dto.email)
+    console.log('iserr====',user)
+    if (!user) {
+      throw new UnauthorizedException('Invalid email')
     }
-
-    async login(dto: LoginRequestDto, res: Response): Promise<any> {
-        let user = await this.userService.findOneByEmail(dto.email)
-        if (!user) {
-            throw new UnauthorizedException('Invalid email')
-        }
-        let match = await comparePassword(user.password, dto.password) 
-        if (!match) {
-            throw new UnauthorizedException('Invalid pssword')
-        }
-        const payload = {
-            sub: user.id,
-            name: user.firstName,
-
-        }
-        console.log('payload', payload);
-        const token = await this.jwtService.signAsync(payload,{secret:process.env.JWT_SECRET,expiresIn:'50m'});
-        console.log("Tokeeenn", token);
-        // res.cookie('access_token', token, {
-        //     httpOnly: true,
-        //     secure: process.env.NODE_ENV === 'production', // Send only over HTTPS in production process.env.NODE_ENV === 'production',
-        //     sameSite: 'none', // or 'strict' or 'none' depending on your frontend domain
-        //     maxAge: 1000 * 60 * 60 * 24, // 1 day
-        // });
-
-        return {
-            message: 'Login Successfully',
-            token:token
-        }
+    let match = await comparePassword(user.password, dto.password)
+    if (!match) {
+      throw new UnauthorizedException('Invalid pssword')
     }
+    const payload = {
+      sub: user.id,
+      name: user.firstName,
 
-      async generateOtp(email: any): Promise<string> {
+    }
+    console.log('payload', payload);
+    const token = await this.jwtService.signAsync(payload, { secret: process.env.JWT_SECRET, expiresIn: '50m' });
+    console.log("Tokeeenn", token);
+    // res.cookie('access_token', token, {
+    //     httpOnly: true,
+    //     secure: process.env.NODE_ENV === 'production', // Send only over HTTPS in production process.env.NODE_ENV === 'production',
+    //     sameSite: 'none', // or 'strict' or 'none' depending on your frontend domain
+    //     maxAge: 1000 * 60 * 60 * 24, // 1 day
+    // });
+
+    return {
+      message: 'Login Successfully',
+      token: token
+    }
+  }
+
+  async generateOtp(email: any): Promise<string> {
     // delete old OTPs for this email
     await this.otpRepository.delete({ email });
 
@@ -71,8 +73,8 @@ export class AuthService {
     return otp;
   }
 
-    async verifyOtp( code: string): Promise<boolean> {
-    const otpRecord = await this.otpRepository.findOne({ where: {  code } });
+  async verifyOtp(code: string): Promise<boolean> {
+    const otpRecord = await this.otpRepository.findOne({ where: { code } });
 
     if (!otpRecord) throw new BadRequestException('Invalid OTP');
     if (otpRecord.expiresAt < new Date()) throw new BadRequestException('OTP expired');
@@ -82,13 +84,13 @@ export class AuthService {
     return true;
   }
 
-    async sendOtp(to: any, otp: string) {
-                console.log(to);
+  async sendOtp(to: any, otp: string) {
+    console.log(to);
 
     await this.mailerService.sendMail({
       to,
       subject: 'Your OTP Code',
-      text:`Your OTP code is: ${otp}. It will expire in 5 minutes.`
+      text: `Your OTP code is: ${otp}. It will expire in 5 minutes.`
     });
   }
 }

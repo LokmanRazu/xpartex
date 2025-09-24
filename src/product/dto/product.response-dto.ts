@@ -8,15 +8,15 @@ import { B2bResponseDto } from 'src/b2b/dto/b2b.response-dto';
 import { productStatus, productType } from '../product.entity';
 
 export class ProductResponseDto {
-  @ApiProperty({ example: '123e4567-e89b-12d3-a456-426614174000', description: 'Unique product ID (UUID)' })
+  @ApiProperty({ example: '123e4567-e89b-12d3-a456-426614174000' })
   @Expose()
   id: string;
 
-  @ApiProperty({ example: 'iPhone 15 Pro', description: 'Name of the product' })
+  @ApiProperty({ example: 'iPhone 15 Pro' })
   @Expose()
   name: string;
 
-  @ApiProperty({ example: 'https://example.com/images/iphone15.jpg', description: 'Product image URL' })
+  @ApiProperty({ example: 'https://example.com/images/iphone15.jpg' })
   @Expose()
   img: string;
 
@@ -30,15 +30,15 @@ export class ProductResponseDto {
   @Expose()
   category: CategoryResponseDto;
 
-  @ApiProperty({ example: '999.99', description: 'Price of the product' })
+  @ApiProperty({ example: '999.99' })
   @Expose()
   price: string;
 
-  @ApiProperty({ example: 100, description: 'Available stock quantity' })
+  @ApiProperty({ example: 100 })
   @Expose()
   stockQuantity: number;
 
-  @ApiProperty({ example: 'Latest iPhone model with titanium frame', description: 'Detailed description of the product' })
+  @ApiProperty({ example: 'Latest iPhone model with titanium frame' })
   @Expose()
   productDescription: string;
 
@@ -50,7 +50,64 @@ export class ProductResponseDto {
   @Expose()
   productStatus: productStatus;
 
-  // ---------------- New fields ----------------
+  // ------------------- New Fields -------------------
+  @ApiProperty({ example: 'Mobile Accessories', required: false })
+  @Expose()
+  productSubCategory?: string;
+
+  @ApiProperty({ example: 'HSN12345', required: false })
+  @Expose()
+  hsnCode?: string;
+
+  @ApiProperty({ example: 'SKU-001', required: false })
+  @Expose()
+  skuCode?: string;
+
+  @ApiProperty({ example: 'Cotton', required: false })
+  @Expose()
+  materialType?: string;
+
+  @ApiProperty({ example: '80% Cotton, 20% Polyester', required: false })
+  @Expose()
+  composition?: string;
+
+  @ApiProperty({ example: '180 GSM', required: false })
+  @Expose()
+  gsm?: string;
+
+  @ApiProperty({ example: '40s', required: false })
+  @Expose()
+  yarnCount?: string;
+
+  @ApiProperty({ example: 'Striped', required: false })
+  @Expose()
+  pattern?: string;
+
+  @ApiProperty({ example: ['OEKO-TEX', 'GOTS'], required: false })
+  @Expose()
+  certifications?: string[];
+
+  @ApiProperty({ example: 'kg' })
+  @Expose()
+  unitOfMeasurement: string;
+
+  @ApiProperty({ example: 500 })
+  @Expose()
+  availableQuantity: number;
+
+  @ApiProperty({ example: true })
+  @Expose()
+  manufacturer: boolean;
+
+  @ApiProperty({ example: 'India', required: false })
+  @Expose()
+  originCountry?: string;
+
+  @ApiProperty({ example: '1000 units per month', required: false })
+  @Expose()
+  productionCapacity?: string;
+  // ---------------------------------------------------
+
   @ApiProperty({ example: ['https://example.com/img1.jpg', 'https://example.com/img2.jpg'], required: false })
   @Expose()
   additionalImages?: string[];
@@ -59,7 +116,7 @@ export class ProductResponseDto {
   @Expose()
   tags?: string[];
 
-  @ApiProperty({ example: 0.5, description: 'Weight in kg', required: false })
+  @ApiProperty({ example: 0.5, required: false })
   @Expose()
   weight?: number;
 
@@ -67,7 +124,7 @@ export class ProductResponseDto {
   @Expose()
   deliveryOptions?: string[];
 
-  @ApiProperty({ example: 899.99, description: 'Discounted price', required: false })
+  @ApiProperty({ example: 899.99, required: false })
   @Expose()
   discountPrice?: number;
 
@@ -98,17 +155,17 @@ export class ProductResponseDto {
   @ApiProperty({ example: false, required: false })
   @Expose()
   customBiddingOption?: boolean;
-  // ------------------------------------------------
 
-  @ApiProperty({ example: '2025-09-12T10:00:00.000Z', description: 'Product creation timestamp' })
+  // ---------------------------------------------------
+  @ApiProperty({ example: '2025-09-12T10:00:00.000Z' })
   @Expose()
   createdAt: Date;
 
-  @ApiProperty({ example: '2025-09-12T12:30:00.000Z', description: 'Product last update timestamp' })
+  @ApiProperty({ example: '2025-09-12T12:30:00.000Z' })
   @Expose()
   updatedAt: Date;
 
-  // Optional related responses
+  // Related responses
   @ApiProperty({ type: [WholesaleResponseDto], required: false })
   @Expose()
   @Type(() => WholesaleResponseDto)

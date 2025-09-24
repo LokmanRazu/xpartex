@@ -48,7 +48,7 @@ export class UserResponseDto {
 export class UserResponseWithPasswordDto {
   @ApiProperty()
   @Expose()
-  id: number;
+  id: string;
 
   @ApiProperty()
   @Expose()

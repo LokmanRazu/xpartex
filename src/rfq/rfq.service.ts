@@ -22,12 +22,12 @@ export class RfqService {
     private rfqRepository: Repository<Rfq>,
     private userService: UserService,
     private productService: ProductService,
-  ) {}
+  ) { }
 
   async findAll(): Promise<RfqResponseDto[]> {
     try {
       const rfqs = await this.rfqRepository.find({
-        relations: ['buyer', 'product'],
+        relations: ['buyer', 'product', 'product.seller'],
       });
 
       return plainToInstance(RfqResponseDto, rfqs, {
@@ -43,7 +43,7 @@ export class RfqService {
     try {
       const rfq = await this.rfqRepository.findOne({
         where: { id },
-        relations: ['buyer', 'product'],
+        relations: ['buyer', 'product', 'product.seller'],
       });
       if (!rfq) throw new NotFoundException('RFQ not found');
 
@@ -60,8 +60,9 @@ export class RfqService {
 
   async create(dto: CreateRfqDto): Promise<RfqResponseDto> {
     try {
-      const { title, quantity, unit, date, file, region, buyerId, productId } =
-        dto;
+      const { title, quantity, unit, date, file, region, buyerId, productId,
+        deliveryTerms, paymentTerms, warrantyPeriod, currency,
+        shippingAddress, specialInstructions } = dto;
 
       const buyer = await this.userService.findOne(buyerId);
       if (!buyer) throw new NotFoundException('Buyer not found');
@@ -70,12 +71,9 @@ export class RfqService {
       if (!product) throw new NotFoundException('Product not found');
 
       const rfq = this.rfqRepository.create({
-        title,
-        quantity,
-        unit,
-        date,
-        file,
-        region,
+        title, quantity, unit, date, file, region,
+        deliveryTerms, paymentTerms, warrantyPeriod, currency,
+        shippingAddress, specialInstructions,
         buyer: { id: buyerId } as User,
         product: { id: productId } as Product,
       });

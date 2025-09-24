@@ -66,30 +66,71 @@ export class Product {
     @Column({
         type: "enum",
         enum: productStatus,
-        default:productStatus.PUBLISH
+        default: productStatus.PUBLISH
     })
     productStatus: productStatus;
 
-
-
     // ------------------- New Fields -------------------
-    @Column("simple-array", { nullable: true })
-    additionalImages?: string[]; // Multiple images
+    @Column({ nullable: true })
+    productSubCategory?: string;
+
+    @Column({ nullable: true })
+    hsnCode?: string;
+
+    @Column({ nullable: true })
+    skuCode?: string;
+
+    @Column({ nullable: true })
+    materialType?: string;
+
+    @Column({ nullable: true })
+    composition?: string;
+
+    @Column({ type: "varchar", length: 50, nullable: true })
+    gsm?: string;
+
+    @Column({ type: "varchar", length: 50, nullable: true })
+    yarnCount?: string;
+
+    @Column({ nullable: true })
+    pattern?: string;
 
     @Column("simple-array", { nullable: true })
-    tags?: string[]; // Tags like ["electronics","phone","new"]
+    certifications?: string[];
+
+    @Column({ nullable: false })
+    unitOfMeasurement: string;
+
+    @Column({ type: "int", nullable: false })
+    availableQuantity: number;
+
+    @Column({ default: false })
+    manufacturer: boolean;
+
+    @Column({ nullable: true })
+    originCountry?: string;
+
+    @Column({ nullable: true })
+    productionCapacity?: string;
+    // ---------------------------------------------------
+
+    @Column("simple-array", { nullable: true })
+    additionalImages?: string[];
+
+    @Column("simple-array", { nullable: true })
+    tags?: string[];
 
     @Column({ type: "decimal", precision: 10, scale: 2, nullable: true })
-    weight?: number; // Weight in KG or grams
+    weight?: number;
 
     @Column("simple-array", { nullable: true })
-    deliveryOptions?: string[]; // ["Home Delivery","Pickup"]
+    deliveryOptions?: string[];
 
     @Column({ type: "decimal", precision: 10, scale: 2, nullable: true })
     discountPrice?: number;
 
     @Column("simple-array", { nullable: true })
-    colorVariants?: string[]; // ["Black","Red","Blue"]
+    colorVariants?: string[];
 
     @Column({ type: "text", nullable: true })
     returnPolicy?: string;
@@ -98,9 +139,9 @@ export class Product {
     packagingDetails?: string;
 
     @Column({ type: "varchar", length: 255, nullable: true })
-    leadTime?: string; // e.g. "7-10 days"
+    leadTime?: string;
 
-    @Column({ default: false })
+    @Column({ default: false ,nullable:true})
     negotiablePrice?: boolean;
 
     @Column({ default: false })
@@ -108,6 +149,7 @@ export class Product {
 
     @Column({ default: false })
     customBiddingOption?: boolean;
+
     // ---------------------------------------------------
 
     @OneToMany(() => OrderItem, (orderitem) => orderitem.product, {

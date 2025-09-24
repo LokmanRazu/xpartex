@@ -1,14 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { 
-  IsEnum, 
-  IsNotEmpty, 
-  IsNumber, 
-  IsOptional, 
-  IsPositive, 
-  IsString, 
-  ValidateNested, 
-  IsArray, 
-  IsBoolean 
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsPositive,
+  IsString,
+  ValidateNested,
+  IsArray,
+  IsBoolean,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { productStatus, productType } from '../product.entity';
@@ -30,7 +30,7 @@ export class CreateProductDto {
   @IsNotEmpty()
   name: string;
 
-  @ApiProperty({ example: 'https://example.com/images/iphone15.jpg', description: 'Product image URL',format:'binary' })
+  @ApiProperty({ example: 'https://example.com/images/iphone15.jpg', description: 'Product image URL', format: 'binary' })
   @IsString()
   @IsNotEmpty()
   img: string;
@@ -66,19 +66,92 @@ export class CreateProductDto {
   @IsEnum(productType)
   productType: productType;
 
-  @ApiProperty({ required: true, enum: productStatus,default:productStatus.PUBLISH })
+  @ApiProperty({ required: true, enum: productStatus, default: productStatus.PUBLISH })
   @IsNotEmpty()
   @IsEnum(productStatus)
   productStatus: productStatus;
 
+  // ------------------- New Fields -------------------
+  @ApiProperty({ example: 'Mobile Accessories', required: false })
+  @IsString()
+  @IsOptional()
+  productSubCategory?: string;
+
+  @ApiProperty({ example: 'HSN12345', required: false })
+  @IsString()
+  @IsOptional()
+  hsnCode?: string;
+
+  @ApiProperty({ example: 'SKU-001', required: false })
+  @IsString()
+  @IsOptional()
+  skuCode?: string;
+
+  @ApiProperty({ example: 'Cotton', required: false })
+  @IsString()
+  @IsOptional()
+  materialType?: string;
+
+  @ApiProperty({ example: '80% Cotton, 20% Polyester', required: false })
+  @IsString()
+  @IsOptional()
+  composition?: string;
+
+  @ApiProperty({ example: '180 GSM', required: false })
+  @IsString()
+  @IsOptional()
+  gsm?: string;
+
+  @ApiProperty({ example: '40s', required: false })
+  @IsString()
+  @IsOptional()
+  yarnCount?: string;
+
+  @ApiProperty({ example: 'Striped', required: false })
+  @IsString()
+  @IsOptional()
+  pattern?: string;
+
+  @ApiProperty({ example: ['OEKO-TEX', 'GOTS'], required: false })
+  @IsArray()
+  @IsString({ each: true })
+  @IsOptional()
+  certifications?: string[];
+
+  @ApiProperty({ example: 'kg', description: 'Unit of measurement' })
+  @IsString()
+  @IsNotEmpty()
+  unitOfMeasurement: string;
+
+  @ApiProperty({ example: 500, description: 'Available quantity' })
+  @IsNumber()
+  @IsNotEmpty()
+  availableQuantity: number;
+
+  @ApiProperty({ example: true, description: 'Is manufacturer?', required: false })
+  @IsBoolean()
+  @IsOptional()
+  manufacturer?: boolean;
+
+  @ApiProperty({ example: 'India', required: false })
+  @IsString()
+  @IsOptional()
+  originCountry?: string;
+
+  @ApiProperty({ example: '1000 units per month', required: false })
+  @IsString()
+  @IsOptional()
+  productionCapacity?: string;
+
+  // ---------------- Existing Optional Fields ----------------
   @ApiProperty({ type: [ProductDescriptionDto], required: false })
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => ProductDescriptionDto)
   @IsOptional()
   description?: ProductDescriptionDto[];
-  
-  @ApiProperty({ type:[productSizeRequestDto]})
+
+  @ApiProperty({ type: [productSizeRequestDto], required: false })
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => productSizeRequestDto)
@@ -90,9 +163,7 @@ export class CreateProductDto {
   @IsOptional()
   moq?: number;
 
-  // ---------------- New fields ----------------
-
-  @ApiProperty({ example: ['https://example.com/img1.jpg','https://example.com/img2.jpg'], required: false, format:'binary' })
+  @ApiProperty({ example: ['https://example.com/img1.jpg','https://example.com/img2.jpg'], required: false, format: 'binary' })
   @IsArray()
   @IsString({ each: true })
   @IsOptional()

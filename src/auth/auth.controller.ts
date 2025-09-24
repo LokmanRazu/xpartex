@@ -12,7 +12,7 @@ import { SendOtpRequestDto } from './dto/otpVerify.dto';
 @Controller({ path: 'auth' })
 @ApiTags('Auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) { }
 
   @Post('signin')
   @ApiOkResponse({ type: LoginResponseDto })
@@ -58,14 +58,13 @@ export class AuthController {
     schema: {
       type: 'object',
       properties: {
-        email: { type: 'string', example: 'user@example.com' },
         otp: { type: 'string', example: '123456' },
       },
-      required: ['email', 'otp'],
+      required: ['otp'],
     },
   })
   async verifyOtp(@Body() body: { otp: string }) {
-    await this.authService.verifyOtp( body.otp);
+    await this.authService.verifyOtp(body.otp);
     return { message: 'OTP verified successfully' };
   }
 }
