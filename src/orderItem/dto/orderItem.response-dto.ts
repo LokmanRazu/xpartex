@@ -1,8 +1,8 @@
 
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
-import { OrderResponseDto } from 'src/order/dto/order.response-dto';
-import { ProductResponseDto } from 'src/product/dto/product.response-dto';
+import { OrderResponseDto } from '../../order/dto/order.response-dto';
+import { ProductResponseDto } from '../../product/dto/product.response-dto';
 export class OrderItemResponseDto {
   @ApiProperty()
   @Expose()

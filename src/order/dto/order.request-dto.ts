@@ -1,7 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsUUID, Min, ValidateNested } from "class-validator";
-import { CreateOrderItemDto } from "src/orderItem/dto/orderItem.request-dto";
 
 export class CreateOrderDto {
   @ApiProperty({ example: 'c8d8a4a7-2f4e-41e7-a6f2-1234567890ab', description: 'Product linked to this order' })

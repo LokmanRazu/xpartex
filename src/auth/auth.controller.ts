@@ -3,7 +3,7 @@ import { ApiBearerAuth, ApiBody, ApiOkResponse, ApiTags } from '@nestjs/swagger'
 import { Get, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginResponseDto } from './dto/login.response-dto';
-import { CreateUserDto } from 'src/user/dto/user.request-dto';
+import { CreateUserDto } from '../user/dto/user.request-dto';
 import type { Response } from 'express';
 import { AuthGuard } from '@nestjs/passport';
 import { LoginRequestDto } from './dto/login.request-dto';

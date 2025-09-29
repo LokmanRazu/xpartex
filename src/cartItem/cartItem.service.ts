@@ -7,10 +7,10 @@ import { plainToInstance } from 'class-transformer';
 import { CartItemResponseDto } from './dto/cartItem.response-dto';
 import { CreateCartItemDto } from './dto/cartItem.request-dto';
 import { UpdateCartItemDto } from './dto/cartItem.update-dto';
-import { Product } from 'src/product/product.entity';
-import { ProductService } from 'src/product/product.service';
-import { Cart } from 'src/cart/cart.entity';
-import { CartService } from 'src/cart/cart.service';
+import { Product } from '../product/product.entity';
+import { ProductService } from '../product/product.service';
+import { Cart } from '../cart/cart.entity';
+import { CartService } from '../cart/cart.service';
 
 @Injectable()
 export class CartItemService {

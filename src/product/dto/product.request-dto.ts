@@ -12,7 +12,7 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { productStatus, productType } from '../product.entity';
-import { productSizeRequestDto } from 'src/wholesale/dto/wholesale.request-dto';
+import { productSizeRequestDto } from '../../wholesale/dto/wholesale.request-dto';
 
 class ProductDescriptionDto {
   @ApiProperty({ example: '1000' })

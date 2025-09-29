@@ -7,13 +7,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { plainToInstance } from 'class-transformer';
 import { Rfq } from './rfq.entity';
-import { User } from 'src/user/user.entity';
-import { Product } from 'src/product/product.entity';
-import { UserService } from 'src/user/user.service';
-import { ProductService } from 'src/product/product.service';
+import { User } from '../user/user.entity';
+import { Product } from '../product/product.entity';
+import { UserService } from '../user/user.service';
+import { ProductService } from '../product/product.service';
 import { RfqResponseDto } from './dto/rfq.response-dto';
 import { CreateRfqDto } from './dto/rfq.request-dto';
 import { UpdateRfqDto } from './dto/rfq.update-dto';
+import { OrderItemService } from '../orderItem/orderItem.service';
 
 @Injectable()
 export class RfqService {
@@ -22,12 +23,13 @@ export class RfqService {
     private rfqRepository: Repository<Rfq>,
     private userService: UserService,
     private productService: ProductService,
+    private orderitemService: OrderItemService
   ) { }
 
   async findAll(): Promise<RfqResponseDto[]> {
     try {
       const rfqs = await this.rfqRepository.find({
-        relations: ['buyer', 'product', 'product.seller'],
+        relations: ['buyer','rfqBySeller', 'product', 'product.seller',],
       });
 
       return plainToInstance(RfqResponseDto, rfqs, {
@@ -43,7 +45,7 @@ export class RfqService {
     try {
       const rfq = await this.rfqRepository.findOne({
         where: { id },
-        relations: ['buyer', 'product', 'product.seller'],
+        relations: ['buyer','rfqBySeller', 'product', 'product.seller'],
       });
       if (!rfq) throw new NotFoundException('RFQ not found');
 
@@ -60,7 +62,7 @@ export class RfqService {
 
   async create(dto: CreateRfqDto): Promise<RfqResponseDto> {
     try {
-      const { title, quantity, unit, date, file, region, buyerId, productId,
+      const { title,status, quantity, unit, leadTime, file, region, buyerId, productId,
         deliveryTerms, paymentTerms, warrantyPeriod, currency,
         shippingAddress, specialInstructions } = dto;
 
@@ -71,7 +73,7 @@ export class RfqService {
       if (!product) throw new NotFoundException('Product not found');
 
       const rfq = this.rfqRepository.create({
-        title, quantity, unit, date, file, region,
+        title,status, quantity, unit, leadTime, file, region,
         deliveryTerms, paymentTerms, warrantyPeriod, currency,
         shippingAddress, specialInstructions,
         buyer: { id: buyerId } as User,
@@ -93,7 +95,7 @@ export class RfqService {
     try {
       const rfq = await this.rfqRepository.findOne({
         where: { id },
-        relations: ['buyer', 'product'],
+        relations: ['buyer','rfqBySeller', 'product', 'product.seller'],
       });
       if (!rfq) throw new NotFoundException('RFQ not found');
 

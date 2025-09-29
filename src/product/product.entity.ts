@@ -1,10 +1,12 @@
-import { B2b } from "src/b2b/b2b.entity";
-import { Category } from "src/category/category.entity";
-import { OrderItem } from "src/orderItem/orderItem.entity";
-import { Retail } from "src/retail/retail.entity";
-import { Rfq } from "src/rfq/rfq.entity";
-import { User } from "src/user/user.entity";
-import { Wholesale } from "src/wholesale/wholesale.entity";
+import { B2b } from "../b2b/b2b.entity";
+import { SampleRequest } from "../sampleRequest/sampleRequest.entity";
+import { Inquiry } from "../inquiry/inquiry.entity";
+import { Category } from "../category/category.entity";
+import { OrderItem } from "../orderItem/orderItem.entity";
+import { Retail } from "../retail/retail.entity";
+import { Rfq } from "../rfq/rfq.entity";
+import { User } from "../user/user.entity";
+import { Wholesale } from "../wholesale/wholesale.entity";
 import {
     Column,
     CreateDateColumn,
@@ -177,13 +179,19 @@ export class Product {
     })
     b2bs?: B2b;
 
+    @OneToMany(() => Inquiry, (inquiry) => inquiry.product)
+    inquiries: Inquiry[];
+
+    @OneToMany(() => SampleRequest, (sampleRequest) => sampleRequest.product)
+    sampleRequests: SampleRequest[];
+
     @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
     createdAt: Date;
 
-    @UpdateDateColumn({
+    @UpdateDateColumn({ 
         type: "timestamp",
         default: () => "CURRENT_TIMESTAMP",
         onUpdate: "CURRENT_TIMESTAMP",
     })
-    updatedAt: Date;
+    updatedAt: Date; 
 }

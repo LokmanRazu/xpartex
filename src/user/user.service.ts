@@ -5,7 +5,7 @@ import { User } from './user.entity';
 import { UserResponseDto, UserResponseWithPasswordDto } from './dto/user.response-dto';
 import { plainToInstance } from 'class-transformer';
 import { CreateUserDto } from './dto/user.request-dto';
-import { hashPassword } from 'utils/utils';
+import { hashPassword } from '../../utils/utils'
 import { UpdateUserDto } from './dto/user.update-dto';
 
 @Injectable()
@@ -63,7 +63,7 @@ export class UserService {
 
   async create(dto: CreateUserDto): Promise<UserResponseDto> {
   try {
-    const { firstName, lastName, email, password, phoneNumber, role, address, registrationdate } = dto;
+    const { firstName, lastName, email, password, phoneNumber } = dto;
 
     let existingUser = await this.userRepository.findOne({ where: { email } })
     if (existingUser) {
@@ -76,9 +76,6 @@ export class UserService {
       email,
       password: hashPassword(password), 
       phoneNumber,
-      role,
-      address,
-      registrationdate,
     });
 
     const savedUser = await this.userRepository.save(user);

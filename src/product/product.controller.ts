@@ -6,7 +6,7 @@ import { UpdateProductDto } from './dto/product.update-dto';
 import { ProductResponseDto } from './dto/product.response-dto';
 import { AuthGuard } from '@nestjs/passport';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
-import { MultiFileUploadInterceptor } from 'utils/imageUpload';
+import { MultiFileUploadInterceptor } from '../../utils/imageUpload';
 
 @ApiBearerAuth('JWT-auth')
 @ApiTags('Product')

@@ -8,7 +8,9 @@ import {
   IsUUID,
   IsDateString,
   MaxLength,
+  IsEnum,
 } from 'class-validator';
+import { RfqStatus } from '../rfq.entity';
 
 export class CreateRfqDto {
   @ApiProperty({
@@ -19,6 +21,11 @@ export class CreateRfqDto {
   @IsNotEmpty({ message: 'Title is required' })
   @MaxLength(50, { message: 'Title must not exceed 50 characters' })
   title: string;
+
+  @ApiProperty({ example: RfqStatus.OPEN, enum: RfqStatus, description: 'RFQ status', required: true, default: RfqStatus.OPEN })
+  @IsEnum(RfqStatus)
+  @IsNotEmpty()
+  status?: RfqStatus;
 
   @ApiProperty({
     example: 500,
@@ -42,9 +49,9 @@ export class CreateRfqDto {
     example: '2025-10-01',
     description: 'Date when the RFQ is created or required (YYYY-MM-DD)',
   })
-  @IsDateString({}, { message: 'Date must be a valid date string (YYYY-MM-DD)' })
+  @IsDateString({}, { message: 'Date must be a Lead time' })
   @IsNotEmpty({ message: 'Date is required' })
-  date: Date;
+  leadTime: string;
 
   @ApiProperty({
     example: 'https://example.com/specifications.pdf',
@@ -72,6 +79,14 @@ export class CreateRfqDto {
   @IsUUID('4', { message: 'Buyer ID must be a valid UUID' })
   @IsNotEmpty({ message: 'Buyer ID is required' })
   buyerId: string;
+
+  @ApiProperty({
+    example: '123e4567-e89b-12d3-a456-426614174111',
+    description: 'Buyer ID (UUID)',
+  })
+  @IsUUID('4', { message: 'rfqBySelerId ID must be a valid UUID' })
+  @IsNotEmpty({ message: 'rfqBySelerId ID is required' })
+  rfqBySelerId: string;
 
   @ApiProperty({
     example: '123e4567-e89b-12d3-a456-426614174222',

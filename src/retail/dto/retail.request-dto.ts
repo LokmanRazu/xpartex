@@ -2,7 +2,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsNotEmpty, IsString, IsNumber, IsUUID, IsOptional, IsArray, ValidateNested } from 'class-validator';
-import { productSizeRequestDto } from 'src/wholesale/dto/wholesale.request-dto';
+import { productSizeRequestDto } from '../../wholesale/dto/wholesale.request-dto';
 
 export class CreateRetailDto {
 

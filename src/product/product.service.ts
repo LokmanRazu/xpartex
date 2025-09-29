@@ -11,16 +11,16 @@ import { Product, productType } from './product.entity';
 import { ProductResponseDto } from './dto/product.response-dto';
 import { plainToInstance } from 'class-transformer';
 import { UpdateProductDto } from './dto/product.update-dto';
-import { CategoryService } from 'src/category/category.service';
-import { Category } from 'src/category/category.entity';
-import { UserService } from 'src/user/user.service';
-import { User } from 'src/user/user.entity';
-import { WholesaleService } from 'src/wholesale/wholesale.service';
-import { Wholesale } from 'src/wholesale/wholesale.entity';
-import { B2b } from 'src/b2b/b2b.entity';
-import { Retail } from 'src/retail/retail.entity';
+import { Category } from '../category/category.entity';
+import { UserService } from '../user/user.service';
+import { User } from '../user/user.entity';
+import { WholesaleService } from '../wholesale/wholesale.service';
+import { Wholesale } from '../wholesale/wholesale.entity';
+import { B2b } from '../b2b/b2b.entity';
+import { Retail } from '../retail/retail.entity';
 import { CreateProductDto } from './dto/product.request-dto';
-import { uploadImageToCloudinary } from 'utils/imageUpload';
+import { uploadImageToCloudinary } from '../../utils/imageUpload';
+import { CategoryService } from '../category/category.service';
 
 @Injectable()
 export class ProductService {

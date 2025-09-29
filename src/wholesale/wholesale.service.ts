@@ -11,8 +11,8 @@ import { Wholesale } from './wholesale.entity';
 import { plainToInstance } from 'class-transformer';
 import { WholesaleResponseDto } from './dto/wholesale.response-dto';
 import { UpdateWholesaleDto } from './dto/wholesale.update-dto';
-import { Product } from 'src/product/product.entity';
-import { ProductService } from 'src/product/product.service';
+import { Product } from '../product/product.entity';
+import { ProductService } from '../product/product.service';
 import { CreateWholesaleDto } from './dto/wholesale.request-dto';
 
 @Injectable()

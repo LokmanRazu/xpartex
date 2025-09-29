@@ -1,6 +1,6 @@
 // user.request-dto.ts
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength, minLength } from 'class-validator';
 import { userRole } from '../user.entity';
 
 export class CreateUserDto {
@@ -21,21 +21,12 @@ export class CreateUserDto {
   @ApiProperty({ example: 'securePassword123' })
   @IsString()
   @IsNotEmpty()
+  @MinLength(8, { message: 'Password must be at least 8 characters long' })
+  @MaxLength(25, { message: 'Password cannot exceed 25 characters' })
   password: string;
 
   @ApiProperty({ example: '+8801234567890' })
   @IsString()
   phoneNumber: string;
 
-  @ApiProperty({ enum: userRole, example: userRole.BUYER })
-  @IsEnum(userRole)
-  role: userRole;
-
-  @ApiProperty({ example: '123 Main Street, Dhaka' })
-  @IsString()
-  address: string;
-
-  @ApiProperty({ example: '2025-09-12T10:00:00Z' })
-  @IsOptional()
-  registrationdate?: Date;
 }

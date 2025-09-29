@@ -7,8 +7,8 @@ import { plainToInstance } from 'class-transformer';
 import { B2bResponseDto } from './dto/b2b.response-dto';
 import { CreateB2bDto } from './dto/b2b.request-dto';
 import { UpdateB2bDto } from './dto/b2b.update-dto';
-import { Product } from 'src/product/product.entity';
-import { ProductService } from 'src/product/product.service';
+import { Product } from '../product/product.entity';
+import { ProductService } from '../product/product.service';
 
 @Injectable()
 export class B2bService {

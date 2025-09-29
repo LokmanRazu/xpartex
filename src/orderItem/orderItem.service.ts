@@ -7,10 +7,10 @@ import { plainToInstance } from 'class-transformer';
 import { OrderItemResponseDto } from './dto/orderItem.response-dto';
 import { CreateOrderItemDto } from './dto/orderItem.request-dto';
 import { UpdateOrderItemDto } from './dto/orderItem.update-dto';
-import { OrderService } from 'src/order/order.service';
-import { ProductService } from 'src/product/product.service';
-import { Product } from 'src/product/product.entity';
-import { Order } from 'src/order/order.entity';
+import { OrderService } from '../order/order.service';
+import { ProductService } from '../product/product.service';
+import { Product } from '../product/product.entity';
+import { Order } from '../order/order.entity';
 
 @Injectable()
 export class OrderItemService {

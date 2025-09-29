@@ -1,7 +1,7 @@
 // b2b.response-dto.ts
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
-import { ProductSizeResponseDto } from 'src/wholesale/dto/wholesale.response-dto';
+import { ProductSizeResponseDto } from '../../wholesale/dto/wholesale.response-dto';
 
 class B2bDescriptionResponseDto {
   @ApiProperty({ example: '200' })

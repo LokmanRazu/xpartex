@@ -9,7 +9,7 @@ cloudinary.config({
     
 }); 
 
-export const uploadImageToCloudinary = async (localPath) => {
+export const uploadImageToCloudinary = async (localPath:any) => {
     try {
         if (!localPath) {
             return null;

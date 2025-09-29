@@ -17,6 +17,9 @@ import { CartItemModule } from './cartItem/cartItem.module';
 import { OrderModule } from './order/order.module';
 import { OrderItemModule } from './orderItem/orderItem.module';
 import { RfqModule } from './rfq/rfq.module';
+import { BidOfferModule } from './bidOffer/bidOffer.module';
+import { InquiryModule } from './inquiry/inquiry.module';
+import { SampleRequestModule } from './sampleRequest/sampleRequest.module';
 
 @Module({
   imports: [
@@ -61,7 +64,10 @@ import { RfqModule } from './rfq/rfq.module';
     CartItemModule,
     OrderModule,
     OrderItemModule,
-    RfqModule
+    RfqModule,
+    BidOfferModule,
+    InquiryModule,
+    SampleRequestModule
     
   ],
   controllers: [AppController],

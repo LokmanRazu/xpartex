@@ -24,17 +24,6 @@ export class UserResponseDto {
   @Expose()
   phoneNumber: string;
 
-  @ApiProperty({ enum: userRole })
-  @Expose()
-  role: userRole;
-
-  @ApiProperty()
-  @Expose()
-  address: string;
-
-  @ApiProperty()
-  @Expose()
-  registrationdate: Date;
 
   @ApiProperty()
   @Expose()
@@ -70,17 +59,7 @@ export class UserResponseWithPasswordDto {
   @Expose()
   phoneNumber: string;
 
-  @ApiProperty({ enum: userRole })
-  @Expose()
-  role: userRole;
 
-  @ApiProperty()
-  @Expose()
-  address: string;
-
-  @ApiProperty()
-  @Expose()
-  registrationdate: Date;
 
   @ApiProperty()
   @Expose()

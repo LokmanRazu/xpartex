@@ -10,7 +10,7 @@ import {
   IsArray 
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { productSizeRequestDto } from 'src/wholesale/dto/wholesale.request-dto';
+import { productSizeRequestDto } from '../../wholesale/dto/wholesale.request-dto';
 
 class B2bDescriptionDto {
   @ApiProperty({ example: 200 })

@@ -1,8 +1,8 @@
 
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
-import { CartResponseDto } from 'src/cart/dto/cart.response-dto';
-import { ProductResponseDto } from 'src/product/dto/product.response-dto';
+import { CartResponseDto } from '../../cart/dto/cart.response-dto';
+import { ProductResponseDto } from '../../product/dto/product.response-dto';
 
 export class CartItemResponseDto {
   @ApiProperty()

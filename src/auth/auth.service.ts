@@ -1,10 +1,10 @@
 import { BadRequestException, Injectable, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
-import { CreateUserDto } from "src/user/dto/user.request-dto";
-import { UserService } from "src/user/user.service";
+import { CreateUserDto } from "../user/dto/user.request-dto";
+import { UserService } from "../user/user.service";
 import { Response } from 'express';
 import { LoginRequestDto } from "./dto/login.request-dto";
-import { comparePassword } from "utils/utils";
+import { comparePassword } from "../../utils/utils";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Otp } from "./otp.entity";
 import { Repository } from "typeorm";
@@ -23,7 +23,7 @@ export class AuthService {
   async signup(dto: CreateUserDto) {
     console.log('dto', dto);
     await this.userService.create(dto);
-    let otp = await this.generateOtp(dto.email)
+    let otp = await this.generateOtp(dto.email);  
     console.log('otttttpp', otp)
     await this.sendOtp(dto.email, otp)
 

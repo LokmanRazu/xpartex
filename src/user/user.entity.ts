@@ -1,8 +1,11 @@
 
-import { Cart } from 'src/cart/cart.entity';
-import { Order } from 'src/order/order.entity';
-import { Product } from 'src/product/product.entity';
-import { Rfq } from 'src/rfq/rfq.entity';
+import { BidOffer } from '../bidOffer/bidOffer.entity';
+import { Cart } from '../cart/cart.entity';
+import { Inquiry } from '../inquiry/inquiry.entity';
+import { Order } from '../order/order.entity';
+import { Product } from '../product/product.entity';
+import { SampleRequest } from '../sampleRequest/sampleRequest.entity';
+import { Rfq } from './../rfq/rfq.entity';
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany, OneToOne } from 'typeorm';
 
 export enum userRole {
@@ -31,18 +34,6 @@ export class User {
     @Column()
     phoneNumber: string;
 
-    @Column({
-        type: 'enum',
-        enum: userRole
-    })
-    role: userRole
-
-    @Column()
-    address: string
-
-    @Column()
-    registrationdate: Date
-
     @OneToOne(() => Cart, (cart) => cart.user, {
         cascade: true,
     })
@@ -56,11 +47,25 @@ export class User {
     @OneToMany(() => Rfq, (rfq) => rfq.buyer, {
         cascade: true,
     })
-    rfq: Rfq[];
+    rfqForBuyer: Rfq[];
 
-    @OneToOne(()=> Order,(order)=>order.user,{cascade:true})
-    order:Order
+    @OneToMany(() => Rfq, (rfq) => rfq.rfqBySeller, {
+        cascade: true,
+    })
+    rfqfromSeller: Rfq[];
 
+    @OneToOne(() => Order, (order) => order.user, { cascade: true })
+    order: Order
+
+    @OneToMany(() => BidOffer, (bidOffer) => bidOffer.seller, { cascade: true })
+    bids: BidOffer[]
+
+
+    @OneToMany(() => Inquiry, (inquiry) => inquiry.buyer, { cascade: true })
+    inquiryes: Inquiry[] 
+
+    @OneToMany(() => SampleRequest, (sampleRequest) => sampleRequest.buyer, { cascade: true })
+    sampleRequestBuyer: SampleRequest[] 
 
 
     @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })

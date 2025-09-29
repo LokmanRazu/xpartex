@@ -1,10 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
-import { CategoryResponseDto } from 'src/category/dto/category.response-dto';
-import { UserResponseDto } from 'src/user/dto/user.response-dto';
-import { WholesaleResponseDto } from 'src/wholesale/dto/wholesale.response-dto';
-import { RetailResponseDto } from 'src/retail/dto/retail.response-dto';
-import { B2bResponseDto } from 'src/b2b/dto/b2b.response-dto';
+import { CategoryResponseDto } from '../../category/dto/category.response-dto';
+import { UserResponseDto } from '../../user/dto/user.response-dto';
+import { WholesaleResponseDto } from '../../wholesale/dto/wholesale.response-dto';
+import { RetailResponseDto } from '../../retail/dto/retail.response-dto';
+import { B2bResponseDto } from '../../b2b/dto/b2b.response-dto';
 import { productStatus, productType } from '../product.entity';
 
 export class ProductResponseDto {

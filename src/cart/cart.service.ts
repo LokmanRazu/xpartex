@@ -6,8 +6,8 @@ import { plainToInstance } from 'class-transformer';
 import { CartResponseDto } from './dto/cart.response-dto';
 import { CreateCartDto } from './dto/cart.request-dto';
 import { UpdateCartDto } from './dto/cart.update-dto';
-import { UserService } from 'src/user/user.service';
-import { User } from 'src/user/user.entity';
+import { UserService } from '../user/user.service';
+import { User } from '../user/user.entity';
 
 @Injectable()
 export class CartService {
