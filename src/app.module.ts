@@ -20,6 +20,8 @@ import { RfqModule } from './rfq/rfq.module';
 import { BidOfferModule } from './bidOffer/bidOffer.module';
 import { InquiryModule } from './inquiry/inquiry.module';
 import { SampleRequestModule } from './sampleRequest/sampleRequest.module';
+import { UserProfileModule } from './userProfile/userProfile.module';
+import { CompanyProfileModule } from './companyProfile/companyProfile.module';
 
 @Module({
   imports: [
@@ -67,7 +69,10 @@ import { SampleRequestModule } from './sampleRequest/sampleRequest.module';
     RfqModule,
     BidOfferModule,
     InquiryModule,
-    SampleRequestModule
+    SampleRequestModule,
+    UserProfileModule, 
+    CompanyProfileModule
+
     
   ],
   controllers: [AppController],

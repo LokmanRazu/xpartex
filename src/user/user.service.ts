@@ -7,12 +7,14 @@ import { plainToInstance } from 'class-transformer';
 import { CreateUserDto } from './dto/user.request-dto';
 import { hashPassword } from '../../utils/utils'
 import { UpdateUserDto } from './dto/user.update-dto';
+import { ProfileService } from '../userProfile/userProfile.service';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    private profileService: ProfileService
   ) {}
 
   async findAll(): Promise<UserResponseDto[]> {
@@ -79,6 +81,8 @@ export class UserService {
     });
 
     const savedUser = await this.userRepository.save(user);
+
+    await this.profileService.create(firstName,lastName,email,phoneNumber,savedUser.id)
 
     return plainToInstance(UserResponseDto, savedUser, {
       enableImplicitConversion: true,

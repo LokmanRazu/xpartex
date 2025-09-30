@@ -49,7 +49,7 @@ export class InquiryService {
   async findAll(): Promise<InquiryResponseDto[]> {
     try {
       const inquiries = await this.inquiryRepository.find({
-        relations: ['product', 'product.seller'],
+        relations: ['product', 'product.seller', 'buyer'],
       });
       return plainToInstance(InquiryResponseDto, inquiries, {
         enableImplicitConversion: true,
@@ -64,7 +64,7 @@ export class InquiryService {
     try {
       const inquiry = await this.inquiryRepository.findOne({
         where: { id },
-        relations: ['product', 'product.seller'],
+        relations: ['product', 'product.seller', 'buyer'],
       });
       if (!inquiry) throw new NotFoundException('Inquiry not found');
 
@@ -76,6 +76,36 @@ export class InquiryService {
       throw error instanceof NotFoundException
         ? error
         : new InternalServerErrorException('Failed to fetch inquiry');
+    }
+  }
+
+  async findBySellerId(sellerId: string): Promise<InquiryResponseDto[]> {
+    try {
+      const inquiries = await this.inquiryRepository.find({
+        where: { product: { seller: { id: sellerId } } },
+        relations: ['product', 'product.seller', 'buyer'],
+      });
+      return plainToInstance(InquiryResponseDto, inquiries, {
+        enableImplicitConversion: true,
+        excludeExtraneousValues: true,
+      });
+    } catch {
+      throw new InternalServerErrorException('Failed to fetch inquiries');
+    }
+  }
+
+  async findByBuyerId(buyerId: string): Promise<InquiryResponseDto[]> {
+    try {
+      const inquiries = await this.inquiryRepository.find({
+        where: { buyer: { id: buyerId } },
+        relations: ['product', 'product.seller', 'buyer'],
+      });
+      return plainToInstance(InquiryResponseDto, inquiries, {
+        enableImplicitConversion: true,
+        excludeExtraneousValues: true,
+      });
+    } catch {
+      throw new InternalServerErrorException('Failed to fetch inquiries');
     }
   }
 

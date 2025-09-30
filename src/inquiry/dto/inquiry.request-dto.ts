@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsString, IsUUID, Min } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID, Min } from 'class-validator';
 
 export class InquiryRequestDto {
   @ApiProperty({
@@ -24,7 +24,7 @@ export class InquiryRequestDto {
     description: 'Attachment file link or path related to the inquiry',
   })
   @IsString({ message: 'Attachment must be a string' })
-  @IsNotEmpty({ message: 'Attachment is required' })
+  @IsOptional({ message: 'Attachment is Optional' })
   attachment: string;
 
   @ApiProperty({

@@ -5,6 +5,8 @@ import { Inquiry } from '../inquiry/inquiry.entity';
 import { Order } from '../order/order.entity';
 import { Product } from '../product/product.entity';
 import { SampleRequest } from '../sampleRequest/sampleRequest.entity';
+import { Profile } from '../userProfile/userProfile.entity';
+import { CompanyProfile } from '../companyProfile/companyProfile.entity';
 import { Rfq } from './../rfq/rfq.entity';
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany, OneToOne } from 'typeorm';
 
@@ -16,7 +18,7 @@ export enum userRole {
 
 @Entity('user')
 export class User {
-    @PrimaryGeneratedColumn('uuid')
+    @PrimaryGeneratedColumn('uuid')  
     id: string;
 
     @Column()
@@ -57,6 +59,9 @@ export class User {
     @OneToOne(() => Order, (order) => order.user, { cascade: true })
     order: Order
 
+    @OneToOne(() => Profile, (profile) => profile.user, { cascade: true })
+    profile: Profile
+
     @OneToMany(() => BidOffer, (bidOffer) => bidOffer.seller, { cascade: true })
     bids: BidOffer[]
 
@@ -66,6 +71,9 @@ export class User {
 
     @OneToMany(() => SampleRequest, (sampleRequest) => sampleRequest.buyer, { cascade: true })
     sampleRequestBuyer: SampleRequest[] 
+
+    @OneToMany(() => CompanyProfile, (companyProfile) => companyProfile.createdBy, { cascade: true })
+    companyProfiles: CompanyProfile[]
 
 
     @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })

@@ -6,6 +6,7 @@ import { WholesaleResponseDto } from '../../wholesale/dto/wholesale.response-dto
 import { RetailResponseDto } from '../../retail/dto/retail.response-dto';
 import { B2bResponseDto } from '../../b2b/dto/b2b.response-dto';
 import { productStatus, productType } from '../product.entity';
+import { InquiryResponseDto } from '../../inquiry/dto/inquiry.response-dto';
 
 export class ProductResponseDto {
   @ApiProperty({ example: '123e4567-e89b-12d3-a456-426614174000' })
@@ -180,4 +181,10 @@ export class ProductResponseDto {
   @Expose()
   @Type(() => B2bResponseDto)
   b2bs?: B2bResponseDto[];
+
+  @ApiProperty({ type: [InquiryResponseDto], required: false }) 
+  @Expose()
+  @Type(() => InquiryResponseDto)
+  inquiries: InquiryResponseDto[];
+
 }

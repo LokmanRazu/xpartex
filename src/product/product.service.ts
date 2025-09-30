@@ -14,7 +14,6 @@ import { UpdateProductDto } from './dto/product.update-dto';
 import { Category } from '../category/category.entity';
 import { UserService } from '../user/user.service';
 import { User } from '../user/user.entity';
-import { WholesaleService } from '../wholesale/wholesale.service';
 import { Wholesale } from '../wholesale/wholesale.entity';
 import { B2b } from '../b2b/b2b.entity';
 import { Retail } from '../retail/retail.entity';
@@ -40,7 +39,7 @@ export class ProductService {
     async findAll(): Promise<ProductResponseDto[]> {
         try {
             const products = await this.productRepository.find({
-                relations: ['category', 'seller', 'b2bs', 'wholesales', 'retails'],
+                relations: ['category', 'seller', 'b2bs', 'wholesales', 'retails','inquiries'],
             });
             return plainToInstance(ProductResponseDto, products, {
                 enableImplicitConversion: true,

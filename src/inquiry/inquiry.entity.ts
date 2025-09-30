@@ -21,7 +21,7 @@ export class Inquiry {
   @Column({ type: 'text' })
   description: string;
 
-  @Column()
+  @Column({ nullable: true })
   attachment: string;
 
   @ManyToOne(() => Product, (product) => product.inquiries)

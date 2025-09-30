@@ -7,17 +7,23 @@ import {
   Patch,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { InquiryService } from './inquiry.service';
 import { InquiryRequestDto } from './dto/inquiry.request-dto';
 import { UpdateInquiryDto } from './dto/inquiry.update-dto';
 import {
+  ApiBearerAuth,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
 import { InquiryResponseDto } from './dto/inquiry.response-dto';
+import { AuthGuard } from '@nestjs/passport';
 
+
+// @ApiBearerAuth('JWT-auth')
+// @UseGuards(AuthGuard('jwt'))
 @ApiTags('Inquiry')
 @Controller('inquiry')
 export class InquiryController {
@@ -44,6 +50,20 @@ export class InquiryController {
   @ApiOkResponse({ type: InquiryResponseDto })
   findOne(@Param('id') id: string) {
     return this.inquiryService.findOne(id);
+  }
+
+  @Get('seller/:id')
+  @ApiOperation({ summary: 'Get all inquiries by seller id' })
+  @ApiOkResponse({ type: [InquiryResponseDto] })
+  findBySellerId(@Param('id') id: string) {
+    return this.inquiryService.findBySellerId(id);
+  }
+
+  @Get('buyer/:id')
+  @ApiOperation({ summary: 'Get all inquiries by buyer id' })
+  @ApiOkResponse({ type: [InquiryResponseDto] })
+  findByBuyerId(@Param('id') id: string) {
+    return this.inquiryService.findByBuyerId(id);
   }
 
   @Patch(':id')

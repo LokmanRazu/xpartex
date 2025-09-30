@@ -169,7 +169,7 @@ export class Product {
     })
     wholesales?: Wholesale;
 
-    @OneToMany(() => Retail, (retail) => retail.product, {
+    @OneToMany(() => Retail, (retail) => retail.product, { 
         cascade: true,
     })
     retails?: Retail;
