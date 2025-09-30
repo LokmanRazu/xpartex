@@ -30,7 +30,7 @@ export class RfqService {
   async findAll(): Promise<RfqResponseDto[]> {
     try {
       const rfqs = await this.rfqRepository.find({
-        relations: ['buyer','rfqBySeller', 'product', 'product.seller',],
+        relations: ['buyer', 'product', 'product.seller',],
       });
 
       return plainToInstance(RfqResponseDto, rfqs, {
@@ -46,7 +46,7 @@ export class RfqService {
     try {
       const rfq = await this.rfqRepository.findOne({
         where: { id },
-        relations: ['buyer','rfqBySeller', 'product', 'product.seller'],
+        relations: ['buyer', 'product', 'product.seller'],
       });
       if (!rfq) throw new NotFoundException('RFQ not found');
 
@@ -142,7 +142,7 @@ async findBySellerId(sellerId: string): Promise<RfqResponseDto[]> {
     try {
       const rfq = await this.rfqRepository.findOne({
         where: { id },
-        relations: ['buyer','rfqBySeller', 'product', 'product.seller'],
+        relations: ['buyer','product', 'product.seller'],
       });
       if (!rfq) throw new NotFoundException('RFQ not found');
 
