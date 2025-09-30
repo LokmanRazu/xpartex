@@ -97,7 +97,7 @@ export class InquiryService {
       });
     } catch (error) {
       if (error instanceof HttpException) {
-        throw error; // keep the original (e.g., NotFoundException)
+        throw error; 
       }
       throw new InternalServerErrorException('Failed to fetch inquiries');
     }

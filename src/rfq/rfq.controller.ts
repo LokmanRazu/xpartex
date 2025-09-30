@@ -1,18 +1,21 @@
-import { Controller, Get, Post, Patch, Delete, Param, Body } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
+import { Controller, Get, Post, Patch, Delete, Param, Body, Req, UseGuards } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody, ApiOkResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { RfqService } from './rfq.service';
 import { CreateRfqDto } from './dto/rfq.request-dto';
 import { UpdateRfqDto } from './dto/rfq.update-dto';
 import { RfqResponseDto } from './dto/rfq.response-dto';
+import { AuthGuard } from '@nestjs/passport';
 
+@ApiBearerAuth('JWT-auth')
+@UseGuards(AuthGuard('jwt'))
 @ApiTags('RFQ')
 @Controller('rfq')
 export class RfqController {
-  constructor(private readonly rfqService: RfqService) {}
+  constructor(private readonly rfqService: RfqService) { }
 
   @Get()
   @ApiOperation({ summary: 'Get all RFQs' })
-  @ApiResponse({ status: 200, description: 'List of RFQs', type: [RfqResponseDto] })
+  @ApiResponse({ status: 200, description: 'List of RFQs', type: [RfqResponseDto] }) 
   async findAll(): Promise<RfqResponseDto[]> {
     return this.rfqService.findAll();
   }
@@ -31,6 +34,20 @@ export class RfqController {
   @ApiResponse({ status: 201, description: 'RFQ created', type: RfqResponseDto })
   async create(@Body() dto: CreateRfqDto): Promise<RfqResponseDto> {
     return this.rfqService.create(dto);
+  }
+
+  @Get('seller/:id')
+  @ApiOperation({ summary: 'Get all RFQs by seller id' })
+  @ApiOkResponse({ type: [RfqResponseDto] })
+  findBySellerId(@Req() req) {
+    return this.rfqService.findBySellerId(req.user.id);
+  }
+
+  @Get('buyer/:id')
+  @ApiOperation({ summary: 'Get all RFQs by buyer id' })
+  @ApiOkResponse({ type: [RfqResponseDto] })
+  findByBuyerId(@Req() req) {
+    return this.rfqService.findByBuyerId(req.user.id);
   }
 
   @Patch(':id')

@@ -49,10 +49,6 @@ export class Rfq {
   @JoinColumn({ name: "buyerId" })
   buyer: User;
 
-  @ManyToOne(() => User, (user) => user.rfqfromSeller, { onDelete: "CASCADE" })
-  @JoinColumn({ name: "rfqBySellerId" })
-  rfqBySeller: User;
-
   @ManyToOne(() => Product, (product) => product.orderitem, { onDelete: "CASCADE" })
   @JoinColumn({ name: "productId" })
   product: Product;

@@ -2,6 +2,7 @@ import {
   Injectable,
   NotFoundException,
   InternalServerErrorException,
+  HttpException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -90,6 +91,52 @@ export class RfqService {
       throw new InternalServerErrorException('Failed to create RFQ');
     }
   }
+
+  async findByBuyerId(buyerId: string): Promise<RfqResponseDto[]> {
+  try {
+    const rfqs = await this.rfqRepository.find({
+      where: { buyer: { id: buyerId } },
+      relations: ['buyer', 'product', 'product.seller'],
+    });
+
+    if (rfqs.length === 0) {
+      throw new NotFoundException('RFQ not found for this buyer');
+    }
+
+    return plainToInstance(RfqResponseDto, rfqs, {
+      enableImplicitConversion: true,
+      excludeExtraneousValues: true,
+    });
+  } catch (error) {
+    if (error instanceof HttpException) {
+      throw error; // rethrow NotFoundException etc.
+    }
+    throw new InternalServerErrorException('Failed to fetch RFQs by buyer');
+  }
+}
+
+async findBySellerId(sellerId: string): Promise<RfqResponseDto[]> {
+  try {
+    const rfqs = await this.rfqRepository.find({
+      where: { product: { seller: { id: sellerId } } },
+      relations: ['buyer', 'product', 'product.seller'],
+    });
+
+    if (rfqs.length === 0) {
+      throw new NotFoundException('RFQ not found for this seller');
+    }
+
+    return plainToInstance(RfqResponseDto, rfqs, {
+      enableImplicitConversion: true,
+      excludeExtraneousValues: true,
+    });
+  } catch (error) {
+    if (error instanceof HttpException) {
+      throw error;
+    }
+    throw new InternalServerErrorException('Failed to fetch RFQs by seller');
+  }
+}
 
   async update(id: string, dto: UpdateRfqDto): Promise<RfqResponseDto> {
     try {

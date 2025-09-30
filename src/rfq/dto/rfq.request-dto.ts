@@ -80,13 +80,6 @@ export class CreateRfqDto {
   @IsNotEmpty({ message: 'Buyer ID is required' })
   buyerId: string;
 
-  @ApiProperty({
-    example: '123e4567-e89b-12d3-a456-426614174111',
-    description: 'Buyer ID (UUID)',
-  })
-  @IsUUID('4', { message: 'rfqBySelerId ID must be a valid UUID' })
-  @IsNotEmpty({ message: 'rfqBySelerId ID is required' })
-  rfqBySelerId: string;
 
   @ApiProperty({
     example: '123e4567-e89b-12d3-a456-426614174222',

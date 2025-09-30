@@ -51,11 +51,6 @@ export class User {
     })
     rfqForBuyer: Rfq[];
 
-    @OneToMany(() => Rfq, (rfq) => rfq.rfqBySeller, {
-        cascade: true,
-    })
-    rfqfromSeller: Rfq[];
-
     @OneToOne(() => Order, (order) => order.user, { cascade: true })
     order: Order
 
