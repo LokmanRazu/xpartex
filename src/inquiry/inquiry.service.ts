@@ -2,6 +2,7 @@ import {
   Injectable,
   NotFoundException,
   InternalServerErrorException,
+  HttpException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -85,14 +86,23 @@ export class InquiryService {
         where: { product: { seller: { id: sellerId } } },
         relations: ['product', 'product.seller', 'buyer'],
       });
+
+      if (inquiries.length === 0) {
+        throw new NotFoundException('Inquiry not found');
+      }
+
       return plainToInstance(InquiryResponseDto, inquiries, {
         enableImplicitConversion: true,
         excludeExtraneousValues: true,
       });
-    } catch {
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error; // keep the original (e.g., NotFoundException)
+      }
       throw new InternalServerErrorException('Failed to fetch inquiries');
     }
   }
+
 
   async findByBuyerId(buyerId: string): Promise<InquiryResponseDto[]> {
     try {
@@ -100,14 +110,23 @@ export class InquiryService {
         where: { buyer: { id: buyerId } },
         relations: ['product', 'product.seller', 'buyer'],
       });
+
+      if (inquiries.length === 0) {
+        throw new NotFoundException('Inquiry not found');
+      }
+
       return plainToInstance(InquiryResponseDto, inquiries, {
         enableImplicitConversion: true,
         excludeExtraneousValues: true,
       });
-    } catch {
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error; // rethrow original (e.g., NotFoundException)
+      }
       throw new InternalServerErrorException('Failed to fetch inquiries');
     }
   }
+
 
   async update(id: string, dto: UpdateInquiryDto): Promise<InquiryResponseDto> {
     try {

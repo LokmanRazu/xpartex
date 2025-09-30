@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
   Put,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { InquiryService } from './inquiry.service';
@@ -22,8 +23,8 @@ import { InquiryResponseDto } from './dto/inquiry.response-dto';
 import { AuthGuard } from '@nestjs/passport';
 
 
-// @ApiBearerAuth('JWT-auth')
-// @UseGuards(AuthGuard('jwt'))
+@ApiBearerAuth('JWT-auth')
+@UseGuards(AuthGuard('jwt'))
 @ApiTags('Inquiry')
 @Controller('inquiry')
 export class InquiryController {
@@ -55,15 +56,15 @@ export class InquiryController {
   @Get('seller/:id')
   @ApiOperation({ summary: 'Get all inquiries by seller id' })
   @ApiOkResponse({ type: [InquiryResponseDto] })
-  findBySellerId(@Param('id') id: string) {
-    return this.inquiryService.findBySellerId(id);
+  findBySellerId(@Req() req) {
+    return this.inquiryService.findBySellerId(req.user.id);
   }
 
   @Get('buyer/:id')
   @ApiOperation({ summary: 'Get all inquiries by buyer id' })
   @ApiOkResponse({ type: [InquiryResponseDto] })
-  findByBuyerId(@Param('id') id: string) {
-    return this.inquiryService.findByBuyerId(id);
+  findByBuyerId(@Req() req) {
+    return this.inquiryService.findByBuyerId(req.user.id);
   }
 
   @Patch(':id')
