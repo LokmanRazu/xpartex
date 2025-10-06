@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Product, productType } from './product.entity';
+import { Product } from './product.entity';
 import { ProductResponseDto } from './dto/product.response-dto';
 import { plainToInstance } from 'class-transformer';
 import { UpdateProductDto } from './dto/product.update-dto';
@@ -39,7 +39,7 @@ export class ProductService {
     async findAll(): Promise<ProductResponseDto[]> {
         try {
             const products = await this.productRepository.find({
-                relations: ['category', 'seller', 'b2bs', 'wholesales', 'retails','inquiries'],
+                relations: ['category', 'seller', 'b2bs', 'wholesales', 'retails', 'inquiries'],
             });
             return plainToInstance(ProductResponseDto, products, {
                 enableImplicitConversion: true,
@@ -88,42 +88,12 @@ export class ProductService {
     ): Promise<ProductResponseDto> {
         try {
             const {
-                name,
-                sellerId,
-                categoryId,
-                price,
-                stockQuantity,
-                productDescription,
-                productType,
-                description,
-                size,
-                moq,
-                tags,
-                weight,
-                deliveryOptions,
-                discountPrice,
-                colorVariants,
-                returnPolicy,
-                packagingDetails,
-                leadTime,
-                negotiablePrice,
-                sampleAvailability,
-                customBiddingOption,
-                // ✅ New fields
-                productSubCategory,
-                hsnCode,
-                skuCode,
-                materialType,
-                composition,
-                gsm,
-                yarnCount,
-                pattern,
-                certifications,
-                unitOfMeasurement,
-                availableQuantity,
-                manufacturer,
-                originCountry,
-                productionCapacity,
+                title, sellerId, categoryId, company_id, tier_pricing, img, additional_images, listing_type, tags, brand_name, hs_code,
+                description, key_features, video_url, origin_country, certifications, material_type, usage_application,
+                moq, supply_ability, lead_time, price_unit, payment_terms, packaging_details, port_of_shipment,
+                sample_available, sample_cost, customization_available, customization_type, delivery_terms,
+                trade_terms, return_policy, warranty, stock_quantity, colorVariants, available_sizes,
+                price_per_unit, shipping_methods, shipping_cost, shipping_time, is_active
             } = dto;
 
             // ----------------- Image Upload -----------------
@@ -152,67 +122,39 @@ export class ProductService {
 
             // ----------------- Create Product -----------------
             const product = this.productRepository.create({
-                name,
+                title,
                 img: uploadedMain?.secure_url,
                 seller: { id: sellerId } as User,
                 category: { id: categoryId } as Category,
-                price,
-                stockQuantity,
-                productDescription,
-                productType,
-                additionalImages: uploadedAdditional,
-                tags,
-                weight,
-                deliveryOptions,
-                discountPrice,
-                colorVariants,
-                returnPolicy,
-                packagingDetails,
-                leadTime,
-                negotiablePrice,
-                sampleAvailability,
-                customBiddingOption,
+                additional_images: uploadedAdditional,
+                company_id, tier_pricing, listing_type, tags, brand_name, hs_code,
+                description, key_features, video_url, origin_country, certifications, material_type, usage_application,
+                moq, supply_ability, lead_time, price_unit, payment_terms, packaging_details, port_of_shipment,
+                sample_available, sample_cost, customization_available, customization_type, delivery_terms,
+                trade_terms, return_policy, warranty, stock_quantity, colorVariants, available_sizes,
+                price_per_unit, shipping_methods, shipping_cost, shipping_time, is_active
 
-                // ✅ New fields mapping
-                productSubCategory,
-                hsnCode,
-                skuCode,
-                materialType,
-                composition,
-                gsm,
-                yarnCount,
-                pattern,
-                certifications,
-                unitOfMeasurement,
-                availableQuantity,
-                manufacturer,
-                originCountry,
-                productionCapacity,
+
             });
 
             const savedProduct = await this.productRepository.save(product);
 
             // ----------------- Handle Product Type Relations -----------------
-            if (productType === 'wholesale') {
+            if (listing_type === 'wholesale') {
                 const wholesale = this.wholesaleRepository.create({
                     product: { id: savedProduct.id } as Product,
-                    description,
-                    size,
                     moq,
                 });
                 await this.wholesaleRepository.save(wholesale);
-            } else if (productType === 'b2b') {
+            } else if (listing_type === 'b2b') {
                 const b2b = this.b2bRepository.create({
                     product: { id: savedProduct.id } as Product,
-                    description,
-                    size,
                     moq,
                 });
                 await this.b2bRepository.save(b2b);
-            } else if (productType === 'retail') {
+            } else if (listing_type === 'retail') {
                 const retail = this.retailRepository.create({
                     product: { id: savedProduct.id } as Product,
-                    size,
                 });
                 await this.retailRepository.save(retail);
             }

@@ -2,7 +2,7 @@
 import { Injectable, NotFoundException, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Order } from './order.entity';
+import { Order, OrderStatus } from './order.entity';
 import { plainToInstance } from 'class-transformer';
 import { OrderResponseDto } from './dto/order.response-dto';
 import { CreateOrderDto } from './dto/order.request-dto';
@@ -40,7 +40,7 @@ export class OrderService {
     try {
       const order = await this.orderRepository.findOne({
         where: { id },
-        relations: ['items','product','user'],
+        relations: ['product','user'],
       });
       if (!order) throw new NotFoundException('Order not found');
 
@@ -57,7 +57,7 @@ export class OrderService {
 
   async create(dto: CreateOrderDto): Promise<OrderResponseDto> {
     try {
-      const { productId, buyerId, status, totalAmount } = dto;
+      const { productId, buyerId, price,quantity } = dto;
       const product = await this.productService.findOne(productId)
       if (!product) throw new NotFoundException('Product not found for given productId');
       const buyer = await this.userservice.findOne(buyerId)
@@ -66,8 +66,10 @@ export class OrderService {
       const order = this.orderRepository.create({
         product: { id: dto.productId } as Product,
         user: { id: dto.buyerId } as User,
-        status,
-        totalAmount
+        status:OrderStatus.PENDING,
+        quantity,
+        price,
+        totalAmount: quantity * price
       });
       const savedOrder = await this.orderRepository.save(order);
 

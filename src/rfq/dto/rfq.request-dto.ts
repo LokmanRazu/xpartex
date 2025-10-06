@@ -57,6 +57,7 @@ export class CreateRfqDto {
     example: 'https://example.com/specifications.pdf',
     description: 'Optional supporting file (URL or filename)',
     required: false,
+    format:'binary'
   })
   @IsOptional()
   @IsString({ message: 'File must be a string' })

@@ -27,11 +27,11 @@ export class SampleRequest {
   @Column()
   shippingAddress: string;
 
-  @ManyToOne(() => User, (user) => user.sampleRequestBuyer)
+  @ManyToOne(() => User, (user) => user.sampleRequestBuyer,{onDelete:'CASCADE'})
   @JoinColumn({ name: "buyerId" })
   buyer: User;
 
-  @ManyToOne(() => Product, (product) => product.sampleRequests)
+  @ManyToOne(() => Product, (product) => product.sampleRequests,{onDelete:'CASCADE'})
   @JoinColumn({ name: 'productId' })
   product: Product;
 

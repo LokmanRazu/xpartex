@@ -2,6 +2,13 @@ import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, Up
 import { OrderItem } from "../orderItem/orderItem.entity";
 import { Product } from "../product/product.entity";
 import { User } from "../user/user.entity";
+import { Payment } from "../payment/payment.entity";
+
+export enum OrderStatus {
+  PENDING = "pending",
+  CONFIRMED = "confirmed",
+  CANCELLED = "cancelled",
+}
 
 @Entity('order')
 export class Order {
@@ -16,14 +23,23 @@ export class Order {
   @JoinColumn({ name: "productId" })
   product: Product;
 
-  @Column({ type: "enum", enum: ["pending", "processing", "shipped", "delivered", "cancelled"], default: "pending" })
-  status: string;
+  @Column({ type: "enum", enum: OrderStatus, default: OrderStatus.PENDING })
+  status: OrderStatus;
+
+  @Column({ type: "int" })
+  quantity: number;
+
+  @Column({ type: "int" })
+  price: number;
 
   @Column({ type: "decimal", precision: 10, scale: 2, default: 0 })
   totalAmount: number;
 
-  @OneToMany(() => OrderItem, (orderItems) => orderItems.order, { cascade: true })
-  orderItems: OrderItem[];
+  @OneToMany(() => Payment, (payment) => payment.order, { cascade: true })
+  payments: Payment[];
+
+  // @OneToMany(() => OrderItem, (orderItems) => orderItems.order, { cascade: true })
+  // orderItems: OrderItem[];
 
   @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;

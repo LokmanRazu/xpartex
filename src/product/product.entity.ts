@@ -8,176 +8,173 @@ import { Rfq } from "../rfq/rfq.entity";
 import { User } from "../user/user.entity";
 import { Wholesale } from "../wholesale/wholesale.entity";
 import {
-    Column,
-    CreateDateColumn,
-    Entity,
-    JoinColumn,
-    ManyToOne,
-    OneToMany,
-    PrimaryGeneratedColumn,
-    UpdateDateColumn,
+    Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn,
 } from "typeorm";
 
-export enum productType {
+export enum ListingType {
+    B2B = "b2b",
     WHOLESALE = "wholesale",
     RETAIL = "retail",
-    B2B = "b2b",
 }
 
-export enum productStatus {
-    PUBLISH = 'publish',
-    UNPUBLISH = 'unpublish'
-}
+// export enum paymentTerms {
+//     COD = 'cod',
+//     ONLINE = 'online',
+//     BANKTRANSFER = 'banktransfer'
+// }
 
 @Entity("product")
 export class Product {
-    @PrimaryGeneratedColumn("uuid")
+    @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @Column()
-    name: string;
-
-    @Column()
-    img: string;
+    @Column({ type: "varchar", length: 255, nullable: false })
+    title: string;
 
     @ManyToOne(() => User, (user) => user.product, { onDelete: "CASCADE" })
     @JoinColumn({ name: "sellerId" })
     seller: User;
 
-    @ManyToOne(() => Category, (category) => category.product, {
-        onDelete: "CASCADE",
-    })
+    @Column({ type: "varchar", nullable: true })
+    company_id: string;
+
+    @ManyToOne(() => Category, (category) => category.product, { onDelete: "CASCADE", })
     @JoinColumn({ name: "categoryId" })
     category: Category;
 
-    @Column()
-    price: string;
+    // Fields
+    @Column({ type: 'json', nullable: true })
+    tier_pricing?: { range: string; price: number }[];
 
-    @Column()
-    stockQuantity: number;
+    @Column({ type: "varchar", length: 255, nullable: false })
+    img: string;
 
-    @Column()
-    productDescription: string;
+    @Column({ type: "simple-array", nullable: true })
+    additional_images?: string[];
 
-    @Column({
-        type: "enum",
-        enum: productType,
-    })
-    productType: productType;
-
-    @Column({
-        type: "enum",
-        enum: productStatus,
-        default: productStatus.PUBLISH
-    })
-    productStatus: productStatus;
-
-    // ------------------- New Fields -------------------
-    @Column({ nullable: true })
-    productSubCategory?: string;
-
-    @Column({ nullable: true })
-    hsnCode?: string;
-
-    @Column({ nullable: true })
-    skuCode?: string;
-
-    @Column({ nullable: true })
-    materialType?: string;
-
-    @Column({ nullable: true })
-    composition?: string;
-
-    @Column({ type: "varchar", length: 50, nullable: true })
-    gsm?: string;
-
-    @Column({ type: "varchar", length: 50, nullable: true })
-    yarnCount?: string;
-
-    @Column({ nullable: true })
-    pattern?: string;
-
-    @Column("simple-array", { nullable: true })
-    certifications?: string[];
-
-    @Column({ nullable: false })
-    unitOfMeasurement: string;
-
-    @Column({ type: "int", nullable: false })
-    availableQuantity: number;
-
-    @Column({ default: false })
-    manufacturer: boolean;
-
-    @Column({ nullable: true })
-    originCountry?: string;
-
-    @Column({ nullable: true })
-    productionCapacity?: string;
-    // ---------------------------------------------------
-
-    @Column("simple-array", { nullable: true })
-    additionalImages?: string[];
+    @Column({ type: "enum", enum: ListingType })
+    listing_type: ListingType;
 
     @Column("simple-array", { nullable: true })
     tags?: string[];
 
-    @Column({ type: "decimal", precision: 10, scale: 2, nullable: true })
-    weight?: number;
+    @Column({ type: "varchar", length: 255, nullable: true })
+    brand_name?: string;
 
-    @Column("simple-array", { nullable: true })
-    deliveryOptions?: string[];
+    @Column({ type: "varchar", length: 100, nullable: true })
+    hs_code?: string;
+
+    @Column({ type: "varchar", length: 250, nullable: true, })
+    description?: string;
+
+    @Column({ type: "varchar",length:250, nullable: true })
+    key_features?: string;
+
+    @Column({ type: "varchar", length: 255, nullable: true })
+    video_url?: string;
+
+    @Column({ type: "varchar", length: 100, nullable: true })
+    origin_country?: string;
+
+    @Column({ type: "text", nullable: true })
+    certifications?: string;
+
+    @Column({ type: "varchar", length: 255, nullable: true })
+    material_type?: string;
+
+    @Column({ type: "varchar", length: 255, nullable: true })
+    usage_application?: string;
+
+    @Column({ type: "int", nullable: true })
+    moq?: number;
+
+    @Column({ type: "varchar", length: 100, nullable: true })
+    supply_ability?: string;
+
+    @Column({ type: "varchar", length: 100, nullable: true })
+    lead_time?: string;
+
+    @Column({ type: "varchar", length: 100, nullable: true })
+    price_unit?: string;
+
+    @Column({ type: "simple-array", nullable: true })
+    payment_terms?: string[];
+
+    @Column({ type: "text", nullable: true })
+    packaging_details?: string;
+
+    @Column({ type: "varchar", length: 100, nullable: true })
+    port_of_shipment?: string;
+
+    @Column({ type: "boolean", default: false })
+    sample_available: boolean;
 
     @Column({ type: "decimal", precision: 10, scale: 2, nullable: true })
-    discountPrice?: number;
+    sample_cost?: number;
+
+    @Column({ type: "boolean", default: false })
+    customization_available: boolean;
+
+    @Column({ type: "text", nullable: true })
+    customization_type?: string;
+
+    @Column({ type: "varchar", length: 100, nullable: true })
+    delivery_terms?: string;
+
+    @Column({ type: "varchar", length: 100, nullable: true })
+    trade_terms?: string;
+
+    @Column({ type: "text", nullable: true })
+    return_policy?: string;
+
+    @Column({ type: "text", nullable: true })
+    warranty?: string;
+
+    @Column({ type: "int", nullable: true })
+    stock_quantity?: number;
 
     @Column("simple-array", { nullable: true })
     colorVariants?: string[];
 
-    @Column({ type: "text", nullable: true })
-    returnPolicy?: string;
+    @Column({ type: "simple-array", nullable: true })
+    available_sizes?: string[];
+
+    @Column({ type: "decimal", precision: 10, scale: 2, nullable: true })
+    price_per_unit?: number;
 
     @Column({ type: "text", nullable: true })
-    packagingDetails?: string;
+    shipping_methods?: string;
 
-    @Column({ type: "varchar", length: 255, nullable: true })
-    leadTime?: string;
+    @Column({ type: "decimal", precision: 10, scale: 2, nullable: true })
+    shipping_cost?: number;
 
-    @Column({ default: false ,nullable:true})
-    negotiablePrice?: boolean;
+    @Column({ type: "varchar", length: 100, nullable: true })
+    shipping_time?: string;
 
-    @Column({ default: false })
-    sampleAvailability?: boolean;
+    @Column({ type: "boolean", default: true })
+    is_active: boolean;
 
-    @Column({ default: false })
-    customBiddingOption?: boolean;
-
-    // ---------------------------------------------------
-
+    // Relations (same as before)
     @OneToMany(() => OrderItem, (orderitem) => orderitem.product, {
         cascade: true,
     })
     orderitem: OrderItem;
 
-    @OneToMany(() => Rfq, (rfq) => rfq.product, {
-        cascade: true,
-    })
+    @OneToMany(() => Rfq, (rfq) => rfq.product, { cascade: true })
     rfq: Rfq;
 
     @OneToMany(() => Wholesale, (wholesale) => wholesale.product, {
         cascade: true,
     })
-    wholesales?: Wholesale;
+    wholesales?: Wholesale[];
 
-    @OneToMany(() => Retail, (retail) => retail.product, { 
+    @OneToMany(() => Retail, (retail) => retail.product, {
         cascade: true,
     })
-    retails?: Retail;
+    retails?: Retail[];
 
-    @OneToMany(() => B2b, (b2b) => b2b.product, {
-        cascade: true,
-    })
-    b2bs?: B2b;
+    @OneToMany(() => B2b, (b2b) => b2b.product, { cascade: true })
+    b2bs?: B2b[];
 
     @OneToMany(() => Inquiry, (inquiry) => inquiry.product)
     inquiries: Inquiry[];
@@ -185,13 +182,11 @@ export class Product {
     @OneToMany(() => SampleRequest, (sampleRequest) => sampleRequest.product)
     sampleRequests: SampleRequest[];
 
+    // Timestamps
     @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
-    createdAt: Date;
+    created_at: Date;
 
-    @UpdateDateColumn({ 
-        type: "timestamp",
-        default: () => "CURRENT_TIMESTAMP",
-        onUpdate: "CURRENT_TIMESTAMP",
-    })
-    updatedAt: Date; 
+    @UpdateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP", onUpdate: "CURRENT_TIMESTAMP", })
+    updated_at: Date;
 }
+

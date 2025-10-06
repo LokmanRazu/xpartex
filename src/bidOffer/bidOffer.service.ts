@@ -88,7 +88,7 @@ export class BidOfferService {
     async create(dto: CreateBidDto): Promise<BidOfferResponseDto> {
         try {
 
-            const { sellerId, rfqId, price, deliveryTime, status } = dto;
+            const { sellerId, rfqId,quantity, price, deliveryTime, status } = dto;
 
             const seller = await this.userService.findOne(sellerId);
             if (!seller) throw new NotFoundException('Seller not found');
@@ -97,6 +97,7 @@ export class BidOfferService {
             if (!rfq) throw new NotFoundException('RFQ not found');
 
             const bid = this.bidRepository.create({
+                quantity,
                 price,
                 deliveryTime,
                 status,

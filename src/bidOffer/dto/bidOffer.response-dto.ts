@@ -20,6 +20,10 @@ export class BidOfferResponseDto {
   @Expose()
   seller: UserResponseDto;
 
+  @ApiProperty({ example: 10 })
+  @Expose()
+  quantity: number;
+
   @ApiProperty({ example: 1500.5 })
   @Expose()
   price: number;

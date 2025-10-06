@@ -21,6 +21,9 @@ export class BidOffer {
     @ManyToOne(() => User, (user) => user.bids, { onDelete: 'CASCADE' })
     seller: User;
 
+    @Column({ type: 'int' })
+    quantity: number;
+
     @Column({ type: 'decimal', precision: 12, scale: 2 })
     price: number;
 

@@ -23,7 +23,7 @@ export class OrderItemService {
 
   async findAll(): Promise<OrderItemResponseDto[]> {
     try {
-      const orderItems = await this.orderItemRepository.find({ relations: ['order'] });
+      const orderItems = await this.orderItemRepository.find({});
       return plainToInstance(OrderItemResponseDto, orderItems, {
         enableImplicitConversion: true,
         excludeExtraneousValues: true,
@@ -37,7 +37,7 @@ export class OrderItemService {
     try {
       const orderItem = await this.orderItemRepository.findOne({
         where: { id },
-        relations: ['order'],
+        // relations: ['order'],
       });
       if (!orderItem) throw new NotFoundException('Order item not found');
 
@@ -56,14 +56,14 @@ export class OrderItemService {
     try {
       const { orderId, productId, quantity, price, total } = dto;
 
-      const order = await this.orderService.findOne(orderId);
-      if (!order) throw new NotFoundException('Order not found for given orderId');
+      // const order = await this.orderService.findOne(orderId);
+      // if (!order) throw new NotFoundException('Order not found for given orderId');
 
       const product = await this.productService.findOne(String(productId));
       if (!product) throw new NotFoundException('Product not found for given productId');
 
       const orderItem = this.orderItemRepository.create({
-        order: { id: dto.orderId } as Order,
+        // order: { id: dto.orderId } as Order,
         product:{ id: dto.productId } as Product, 
         quantity,
         price,
@@ -84,13 +84,13 @@ export class OrderItemService {
 
   async update(id: string, dto: UpdateOrderItemDto): Promise<OrderItemResponseDto> {
     try {
-      const orderItem = await this.orderItemRepository.findOne({ where: { id }, relations: ['order'] });
+      const orderItem = await this.orderItemRepository.findOne({ where: { id },  });
       if (!orderItem) throw new NotFoundException('Order item not found');
 
       if (dto.orderId) {
         const order = await this.orderService.findOne(dto.orderId);
         if (!order) throw new NotFoundException('Order not found for given orderId');
-        orderItem.order = { id: dto.orderId } as Order;
+        // orderItem.order = { id: dto.orderId } as Order;
       }
 
       if (dto.productId) {

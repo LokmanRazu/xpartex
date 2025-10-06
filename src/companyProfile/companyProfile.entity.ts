@@ -50,7 +50,7 @@ export class CompanyProfile {
   @Column()
   productionCapacity: string;
 
-  @ManyToOne(() => User, (user) => user.companyProfiles)
+  @ManyToOne(() => User, (user) => user.companyProfiles, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'createdBy' })
   createdBy: User;
 

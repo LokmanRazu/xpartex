@@ -1,12 +1,18 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
-import { CategoryResponseDto } from '../../category/dto/category.response-dto';
+import { ListingType } from '../product.entity';
 import { UserResponseDto } from '../../user/dto/user.response-dto';
-import { WholesaleResponseDto } from '../../wholesale/dto/wholesale.response-dto';
-import { RetailResponseDto } from '../../retail/dto/retail.response-dto';
-import { B2bResponseDto } from '../../b2b/dto/b2b.response-dto';
-import { productStatus, productType } from '../product.entity';
-import { InquiryResponseDto } from '../../inquiry/dto/inquiry.response-dto';
+import { CategoryResponseDto } from '../../category/dto/category.response-dto';
+
+class TierPriceingresponseDto {
+  @ApiProperty({ example: 10 - 100 })
+  @Expose()
+  range: string;
+
+  @ApiProperty({ example: 1000 })
+  @Expose()
+  price: number;
+}
 
 export class ProductResponseDto {
   @ApiProperty({ example: '123e4567-e89b-12d3-a456-426614174000' })
@@ -15,11 +21,7 @@ export class ProductResponseDto {
 
   @ApiProperty({ example: 'iPhone 15 Pro' })
   @Expose()
-  name: string;
-
-  @ApiProperty({ example: 'https://example.com/images/iphone15.jpg' })
-  @Expose()
-  img: string;
+  title: string;
 
   @ApiProperty({ description: 'Seller details' })
   @Type(() => UserResponseDto)
@@ -31,133 +33,158 @@ export class ProductResponseDto {
   @Expose()
   category: CategoryResponseDto;
 
-  @ApiProperty({ example: '999.99' })
+  @ApiProperty({ example: '123e4567-e89b-12d3-a456-426614174000' })
   @Expose()
-  price: string;
+  company_id: string;
 
-  @ApiProperty({ example: 100 })
+  @ApiProperty({ type: [TierPriceingresponseDto], required: false })
   @Expose()
-  stockQuantity: number;
+  tier_pricing?: TierPriceingresponseDto[];
 
-  @ApiProperty({ example: 'Latest iPhone model with titanium frame' })
+  @ApiProperty({ example: '[https://example.com/img.jpg](https://example.com/img.jpg)' })
   @Expose()
-  productDescription: string;
+  img: string;
 
-  @ApiProperty({ enum: productType })
+  @ApiProperty({ example: ['[https://example.com/img1.jpg](https://example.com/img1.jpg)', '[https://example.com/img2.jpg](https://example.com/img2.jpg)'], required: false })
   @Expose()
-  productType: productType;
+  additional_images?: string[];
 
-  @ApiProperty({ enum: productStatus })
+  @ApiProperty({ enum: ListingType, description: 'Listing type (b2b, wholesale, retail)' })
   @Expose()
-  productStatus: productStatus;
-
-  // ------------------- New Fields -------------------
-  @ApiProperty({ example: 'Mobile Accessories', required: false })
-  @Expose()
-  productSubCategory?: string;
-
-  @ApiProperty({ example: 'HSN12345', required: false })
-  @Expose()
-  hsnCode?: string;
-
-  @ApiProperty({ example: 'SKU-001', required: false })
-  @Expose()
-  skuCode?: string;
-
-  @ApiProperty({ example: 'Cotton', required: false })
-  @Expose()
-  materialType?: string;
-
-  @ApiProperty({ example: '80% Cotton, 20% Polyester', required: false })
-  @Expose()
-  composition?: string;
-
-  @ApiProperty({ example: '180 GSM', required: false })
-  @Expose()
-  gsm?: string;
-
-  @ApiProperty({ example: '40s', required: false })
-  @Expose()
-  yarnCount?: string;
-
-  @ApiProperty({ example: 'Striped', required: false })
-  @Expose()
-  pattern?: string;
-
-  @ApiProperty({ example: ['OEKO-TEX', 'GOTS'], required: false })
-  @Expose()
-  certifications?: string[];
-
-  @ApiProperty({ example: 'kg' })
-  @Expose()
-  unitOfMeasurement: string;
-
-  @ApiProperty({ example: 500 })
-  @Expose()
-  availableQuantity: number;
-
-  @ApiProperty({ example: true })
-  @Expose()
-  manufacturer: boolean;
-
-  @ApiProperty({ example: 'India', required: false })
-  @Expose()
-  originCountry?: string;
-
-  @ApiProperty({ example: '1000 units per month', required: false })
-  @Expose()
-  productionCapacity?: string;
-  // ---------------------------------------------------
-
-  @ApiProperty({ example: ['https://example.com/img1.jpg', 'https://example.com/img2.jpg'], required: false })
-  @Expose()
-  additionalImages?: string[];
+  listing_type: ListingType;
 
   @ApiProperty({ example: ['electronics', 'smartphone'], required: false })
   @Expose()
   tags?: string[];
 
-  @ApiProperty({ example: 0.5, required: false })
+  @ApiProperty({ example: 'Apple', required: false })
   @Expose()
-  weight?: number;
+  brand_name?: string;
 
-  @ApiProperty({ example: ['Home Delivery', 'Pickup'], required: false })
+  @ApiProperty({ example: 'HSN12345', required: false })
   @Expose()
-  deliveryOptions?: string[];
+  hs_code?: string;
 
-  @ApiProperty({ example: 899.99, required: false })
+  @ApiProperty({ example: 'Latest iPhone model', required: false })
   @Expose()
-  discountPrice?: number;
+  description?: string;
 
-  @ApiProperty({ example: ['Black', 'Blue', 'Gold'], required: false })
+  @ApiProperty({ example: 'Titanium frame, 256GB storage', required: false })
   @Expose()
-  colorVariants?: string[];
+  key_features?: string;
 
-  @ApiProperty({ example: '7-day return policy', required: false })
+  @ApiProperty({ example: '[https://example.com/video.mp4](https://example.com/video.mp4)', required: false })
   @Expose()
-  returnPolicy?: string;
+  video_url?: string;
 
-  @ApiProperty({ example: 'Ships in eco-friendly packaging', required: false })
+  @ApiProperty({ example: 'India', required: false })
   @Expose()
-  packagingDetails?: string;
+  origin_country?: string;
+
+  @ApiProperty({ example: 'OEKO-TEX, GOTS', required: false })
+  @Expose()
+  certifications?: string;
+
+  @ApiProperty({ example: 'Cotton', required: false })
+  @Expose()
+  material_type?: string;
+
+  @ApiProperty({ example: 'T-shirt Production', required: false })
+  @Expose()
+  usage_application?: string;
+
+  @ApiProperty({ example: 100, required: false })
+  @Expose()
+  moq?: number;
+
+  @ApiProperty({ example: '1000 pcs/month', required: false })
+  @Expose()
+  supply_ability?: string;
 
   @ApiProperty({ example: '7-10 business days', required: false })
   @Expose()
-  leadTime?: string;
+  lead_time?: string;
+
+  @ApiProperty({ example: 'USD', required: false })
+  @Expose()
+  price_unit?: string;
+
+  @ApiProperty({})
+  @Expose()
+  payment_terms?: string[];
+
+  @ApiProperty({ example: 'Eco-friendly packaging', required: false })
+  @Expose()
+  packaging_details?: string;
+
+  @ApiProperty({ example: 'Chittagong Port', required: false })
+  @Expose()
+  port_of_shipment?: string;
 
   @ApiProperty({ example: true, required: false })
   @Expose()
-  negotiablePrice?: boolean;
+  sample_available?: boolean;
+
+  @ApiProperty({ example: 20.5, required: false })
+  @Expose()
+  sample_cost?: number;
 
   @ApiProperty({ example: true, required: false })
   @Expose()
-  sampleAvailability?: boolean;
+  customization_available?: boolean;
 
-  @ApiProperty({ example: false, required: false })
+  @ApiProperty({ example: 'Color, Size', required: false })
   @Expose()
-  customBiddingOption?: boolean;
+  customization_type?: string;
 
-  // ---------------------------------------------------
+  @ApiProperty({ example: 'FOB', required: false })
+  @Expose()
+  delivery_terms?: string;
+
+  @ApiProperty({ example: 'CIF', required: false })
+  @Expose()
+  trade_terms?: string;
+
+  @ApiProperty({ example: '7-day return policy', required: false })
+  @Expose()
+  return_policy?: string;
+
+  @ApiProperty({ example: '1 year warranty', required: false })
+  @Expose()
+  warranty?: string;
+
+  @ApiProperty({ example: 1000, required: false })
+  @Expose()
+  stock_quantity?: number;
+
+  @ApiProperty({ example: ['Black', 'Blue'], required: false })
+  @Expose()
+  colorVariants?: string[];
+
+  @ApiProperty({ example: ['S', 'M', 'L'], required: false })
+  @Expose()
+  available_sizes?: string[];
+
+  @ApiProperty({ example: 999.99, required: false })
+  @Expose()
+  price_per_unit?: number;
+
+  @ApiProperty({ example: 'Air, Sea, Courier', required: false })
+  @Expose()
+  shipping_methods?: string;
+
+  @ApiProperty({ example: 50, required: false })
+  @Expose()
+  shipping_cost?: number;
+
+  @ApiProperty({ example: '7 days', required: false })
+  @Expose()
+  shipping_time?: string;
+
+  @ApiProperty({ example: true, required: false, default: true })
+  @Expose()
+  is_active?: boolean;
+
   @ApiProperty({ example: '2025-09-12T10:00:00.000Z' })
   @Expose()
   createdAt: Date;
@@ -165,26 +192,4 @@ export class ProductResponseDto {
   @ApiProperty({ example: '2025-09-12T12:30:00.000Z' })
   @Expose()
   updatedAt: Date;
-
-  // Related responses
-  @ApiProperty({ type: [WholesaleResponseDto], required: false })
-  @Expose()
-  @Type(() => WholesaleResponseDto)
-  wholesales?: WholesaleResponseDto[];
-
-  @ApiProperty({ type: [RetailResponseDto], required: false })
-  @Expose()
-  @Type(() => RetailResponseDto)
-  retails?: RetailResponseDto[];
-
-  @ApiProperty({ type: [B2bResponseDto], required: false })
-  @Expose()
-  @Type(() => B2bResponseDto)
-  b2bs?: B2bResponseDto[];
-
-  @ApiProperty({ type: [InquiryResponseDto], required: false }) 
-  @Expose()
-  @Type(() => InquiryResponseDto)
-  inquiries: InquiryResponseDto[];
-
 }

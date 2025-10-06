@@ -12,6 +12,7 @@ import { ProfileRequestDto } from './dto/userProfile.request-dto';
 import { ProfileResponseDto } from './dto/userProfile.response-dto';
 import { UpdateProfileDto } from './dto/userProfile.update-dto';
 import { UserService } from '../user/user.service';
+import { uploadImageToCloudinary } from '../../utils/imageUpload';
 
 @Injectable()
 export class ProfileService {
@@ -80,7 +81,32 @@ export class ProfileService {
         }
     }
 
-    async update(id: string, dto: UpdateProfileDto): Promise<ProfileResponseDto> {
+    async findByUserId(userId: string): Promise<ProfileResponseDto> {
+        console.log('userIdddd===', userId);
+        try {
+            const profile = await this.profileRepository.findOne({
+                where: { user: { id: userId } },
+                relations: ['user'],
+            });
+
+            if (!profile) throw new NotFoundException('Profile not found');
+
+            return plainToInstance(ProfileResponseDto, profile, {
+                enableImplicitConversion: true,
+                excludeExtraneousValues: true,
+            });
+        } catch (error) {
+            throw error instanceof NotFoundException
+                ? error
+                : new InternalServerErrorException('Failed to fetch profile');
+        }
+    }
+
+    async update(
+        id: string,
+        dto: UpdateProfileDto,
+        files?: { img?: Express.Multer.File[] },
+    ): Promise<ProfileResponseDto> {
         try {
             const profile = await this.profileRepository.findOne({
                 where: { id },
@@ -89,10 +115,18 @@ export class ProfileService {
 
             if (!profile) throw new NotFoundException('Profile not found');
 
+            // If userId is being updated
             if (dto.userId) {
                 profile.user = { id: dto.userId } as User;
             }
 
+            // ----------------- Handle Image Upload -----------------
+            if (files?.img && files.img[0]) {
+                const uploadedImg = await uploadImageToCloudinary(files.img[0].path);
+                profile.img = uploadedImg?.secure_url; // assuming your entity has "img" column
+            }
+
+            // ----------------- Update Other Fields -----------------
             Object.assign(profile, dto);
 
             const updatedProfile = await this.profileRepository.save(profile);
@@ -107,6 +141,7 @@ export class ProfileService {
                 : new InternalServerErrorException('Failed to update profile');
         }
     }
+
 
     async delete(id: string): Promise<ProfileResponseDto> {
         try {

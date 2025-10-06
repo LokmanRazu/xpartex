@@ -24,11 +24,11 @@ export class Inquiry {
   @Column({ nullable: true })
   attachment: string;
 
-  @ManyToOne(() => Product, (product) => product.inquiries)
+  @ManyToOne(() => Product, (product) => product.inquiries, { onDelete: 'CASCADE' })
   @JoinColumn({ name: "productId" })
   product: Product;
 
-  @ManyToOne(() => User, (user) => user.inquiryes)
+  @ManyToOne(() => User, (user) => user.inquiryes, { onDelete: 'CASCADE' }  )
   @JoinColumn({ name: "buyerId" })
   buyer: User;
 

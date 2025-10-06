@@ -16,6 +16,7 @@ import { RfqResponseDto } from './dto/rfq.response-dto';
 import { CreateRfqDto } from './dto/rfq.request-dto';
 import { UpdateRfqDto } from './dto/rfq.update-dto';
 import { OrderItemService } from '../orderItem/orderItem.service';
+import { uploadImageToCloudinary } from '../../utils/imageUpload';
 
 @Injectable()
 export class RfqService {
@@ -24,20 +25,20 @@ export class RfqService {
     private rfqRepository: Repository<Rfq>,
     private userService: UserService,
     private productService: ProductService,
-    private orderitemService: OrderItemService
-  ) { }
+    private orderitemService: OrderItemService,
+  ) {}
 
   async findAll(): Promise<RfqResponseDto[]> {
     try {
       const rfqs = await this.rfqRepository.find({
-        relations: ['buyer', 'product', 'product.seller',],
+        relations: ['buyer', 'product', 'product.seller'],
       });
 
       return plainToInstance(RfqResponseDto, rfqs, {
         enableImplicitConversion: true,
         excludeExtraneousValues: true,
       });
-    } catch (error) {
+    } catch {
       throw new InternalServerErrorException('Failed to fetch RFQs');
     }
   }
@@ -61,22 +62,56 @@ export class RfqService {
     }
   }
 
-  async create(dto: CreateRfqDto): Promise<RfqResponseDto> {
+  async create(
+    dto: CreateRfqDto,
+    file?: Express.Multer.File,
+  ): Promise<RfqResponseDto> {
     try {
-      const { title,status, quantity, unit, leadTime, file, region, buyerId, productId,
-        deliveryTerms, paymentTerms, warrantyPeriod, currency,
-        shippingAddress, specialInstructions } = dto;
+      const {
+        title,
+        status,
+        quantity,
+        unit,
+        leadTime,
+        region,
+        buyerId,
+        productId,
+        deliveryTerms,
+        paymentTerms,
+        warrantyPeriod,
+        currency,
+        shippingAddress,
+        specialInstructions,
+      } = dto;
 
+      // ----------------- Upload file -----------------
+      let uploadedFile: any = null;
+      if (file) {
+        uploadedFile = await uploadImageToCloudinary(file.path);
+      }
+
+      // ----------------- Validate relations -----------------
       const buyer = await this.userService.findOne(buyerId);
       if (!buyer) throw new NotFoundException('Buyer not found');
 
       const product = await this.productService.findOne(productId);
-      if (!product) throw new NotFoundException('Product not found');
+      if (!product) throw new NotFoundException('Product not found'); 
 
+      // ----------------- Create RFQ -----------------
       const rfq = this.rfqRepository.create({
-        title,status, quantity, unit, leadTime, file, region,
-        deliveryTerms, paymentTerms, warrantyPeriod, currency,
-        shippingAddress, specialInstructions,
+        title,
+        status,
+        quantity,
+        unit,
+        leadTime,
+        region,
+        deliveryTerms,
+        paymentTerms,
+        warrantyPeriod,
+        currency,
+        shippingAddress,
+        specialInstructions,
+        file: uploadedFile?.secure_url,
         buyer: { id: buyerId } as User,
         product: { id: productId } as Product,
       });
@@ -88,61 +123,59 @@ export class RfqService {
         excludeExtraneousValues: true,
       });
     } catch (error) {
-      throw new InternalServerErrorException('Failed to create RFQ');
+      throw new InternalServerErrorException(
+        'Failed to create RFQ: ' + error.message,
+      );
     }
   }
 
   async findByBuyerId(buyerId: string): Promise<RfqResponseDto[]> {
-  try {
-    const rfqs = await this.rfqRepository.find({
-      where: { buyer: { id: buyerId } },
-      relations: ['buyer', 'product', 'product.seller'],
-    });
+    try {
+      const rfqs = await this.rfqRepository.find({
+        where: { buyer: { id: buyerId } },
+        relations: ['buyer', 'product', 'product.seller'],
+      });
 
-    if (rfqs.length === 0) {
-      throw new NotFoundException('RFQ not found for this buyer');
-    }
+      if (rfqs.length === 0) {
+        throw new NotFoundException('RFQ not found for this buyer');
+      }
 
-    return plainToInstance(RfqResponseDto, rfqs, {
-      enableImplicitConversion: true,
-      excludeExtraneousValues: true,
-    });
-  } catch (error) {
-    if (error instanceof HttpException) {
-      throw error; // rethrow NotFoundException etc.
+      return plainToInstance(RfqResponseDto, rfqs, {
+        enableImplicitConversion: true,
+        excludeExtraneousValues: true,
+      });
+    } catch (error) {
+      if (error instanceof HttpException) throw error;
+      throw new InternalServerErrorException('Failed to fetch RFQs by buyer');
     }
-    throw new InternalServerErrorException('Failed to fetch RFQs by buyer');
   }
-}
 
-async findBySellerId(sellerId: string): Promise<RfqResponseDto[]> {
-  try {
-    const rfqs = await this.rfqRepository.find({
-      where: { product: { seller: { id: sellerId } } },
-      relations: ['buyer', 'product', 'product.seller'],
-    });
+  async findBySellerId(sellerId: string): Promise<RfqResponseDto[]> {
+    try {
+      const rfqs = await this.rfqRepository.find({
+        where: { product: { seller: { id: sellerId } } },
+        relations: ['buyer', 'product', 'product.seller'],
+      });
 
-    if (rfqs.length === 0) {
-      throw new NotFoundException('RFQ not found for this seller');
+      if (rfqs.length === 0) {
+        throw new NotFoundException('RFQ not found for this seller');
+      }
+
+      return plainToInstance(RfqResponseDto, rfqs, {
+        enableImplicitConversion: true,
+        excludeExtraneousValues: true,
+      });
+    } catch (error) {
+      if (error instanceof HttpException) throw error;
+      throw new InternalServerErrorException('Failed to fetch RFQs by seller');
     }
-
-    return plainToInstance(RfqResponseDto, rfqs, {
-      enableImplicitConversion: true,
-      excludeExtraneousValues: true,
-    });
-  } catch (error) {
-    if (error instanceof HttpException) {
-      throw error;
-    }
-    throw new InternalServerErrorException('Failed to fetch RFQs by seller');
   }
-}
 
   async update(id: string, dto: UpdateRfqDto): Promise<RfqResponseDto> {
     try {
       const rfq = await this.rfqRepository.findOne({
         where: { id },
-        relations: ['buyer','product', 'product.seller'],
+        relations: ['buyer', 'product', 'product.seller'],
       });
       if (!rfq) throw new NotFoundException('RFQ not found');
 

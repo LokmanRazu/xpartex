@@ -82,7 +82,7 @@ export class UserService {
 
     const savedUser = await this.userRepository.save(user);
 
-    await this.profileService.create(firstName,lastName,email,phoneNumber,savedUser.id)
+    await this.profileService.create(firstName,lastName,email,phoneNumber,savedUser.id) 
 
     return plainToInstance(UserResponseDto, savedUser, {
       enableImplicitConversion: true,

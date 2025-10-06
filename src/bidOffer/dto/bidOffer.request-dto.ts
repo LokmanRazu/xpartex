@@ -20,6 +20,11 @@ export class CreateBidDto {
     @IsNotEmpty()
     sellerId: string;
 
+    @ApiProperty({ example: '10', description: 'Quantity must be a number' })
+    @IsNumber()
+    @IsNotEmpty()
+    quantity: number;
+
     @ApiProperty({ example: 1500.5, description: 'Bid price' })
     @IsNumber()
     @IsPositive()

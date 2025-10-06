@@ -22,6 +22,7 @@ import { InquiryModule } from './inquiry/inquiry.module';
 import { SampleRequestModule } from './sampleRequest/sampleRequest.module';
 import { UserProfileModule } from './userProfile/userProfile.module';
 import { CompanyProfileModule } from './companyProfile/companyProfile.module';
+import { PaymentModule } from './payment/payment.module';
 
 @Module({
   imports: [
@@ -34,7 +35,7 @@ import { CompanyProfileModule } from './companyProfile/companyProfile.module';
       port: 3306,
       username: 'root',
       password: '',
-      database: 'xpartexdb',
+      database: 'testxp',
       autoLoadEntities: true,  
       synchronize: true,
     }),
@@ -71,7 +72,8 @@ import { CompanyProfileModule } from './companyProfile/companyProfile.module';
     InquiryModule,
     SampleRequestModule,
     UserProfileModule, 
-    CompanyProfileModule
+    CompanyProfileModule,
+    PaymentModule
 
     
   ],

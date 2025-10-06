@@ -53,3 +53,18 @@ export function MultiFileUploadInterceptor(fields: { name: string; maxCount: num
     limits: { fileSize: 5 * 1024 * 1024 },
   });
 }
+
+export function SingleFileUploadInterceptor(fieldName: string) {
+  const storage = multer.diskStorage({
+    destination: './public/temp',
+    filename: (req, file, cb) => {
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+      cb(null, `${uniqueSuffix}${extname(file.originalname)}`);
+    },
+  });
+
+  return FileInterceptor(fieldName, {
+    storage,
+    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+  });
+}
