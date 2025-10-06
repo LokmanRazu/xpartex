@@ -13,19 +13,30 @@ import { UpdateSampleRequestDto } from '../sampleRequest/dto/sampleRequest.updat
 @ApiTags('CompanyProfile')
 @Controller('company-profile')
 export class CompanyProfileController {
-  constructor(private readonly companyProfileService: CompanyProfileService) {}
+  constructor(private readonly companyProfileService: CompanyProfileService) { }
 
-@Post()
-@ApiConsumes('multipart/form-data')
-@UseInterceptors(MultiFileUploadInterceptor([{ name: 'img', maxCount: 1 }]))
-@ApiOperation({ summary: 'Create a new company profile' })
-@ApiOkResponse({ type: CompanyProfileResponseDto })
-async create(
-  @Body() dto: CompanyProfileRequestDto,
-  @UploadedFiles() files: { img?: Express.Multer.File[] },
-): Promise<CompanyProfileResponseDto> {
-  return this.companyProfileService.create(dto, files);
-}
+
+  @Post()
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(
+    MultiFileUploadInterceptor([
+      { name: 'img', maxCount: 1 },
+      { name: 'trade_license_file', maxCount: 1 },
+    ]),
+  )
+  @ApiOperation({ summary: 'Create a new company profile' })
+  @ApiOkResponse({ type: CompanyProfileResponseDto })
+  async create(
+    @Body() dto: CompanyProfileRequestDto,
+    @UploadedFiles()
+    files: {
+      img?: Express.Multer.File[];
+      trade_license_file?: Express.Multer.File[];
+    },
+  ): Promise<CompanyProfileResponseDto> {
+    return this.companyProfileService.create(dto, files);
+  }
+
 
 
   @Get()

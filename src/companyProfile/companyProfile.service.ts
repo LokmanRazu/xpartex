@@ -16,44 +16,51 @@ export class CompanyProfileService {
     @InjectRepository(CompanyProfile)
     private companyProfileRepository: Repository<CompanyProfile>,
     private userService: UserService,
-  ) {}
+  ) { }
 
   async create(
-  dto: CompanyProfileRequestDto,
-  files?: { img?: Express.Multer.File[] },
-): Promise<CompanyProfileResponseDto> {
-  try {
-    const user = await this.userService.findOne(dto.createdBy);
-    if (!user) throw new NotFoundException('User not found');
+    dto: CompanyProfileRequestDto,
+    files?: { img?: Express.Multer.File[]; trade_license_file?: Express.Multer.File[] },
+  ): Promise<CompanyProfileResponseDto> {
+    try {
+      const user = await this.userService.findOne(dto.createdBy);
+      if (!user) throw new NotFoundException('User not found');
 
-    // ----------------- Handle Image Upload -----------------
-    let uploadedImgUrl: string | null = null;
-    if (files?.img && files.img[0]) {
-      const uploadedImg = await uploadImageToCloudinary(files.img[0].path);
-      uploadedImgUrl = uploadedImg?.secure_url;
+      // ----------------- Handle Image Upload -----------------
+      let uploadedImgUrl: string | null = null;
+      if (files?.img && files.img[0]) {
+        const uploadedImg = await uploadImageToCloudinary(files.img[0].path);
+        uploadedImgUrl = uploadedImg?.secure_url;
+      }
+
+      // ----------------- Handle Trade License Upload -----------------
+      let uploadedTradeLicenseUrl: string | null = null;
+      if (files?.trade_license_file && files.trade_license_file[0]) {
+        const uploadedTradeLicense = await uploadImageToCloudinary(files.trade_license_file[0].path);
+        uploadedTradeLicenseUrl = uploadedTradeLicense?.secure_url;
+      }
+
+      // ----------------- Create Company Profile -----------------
+      const companyProfile = this.companyProfileRepository.create({
+        ...dto,
+        img: uploadedImgUrl,
+        trade_license_file: uploadedTradeLicenseUrl,
+        createdBy: { id: dto.createdBy } as User,
+      });
+
+      const savedCompanyProfile = await this.companyProfileRepository.save(companyProfile);
+
+      return plainToInstance(CompanyProfileResponseDto, savedCompanyProfile, {
+        enableImplicitConversion: true,
+        excludeExtraneousValues: true,
+      });
+    } catch (error) {
+      throw error instanceof NotFoundException
+        ? error
+        : new InternalServerErrorException('Failed to create company profile: ' + error.message);
     }
-
-    // ----------------- Create Company Profile -----------------
-    const companyProfile = this.companyProfileRepository.create({
-      ...dto,
-      img: uploadedImgUrl, // Save uploaded image URL
-      createdBy: { id: dto.createdBy } as User,
-    });
-
-    const savedCompanyProfile = await this.companyProfileRepository.save(companyProfile);
-
-    return plainToInstance(CompanyProfileResponseDto, savedCompanyProfile, {
-      enableImplicitConversion: true,
-      excludeExtraneousValues: true,
-    });
-  } catch (error) {
-    throw error instanceof NotFoundException
-      ? error
-      : new InternalServerErrorException(
-          'Failed to create company profile: ' + error.message,
-        );
   }
-}
+
 
 
   async findAll(): Promise<CompanyProfileResponseDto[]> {

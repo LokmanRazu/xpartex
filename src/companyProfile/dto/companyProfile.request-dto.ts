@@ -131,7 +131,7 @@ export class CompanyProfileRequestDto {
   @IsOptional()
   operating_hours?: string;
 
-  @ApiProperty({ example: 'trade_license.pdf', description: 'File path or URL of trade license document' })
+  @ApiProperty({ example: 'trade_license.pdf', description: 'File path or URL of trade license document',format: 'binary' })
   @IsString()
   @IsOptional()
   trade_license_file?: string;
