@@ -63,6 +63,21 @@ export class CartService {
     }
   }
 
+  async findCartByUserId(userId: string): Promise<CartResponseDto> {
+    try {
+      const cart = await this.cartRepository.findOne({ where: { user: { id: userId } }, relations: ['user','product'] });
+      if (!cart) throw new NotFoundException('Cart not found');
+      return plainToInstance(CartResponseDto, cart, {
+        enableImplicitConversion: true,
+        excludeExtraneousValues: true,
+      });
+    } catch (error) {
+      throw error instanceof NotFoundException
+        ? error
+        : new InternalServerErrorException('Failed to fetch cart');
+    }
+  }
+
   async update(id: string, dto: UpdateCartDto): Promise<CartResponseDto> {
     try {
       const cart = await this.cartRepository.findOne({ where: { id }, relations: ['user','product'] });
