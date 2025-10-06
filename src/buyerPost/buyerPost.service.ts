@@ -6,6 +6,8 @@ import { Buyerpost } from './buyerPost.entity';
 import { BuyerPostResponseDto } from './dto/buyerPost.response-dto';
 import { CreateBuyerPostDto } from './dto/buyerPost.request-dto';
 import { UpdateBuyerPostDto } from './dto/buyerPost.update-dto';
+import { User } from '../user/user.entity';
+import { Category } from '../category/category.entity';
 
 @Injectable()
 export class BuyerPostService {
@@ -16,7 +18,7 @@ export class BuyerPostService {
 
   async findAll(): Promise<BuyerPostResponseDto[]> {
     try {
-      const posts = await this.buyerPostRepository.find();
+      const posts = await this.buyerPostRepository.find({ relations: ['user','category'] });
       return plainToInstance(BuyerPostResponseDto, posts, {
         enableImplicitConversion: true,
         excludeExtraneousValues: true,
@@ -28,7 +30,7 @@ export class BuyerPostService {
 
   async findOne(id: string): Promise<BuyerPostResponseDto> {
     try {
-      const post = await this.buyerPostRepository.findOne({ where: { id: Number(id) } });
+      const post = await this.buyerPostRepository.findOne({ where: { id },relations: ['user','category'] });
       if (!post) throw new NotFoundException('Buyer post not found');
 
       return plainToInstance(BuyerPostResponseDto, post, {
@@ -44,7 +46,11 @@ export class BuyerPostService {
 
   async create(dto: CreateBuyerPostDto): Promise<BuyerPostResponseDto> {
     try {
-      const post = this.buyerPostRepository.create(dto);
+      const post = this.buyerPostRepository.create({
+        ...dto,
+        user: { id: dto.userId } as User,
+        category: { id: dto.categoryId } as Category
+      });
       const savedPost = await this.buyerPostRepository.save(post);
 
       return plainToInstance(BuyerPostResponseDto, savedPost, {
@@ -59,7 +65,7 @@ export class BuyerPostService {
   async update(id: string, dto: UpdateBuyerPostDto): Promise<BuyerPostResponseDto> {
     try {
       await this.buyerPostRepository.update(id, dto);
-      const updatedPost = await this.buyerPostRepository.findOne({ where: { id: Number(id) } });
+      const updatedPost = await this.buyerPostRepository.findOne({ where: { id },relations: ['user','category'] });
 
       if (!updatedPost) throw new NotFoundException('Buyer post not found after update');
 
@@ -76,7 +82,7 @@ export class BuyerPostService {
 
   async delete(id: string): Promise<BuyerPostResponseDto> {
     try {
-      const post = await this.buyerPostRepository.findOne({ where: { id: Number(id) } });
+      const post = await this.buyerPostRepository.findOne({ where: { id },relations: ['user','category'] });
       if (!post) throw new NotFoundException('Buyer post not found');
 
       await this.buyerPostRepository.delete(id);

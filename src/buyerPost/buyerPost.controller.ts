@@ -7,7 +7,6 @@ import { UpdateBuyerPostDto } from './dto/buyerPost.update-dto';
 import { AuthGuard } from '@nestjs/passport';
 
 @ApiBearerAuth('JWT-auth')
-@UseGuards(AuthGuard('jwt'))
 @ApiTags('BuyerPost')
 @Controller('buyer-post')
 export class BuyerPostController {
@@ -28,6 +27,7 @@ export class BuyerPostController {
     return this.buyerPostService.findOne(id);
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Post()
   @ApiOperation({ summary: 'Create a new buyer post' })
   @ApiBody({ type: CreateBuyerPostDto })
@@ -36,6 +36,7 @@ export class BuyerPostController {
     return this.buyerPostService.create(dto);
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Patch(':id')
   @ApiOperation({ summary: 'Update buyer post by ID' })
   @ApiParam({ name: 'id', type: String })
@@ -45,6 +46,7 @@ export class BuyerPostController {
     return this.buyerPostService.update(id, dto);
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Delete(':id')
   @ApiOperation({ summary: 'Delete buyer post by ID' })
   @ApiParam({ name: 'id', type: String })

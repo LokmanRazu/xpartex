@@ -7,10 +7,11 @@ import { CartItemService } from "./cartItem.service";
 import { ProductModule } from "../product/product.module";
 import { CartModule } from "../cart/cart.module";
 
+
 @Module({
-    imports:[TypeOrmModule.forFeature([CartItem]), ProductModule, CartModule],
+    imports:[TypeOrmModule.forFeature([CartItem]),ProductModule,CartModule],
     controllers:[CartItemController],
     providers:[CartItemService],
-    exports:[]
+    exports:[CartItemService]
 })
 export class CartItemModule{}

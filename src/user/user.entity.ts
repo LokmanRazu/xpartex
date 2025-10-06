@@ -9,6 +9,7 @@ import { Profile } from '../userProfile/userProfile.entity';
 import { CompanyProfile } from '../companyProfile/companyProfile.entity';
 import { Rfq } from './../rfq/rfq.entity';
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany, OneToOne } from 'typeorm';
+import { Buyerpost } from '../buyerPost/buyerPost.entity';
 
 export enum userRole {
     ADMIN = 'admin',
@@ -36,7 +37,12 @@ export class User {
     @Column()
     phoneNumber: string;
 
-    @OneToOne(() => Cart, (cart) => cart.user, {
+    @OneToMany(() => Buyerpost, (buyerpost) => buyerpost.user, {
+        cascade: true,
+    })
+    buyerpost: Buyerpost
+
+    @OneToMany(() => Cart, (cart) => cart.user, {
         cascade: true,
     })
     cart: Cart;

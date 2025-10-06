@@ -10,6 +10,7 @@ import { Wholesale } from "../wholesale/wholesale.entity";
 import {
     Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn,
 } from "typeorm";
+import { Cart } from "../cart/cart.entity";
 
 export enum ListingType {
     B2B = "b2b",
@@ -155,6 +156,9 @@ export class Product {
     is_active: boolean;
 
     // Relations (same as before)
+    @OneToMany(() => Cart, (cart) => cart.product, { cascade: true })
+    cart: Cart;
+    
     @OneToMany(() => OrderItem, (orderitem) => orderitem.product, {
         cascade: true,
     })
@@ -176,10 +180,10 @@ export class Product {
     @OneToMany(() => B2b, (b2b) => b2b.product, { cascade: true })
     b2bs?: B2b[];
 
-    @OneToMany(() => Inquiry, (inquiry) => inquiry.product)
+    @OneToMany(() => Inquiry, (inquiry) => inquiry.product, { cascade: true })
     inquiries: Inquiry[];
 
-    @OneToMany(() => SampleRequest, (sampleRequest) => sampleRequest.product)
+    @OneToMany(() => SampleRequest, (sampleRequest) => sampleRequest.product, { cascade: true })
     sampleRequests: SampleRequest[];
 
     // Timestamps

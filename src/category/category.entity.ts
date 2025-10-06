@@ -1,3 +1,4 @@
+import { Buyerpost } from "../buyerPost/buyerPost.entity";
 import { Product } from "../product/product.entity";
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
@@ -13,4 +14,9 @@ export class Category {
         cascade: true,
     })
     product: Product[];
+
+        @OneToMany(() => Buyerpost, (buyerPost) => buyerPost.category, {
+        cascade: true,
+    })
+    buyerPost: Buyerpost[];
 }

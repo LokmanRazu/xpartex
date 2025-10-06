@@ -1,16 +1,16 @@
 
 import { Cart } from "../cart/cart.entity";
 import { Product } from "../product/product.entity";
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity('cart_item')
 export class CartItem {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @ManyToOne(() => Cart, (cart) => cart.cartItems, { onDelete: 'CASCADE' })
-    @JoinColumn({ name: "cartId" })
-    cart: Cart;
+    // @ManyToOne(() => Cart, (cart) => cart.cartItems, { onDelete: 'CASCADE' })
+    // @JoinColumn({ name: "cartId" })
+    // cart: Cart;
 
     @ManyToOne(() => Product, { onDelete: 'CASCADE' })
     @JoinColumn({ name: "productId" })
@@ -20,5 +20,12 @@ export class CartItem {
     quantity: number;
 
     @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-    addedTime: Date;
+    created_at: Date;
+
+    @UpdateDateColumn({
+        type: 'timestamp',
+        default: () => 'CURRENT_TIMESTAMP',
+        onUpdate: 'CURRENT_TIMESTAMP',
+    })
+    updated_at: Date;
 }
