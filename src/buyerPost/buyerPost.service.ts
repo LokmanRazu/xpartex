@@ -14,11 +14,11 @@ export class BuyerPostService {
   constructor(
     @InjectRepository(Buyerpost)
     private readonly buyerPostRepository: Repository<Buyerpost>,
-  ) {}
+  ) { }
 
   async findAll(): Promise<BuyerPostResponseDto[]> {
     try {
-      const posts = await this.buyerPostRepository.find({ relations: ['user','category'] });
+      const posts = await this.buyerPostRepository.find({ relations: ['user', 'category'] });
       return plainToInstance(BuyerPostResponseDto, posts, {
         enableImplicitConversion: true,
         excludeExtraneousValues: true,
@@ -30,7 +30,7 @@ export class BuyerPostService {
 
   async findOne(id: string): Promise<BuyerPostResponseDto> {
     try {
-      const post = await this.buyerPostRepository.findOne({ where: { id },relations: ['user','category','postBidOffers','postBidOffers.bidder'] });
+      const post = await this.buyerPostRepository.findOne({ where: { id }, relations: ['user', 'category', 'postBidOffers', 'postBidOffers.bidder'] });
       if (!post) throw new NotFoundException('Buyer post not found');
 
       return plainToInstance(BuyerPostResponseDto, post, {
@@ -41,6 +41,20 @@ export class BuyerPostService {
       throw error instanceof NotFoundException
         ? error
         : new InternalServerErrorException('Failed to fetch buyer post');
+    }
+  }
+
+  async findByUserId(userId: string): Promise<BuyerPostResponseDto[]> {
+    try {
+      const posts = await this.buyerPostRepository.find({ where: { user: { id: userId } }, relations: ['user', 'category', 'postBidOffers', 'postBidOffers.bidder'] });
+      return plainToInstance(BuyerPostResponseDto, posts, {
+        enableImplicitConversion: true,
+        excludeExtraneousValues: true,
+      });
+    } catch (error) {
+      throw error instanceof NotFoundException
+        ? error
+        : new InternalServerErrorException('Failed to update buyer post');
     }
   }
 
@@ -58,14 +72,16 @@ export class BuyerPostService {
         excludeExtraneousValues: true,
       });
     } catch (error) {
-      throw new InternalServerErrorException('Failed to create buyer post');
+      throw error instanceof NotFoundException
+        ? error
+        : new InternalServerErrorException('Failed to update buyer post');
     }
   }
 
   async update(id: string, dto: UpdateBuyerPostDto): Promise<BuyerPostResponseDto> {
     try {
       await this.buyerPostRepository.update(id, dto);
-      const updatedPost = await this.buyerPostRepository.findOne({ where: { id },relations: ['user','category'] });
+      const updatedPost = await this.buyerPostRepository.findOne({ where: { id }, relations: ['user', 'category'] });
 
       if (!updatedPost) throw new NotFoundException('Buyer post not found after update');
 
@@ -82,7 +98,7 @@ export class BuyerPostService {
 
   async delete(id: string): Promise<BuyerPostResponseDto> {
     try {
-      const post = await this.buyerPostRepository.findOne({ where: { id },relations: ['user','category'] });
+      const post = await this.buyerPostRepository.findOne({ where: { id }, relations: ['user', 'category'] });
       if (!post) throw new NotFoundException('Buyer post not found');
 
       await this.buyerPostRepository.delete(id);

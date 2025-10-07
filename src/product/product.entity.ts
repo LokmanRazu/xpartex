@@ -44,7 +44,7 @@ export class Product {
     category: Category;
 
     // Fields
-    @Column({ type: "int",  nullable: true })
+    @Column({ type: "int", nullable: true })
     price: number;
  
 

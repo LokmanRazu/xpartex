@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Patch, Delete, Param, Body, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Param, Body, UseGuards, Req } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody, ApiBearerAuth } from '@nestjs/swagger';
 import { BuyerPostService } from './buyerPost.service';
 import { BuyerPostResponseDto } from './dto/buyerPost.response-dto';
@@ -19,12 +19,20 @@ export class BuyerPostController {
     return this.buyerPostService.findAll();
   }
 
-  @Get(':id')
+  @Get(':id') 
   @ApiOperation({ summary: 'Get buyer post by ID' })
   @ApiParam({ name: 'id', type: String })
   @ApiResponse({ status: 200, description: 'Buyer post details', type: BuyerPostResponseDto })
   async findOne(@Param('id') id: string): Promise<BuyerPostResponseDto> {
     return this.buyerPostService.findOne(id);
+  }
+  
+ @UseGuards(AuthGuard('jwt'))
+  @Get('user/:Id')
+  @ApiOperation({ summary: 'Get buyer posts by user ID' })
+  @ApiResponse({ status: 200, description: 'List of buyer posts', type: [BuyerPostResponseDto] })
+  async findByUserId(@Req() req): Promise<BuyerPostResponseDto[]> {
+    return this.buyerPostService.findByUserId(req.user.id);
   }
 
   @UseGuards(AuthGuard('jwt'))

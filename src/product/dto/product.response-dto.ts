@@ -3,16 +3,7 @@ import { Expose, Type } from 'class-transformer';
 import { ListingType } from '../product.entity';
 import { UserResponseDto } from '../../user/dto/user.response-dto';
 import { CategoryResponseDto } from '../../category/dto/category.response-dto';
-
-class TierPriceingresponseDto {
-  @ApiProperty({ example: 10 - 100 })
-  @Expose()
-  range: string;
-
-  @ApiProperty({ example: 1000 })
-  @Expose()
-  price: number;
-}
+import { CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
 export class ProductResponseDto {
   @ApiProperty({ example: '123e4567-e89b-12d3-a456-426614174000' })
@@ -37,13 +28,9 @@ export class ProductResponseDto {
   @Expose()
   company_id: string;
 
-  @ApiProperty({ example: 1000 })
+  @ApiProperty({ example: 1000, nullable: true })
   @Expose()
   price: number;
-
-  @ApiProperty({ type: [TierPriceingresponseDto], required: false })
-  @Expose()
-  tier_pricing?: TierPriceingresponseDto[];
 
   @ApiProperty({ example: '[https://example.com/img.jpg](https://example.com/img.jpg)' })
   @Expose()
@@ -65,21 +52,9 @@ export class ProductResponseDto {
   @Expose()
   brand_name?: string;
 
-  @ApiProperty({ example: 'HSN12345', required: false })
-  @Expose()
-  hs_code?: string;
-
   @ApiProperty({ example: 'Latest iPhone model', required: false })
   @Expose()
   description?: string;
-
-  @ApiProperty({ example: 'Titanium frame, 256GB storage', required: false })
-  @Expose()
-  key_features?: string;
-
-  @ApiProperty({ example: '[https://example.com/video.mp4](https://example.com/video.mp4)', required: false })
-  @Expose()
-  video_url?: string;
 
   @ApiProperty({ example: 'India', required: false })
   @Expose()
@@ -97,18 +72,6 @@ export class ProductResponseDto {
   @Expose()
   usage_application?: string;
 
-  @ApiProperty({ example: 100, required: false })
-  @Expose()
-  moq?: number;
-
-  @ApiProperty({ example: '1000 pcs/month', required: false })
-  @Expose()
-  supply_ability?: string;
-
-  @ApiProperty({ example: '7-10 business days', required: false })
-  @Expose()
-  lead_time?: string;
-
   @ApiProperty({ example: 'USD', required: false })
   @Expose()
   price_unit?: string;
@@ -125,29 +88,10 @@ export class ProductResponseDto {
   @Expose()
   port_of_shipment?: string;
 
-  @ApiProperty({ example: true, required: false })
-  @Expose()
-  sample_available?: boolean;
-
-  @ApiProperty({ example: 20.5, required: false })
-  @Expose()
-  sample_cost?: number;
-
-  @ApiProperty({ example: true, required: false })
-  @Expose()
-  customization_available?: boolean;
-
-  @ApiProperty({ example: 'Color, Size', required: false })
-  @Expose()
-  customization_type?: string;
-
   @ApiProperty({ example: 'FOB', required: false })
   @Expose()
   delivery_terms?: string;
 
-  @ApiProperty({ example: 'CIF', required: false })
-  @Expose()
-  trade_terms?: string;
 
   @ApiProperty({ example: '7-day return policy', required: false })
   @Expose()
@@ -157,10 +101,6 @@ export class ProductResponseDto {
   @Expose()
   warranty?: string;
 
-  @ApiProperty({ example: 1000, required: false })
-  @Expose()
-  stock_quantity?: number;
-
   @ApiProperty({ example: ['Black', 'Blue'], required: false })
   @Expose()
   colorVariants?: string[];
@@ -169,17 +109,9 @@ export class ProductResponseDto {
   @Expose()
   available_sizes?: string[];
 
-  @ApiProperty({ example: 999.99, required: false })
-  @Expose()
-  price_per_unit?: number;
-
   @ApiProperty({ example: 'Air, Sea, Courier', required: false })
   @Expose()
   shipping_methods?: string;
-
-  @ApiProperty({ example: 50, required: false })
-  @Expose()
-  shipping_cost?: number;
 
   @ApiProperty({ example: '7 days', required: false })
   @Expose()
@@ -189,11 +121,9 @@ export class ProductResponseDto {
   @Expose()
   is_active?: boolean;
 
-  @ApiProperty({ example: '2025-09-12T10:00:00.000Z' })
-  @Expose()
+  @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
-  @ApiProperty({ example: '2025-09-12T12:30:00.000Z' })
-  @Expose()
+  @UpdateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
   updatedAt: Date;
 }
