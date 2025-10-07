@@ -5,7 +5,7 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, Up
 
 @Entity('order_item')
 export class OrderItem {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn('uuid') 
   id: string; 
 
   // @ManyToOne(() => Order, (order) => order.orderItems, { onDelete: "CASCADE" })

@@ -67,8 +67,8 @@ export class OrderService {
         product: { id: dto.productId } as Product,
         user: { id: dto.buyerId } as User,
         status:OrderStatus.PENDING,
-        quantity,
-        price,
+        quantity:1,
+        price:product.price, 
         totalAmount: quantity * price
       });
       const savedOrder = await this.orderRepository.save(order);

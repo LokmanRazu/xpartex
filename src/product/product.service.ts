@@ -68,7 +68,7 @@ export class ProductService {
 
     async findOne(id: string): Promise<ProductResponseDto> {
         try {
-            const product = await this.productRepository.findOne({ where: { id }, relations: ['category', 'seller', 'b2bs', 'wholesales', 'retails'] });
+            const product = await this.productRepository.findOne({ where: { id }, relations: ['category', 'seller', 'b2bs', 'wholesales', 'retails','cart'] });
             if (!product) throw new NotFoundException('Product not found');
 
             return plainToInstance(ProductResponseDto, product, {
@@ -88,7 +88,7 @@ export class ProductService {
     ): Promise<ProductResponseDto> {
         try {
             const {
-                title, sellerId, categoryId, company_id, tier_pricing, img, additional_images, listing_type, tags, brand_name, hs_code,
+                title, sellerId, categoryId, company_id,price, tier_pricing, img, additional_images, listing_type, tags, brand_name, hs_code,
                 description, key_features, video_url, origin_country, certifications, material_type, usage_application,
                 moq, supply_ability, lead_time, price_unit, payment_terms, packaging_details, port_of_shipment,
                 sample_available, sample_cost, customization_available, customization_type, delivery_terms,
@@ -127,7 +127,7 @@ export class ProductService {
                 seller: { id: sellerId } as User,
                 category: { id: categoryId } as Category,
                 additional_images: uploadedAdditional,
-                company_id, tier_pricing, listing_type, tags, brand_name, hs_code,
+                company_id,price, tier_pricing, listing_type, tags, brand_name, hs_code,
                 description, key_features, video_url, origin_country, certifications, material_type, usage_application,
                 moq, supply_ability, lead_time, price_unit, payment_terms, packaging_details, port_of_shipment,
                 sample_available, sample_cost, customization_available, customization_type, delivery_terms,

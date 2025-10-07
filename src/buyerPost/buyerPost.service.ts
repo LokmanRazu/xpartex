@@ -30,7 +30,7 @@ export class BuyerPostService {
 
   async findOne(id: string): Promise<BuyerPostResponseDto> {
     try {
-      const post = await this.buyerPostRepository.findOne({ where: { id },relations: ['user','category'] });
+      const post = await this.buyerPostRepository.findOne({ where: { id },relations: ['user','category','postBidOffers','postBidOffers.bidder'] });
       if (!post) throw new NotFoundException('Buyer post not found');
 
       return plainToInstance(BuyerPostResponseDto, post, {

@@ -37,6 +37,10 @@ export class ProductResponseDto {
   @Expose()
   company_id: string;
 
+  @ApiProperty({ example: 1000 })
+  @Expose()
+  price: number;
+
   @ApiProperty({ type: [TierPriceingresponseDto], required: false })
   @Expose()
   tier_pricing?: TierPriceingresponseDto[];

@@ -3,6 +3,7 @@ import { Expose, Type } from 'class-transformer';
 import { ProductStatus } from '../buyerPost.entity';
 import { UserResponseDto } from '../../user/dto/user.response-dto';
 import { CategoryResponseDto } from '../../category/dto/category.response-dto';
+import { PostBidOfferResponseDto } from '../../postBidOffer/dto/postBidOffer.response-dto';
 
 export class BuyerPostResponseDto {
   @ApiProperty({ example: '123e4567-e89b-12d3-a456-426614174000' })
@@ -52,6 +53,11 @@ export class BuyerPostResponseDto {
   @Expose()
   status: ProductStatus;
 
+  @ApiProperty({ type: () => PostBidOfferResponseDto })
+  @Expose()
+  @Type(() => PostBidOfferResponseDto)
+  postBidOffers: PostBidOfferResponseDto;
+
   @ApiProperty({ example: '2025-10-06T12:00:00Z' })
   @Expose()
   @Type(() => Date)
@@ -61,4 +67,6 @@ export class BuyerPostResponseDto {
   @Expose()
   @Type(() => Date)
   updatedAt: Date;
+
+
 }

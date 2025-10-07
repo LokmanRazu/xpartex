@@ -1,8 +1,8 @@
 
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { User } from '../user/user.entity';
 import { Category } from '../category/category.entity';
-
+import { PostBidOffer } from '../postBidOffer/postBidOffer.entity';
 
 export enum ProductStatus {
     OPEN = 'open',
@@ -12,6 +12,7 @@ export enum ProductStatus {
 
 @Entity('buyerpost')
 export class Buyerpost {
+
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
@@ -47,6 +48,8 @@ export class Buyerpost {
     @Column({ type: 'enum', enum: ProductStatus, default: ProductStatus.OPEN })
     status: ProductStatus;
 
+    @OneToMany(() => PostBidOffer, (postBidOffer) => postBidOffer.buyerPost, { cascade: true })
+    postBidOffers: PostBidOffer[];
 
     @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     createdAt: Date;

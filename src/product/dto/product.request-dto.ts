@@ -31,6 +31,10 @@ export class CreateProductDto {
   @IsString({ message: 'Category ID must be a string' })
   company_id: string;
 
+  @ApiProperty({  })
+  @IsNumber({}, { message: 'Price must be a number' })
+  price: number;
+
   @ApiProperty({ type: [TierPriceingDto], required: false })
   @ValidateNested({ each: true })
   @Type(() => TierPriceingDto)

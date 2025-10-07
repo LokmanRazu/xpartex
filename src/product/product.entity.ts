@@ -44,6 +44,10 @@ export class Product {
     category: Category;
 
     // Fields
+    @Column({ type: "int",  nullable: true })
+    price: number;
+ 
+
     @Column({ type: 'json', nullable: true })
     tier_pricing?: { range: string; price: number }[];
 

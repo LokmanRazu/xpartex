@@ -23,6 +23,7 @@ import { SampleRequestModule } from './sampleRequest/sampleRequest.module';
 import { UserProfileModule } from './userProfile/userProfile.module';
 import { CompanyProfileModule } from './companyProfile/companyProfile.module';
 import { PaymentModule } from './payment/payment.module';
+import { PostBidOfferModule } from './postBidOffer/postBidOffer.module';
 
 @Module({
   imports: [
@@ -73,7 +74,8 @@ import { PaymentModule } from './payment/payment.module';
     SampleRequestModule,
     UserProfileModule, 
     CompanyProfileModule,
-    PaymentModule
+    PaymentModule,
+    PostBidOfferModule
 
     
   ],
