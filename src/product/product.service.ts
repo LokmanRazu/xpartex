@@ -20,6 +20,8 @@ import { Retail } from '../retail/retail.entity';
 import { CreateProductDto } from './dto/product.request-dto';
 import { uploadImageToCloudinary } from '../../utils/imageUpload';
 import { CategoryService } from '../category/category.service';
+import { CompanyProfile } from '../companyProfile/companyProfile.entity';
+import { CompanyProfileService } from '../companyProfile/companyProfile.service';
 
 @Injectable()
 export class ProductService {
@@ -34,12 +36,13 @@ export class ProductService {
         private retailRepository: Repository<Retail>,
         private categoryService: CategoryService,
         private userService: UserService,
+        private companyProfileService: CompanyProfileService 
     ) { }
 
     async findAll(): Promise<ProductResponseDto[]> {
         try {
             const products = await this.productRepository.find({
-                relations: ['category', 'seller', 'b2bs', 'wholesales', 'retails', 'inquiries'],
+                relations: ['category', 'seller', 'b2bs', 'wholesales', 'retails', 'inquiries', 'company'],
             });
             return plainToInstance(ProductResponseDto, products, {
                 enableImplicitConversion: true,
@@ -55,7 +58,7 @@ export class ProductService {
             console.log('iddddddd===', id)
             const products = await this.productRepository.find({
                 where: { seller: { id } },
-                relations: ['category', 'seller', 'b2bs', 'wholesales', 'retails'],
+                relations: ['category', 'seller', 'b2bs', 'wholesales', 'retails', 'company'],
             });
             return plainToInstance(ProductResponseDto, products, {
                 enableImplicitConversion: true,
@@ -68,7 +71,7 @@ export class ProductService {
 
     async findOne(id: string): Promise<ProductResponseDto> {
         try {
-            const product = await this.productRepository.findOne({ where: { id }, relations: ['category', 'seller', 'b2bs', 'wholesales', 'retails','cart'] });
+            const product = await this.productRepository.findOne({ where: { id }, relations: ['category', 'seller', 'b2bs', 'wholesales', 'retails', 'cart', 'company'] });
             if (!product) throw new NotFoundException('Product not found');
 
             return plainToInstance(ProductResponseDto, product, {
@@ -88,12 +91,11 @@ export class ProductService {
     ): Promise<ProductResponseDto> {
         try {
             const {
-                title, sellerId, categoryId, company_id,price, tier_pricing, img, additional_images, listing_type, tags, brand_name, hs_code,
-                description, key_features, video_url, origin_country, certifications, material_type, usage_application,
-                moq, supply_ability, lead_time, price_unit, payment_terms, packaging_details, port_of_shipment,
-                sample_available, sample_cost, customization_available, customization_type, delivery_terms,
-                trade_terms, return_policy, warranty, stock_quantity, colorVariants, available_sizes,
-                price_per_unit, shipping_methods, shipping_cost, shipping_time, is_active
+                title, sellerId, companyProfileId, categoryId, img, additional_images, hs_code, tags,
+                brand_name, description, key_features, origin_country, certifications, material_type, usage_application,
+                price_unit, payment_terms, packaging_details, delivery_terms, trade_terms, return_policy, warranty,
+                stock_quantity, colorVariants, available_sizes, price_per_unit, shipping_time, tier_pricing, is_active,
+                is_b2b, is_wholesale, is_retail, moq
             } = dto;
 
             // ----------------- Image Upload -----------------
@@ -120,19 +122,18 @@ export class ProductService {
             const category = await this.categoryService.findOne(categoryId);
             if (!category) throw new NotFoundException('Category not found');
 
+            const companyProfile = await this.companyProfileService.findOne(companyProfileId);
+            if (!companyProfile) throw new NotFoundException('Company profile not found');
+
             // ----------------- Create Product -----------------
             const product = this.productRepository.create({
                 title,
                 img: uploadedMain?.secure_url,
                 seller: { id: sellerId } as User,
+                company: { id: companyProfileId } as CompanyProfile,
                 category: { id: categoryId } as Category,
                 additional_images: uploadedAdditional,
-                company_id,price, tier_pricing, listing_type, tags, brand_name, hs_code,
-                description, key_features, video_url, origin_country, certifications, material_type, usage_application,
-                moq, supply_ability, lead_time, price_unit, payment_terms, packaging_details, port_of_shipment,
-                sample_available, sample_cost, customization_available, customization_type, delivery_terms,
-                trade_terms, return_policy, warranty, stock_quantity, colorVariants, available_sizes,
-                price_per_unit, shipping_methods, shipping_cost, shipping_time, is_active
+                ...dto,
 
 
             });
@@ -140,24 +141,24 @@ export class ProductService {
             const savedProduct = await this.productRepository.save(product);
 
             // ----------------- Handle Product Type Relations -----------------
-            if (listing_type === 'wholesale') {
-                const wholesale = this.wholesaleRepository.create({
-                    product: { id: savedProduct.id } as Product,
-                    moq,
-                });
-                await this.wholesaleRepository.save(wholesale);
-            } else if (listing_type === 'b2b') {
-                const b2b = this.b2bRepository.create({
-                    product: { id: savedProduct.id } as Product,
-                    moq,
-                });
-                await this.b2bRepository.save(b2b);
-            } else if (listing_type === 'retail') {
-                const retail = this.retailRepository.create({
-                    product: { id: savedProduct.id } as Product,
-                });
-                await this.retailRepository.save(retail);
-            }
+            // if (listing_type === 'wholesale') {
+            //     const wholesale = this.wholesaleRepository.create({
+            //         product: { id: savedProduct.id } as Product,
+            //         moq,
+            //     });
+            //     await this.wholesaleRepository.save(wholesale);
+            // } else if (listing_type === 'b2b') {
+            //     const b2b = this.b2bRepository.create({
+            //         product: { id: savedProduct.id } as Product,
+            //         moq,
+            //     });
+            //     await this.b2bRepository.save(b2b);
+            // } else if (listing_type === 'retail') {
+            //     const retail = this.retailRepository.create({
+            //         product: { id: savedProduct.id } as Product,
+            //     });
+            //     await this.retailRepository.save(retail);
+            // }
 
             // ----------------- Response -----------------
             return plainToInstance(ProductResponseDto, savedProduct, {

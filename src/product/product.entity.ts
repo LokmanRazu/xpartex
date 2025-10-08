@@ -11,12 +11,13 @@ import {
     Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn,
 } from "typeorm";
 import { Cart } from "../cart/cart.entity";
+import { CompanyProfile } from "../companyProfile/companyProfile.entity";
 
-export enum ListingType {
-    B2B = "b2b",
-    WHOLESALE = "wholesale",
-    RETAIL = "retail",
-}
+// export enum ListingType {
+//     B2B = "b2b",
+//     WHOLESALE = "wholesale",
+//     RETAIL = "retail",
+// }
 
 // export enum paymentTerms {
 //     COD = 'cod',
@@ -36,20 +37,16 @@ export class Product {
     @JoinColumn({ name: "sellerId" })
     seller: User;
 
-    @Column({ type: "varchar", nullable: true })
-    company_id: string;
+    @ManyToOne(() => CompanyProfile, (companyProfile) => companyProfile.product, { onDelete: "CASCADE", })
+    @JoinColumn({ name: "companyProfileId" })
+    company: CompanyProfile;
 
     @ManyToOne(() => Category, (category) => category.product, { onDelete: "CASCADE", })
     @JoinColumn({ name: "categoryId" })
     category: Category;
 
-    // Fields
     @Column({ type: "int", nullable: true })
     price: number;
- 
-
-    @Column({ type: 'json', nullable: true })
-    tier_pricing?: { range: string; price: number }[];
 
     @Column({ type: "varchar", length: 255, nullable: false })
     img: string;
@@ -57,8 +54,11 @@ export class Product {
     @Column({ type: "simple-array", nullable: true })
     additional_images?: string[];
 
-    @Column({ type: "enum", enum: ListingType })
-    listing_type: ListingType;
+    @Column({ nullable: true })
+    hs_code: string;
+
+    // @Column({ type: "enum", enum: ListingType })
+    // listing_type: ListingType;
 
     @Column("simple-array", { nullable: true })
     tags?: string[];
@@ -66,17 +66,11 @@ export class Product {
     @Column({ type: "varchar", length: 255, nullable: true })
     brand_name?: string;
 
-    @Column({ type: "varchar", length: 100, nullable: true })
-    hs_code?: string;
-
     @Column({ type: "varchar", length: 250, nullable: true, })
     description?: string;
 
-    @Column({ type: "varchar",length:250, nullable: true })
+    @Column({ type: "varchar", length: 250, nullable: true })
     key_features?: string;
-
-    @Column({ type: "varchar", length: 255, nullable: true })
-    video_url?: string;
 
     @Column({ type: "varchar", length: 100, nullable: true })
     origin_country?: string;
@@ -90,15 +84,6 @@ export class Product {
     @Column({ type: "varchar", length: 255, nullable: true })
     usage_application?: string;
 
-    @Column({ type: "int", nullable: true })
-    moq?: number;
-
-    @Column({ type: "varchar", length: 100, nullable: true })
-    supply_ability?: string;
-
-    @Column({ type: "varchar", length: 100, nullable: true })
-    lead_time?: string;
-
     @Column({ type: "varchar", length: 100, nullable: true })
     price_unit?: string;
 
@@ -107,21 +92,6 @@ export class Product {
 
     @Column({ type: "text", nullable: true })
     packaging_details?: string;
-
-    @Column({ type: "varchar", length: 100, nullable: true })
-    port_of_shipment?: string;
-
-    @Column({ type: "boolean", default: false })
-    sample_available: boolean;
-
-    @Column({ type: "decimal", precision: 10, scale: 2, nullable: true })
-    sample_cost?: number;
-
-    @Column({ type: "boolean", default: false })
-    customization_available: boolean;
-
-    @Column({ type: "text", nullable: true })
-    customization_type?: string;
 
     @Column({ type: "varchar", length: 100, nullable: true })
     delivery_terms?: string;
@@ -147,22 +117,31 @@ export class Product {
     @Column({ type: "decimal", precision: 10, scale: 2, nullable: true })
     price_per_unit?: number;
 
-    @Column({ type: "text", nullable: true })
-    shipping_methods?: string;
-
-    @Column({ type: "decimal", precision: 10, scale: 2, nullable: true })
-    shipping_cost?: number;
-
     @Column({ type: "varchar", length: 100, nullable: true })
     shipping_time?: string;
+
+    @Column({ type: 'json', nullable: true })
+    tier_pricing?: { range: string; price: number }[];
 
     @Column({ type: "boolean", default: true })
     is_active: boolean;
 
+    @Column({ type: "boolean", default: false })
+    is_b2b: boolean;
+
+    @Column({ type: "boolean", default: false })
+    is_wholesale: boolean;
+
+    @Column({ type: "boolean", default: false })
+    is_retail: boolean;
+
+    @Column({type: "int", nullable: true })
+    moq: number;
+
     // Relations (same as before)
     @OneToMany(() => Cart, (cart) => cart.product, { cascade: true })
     cart: Cart;
-    
+
     @OneToMany(() => OrderItem, (orderitem) => orderitem.product, {
         cascade: true,
     })

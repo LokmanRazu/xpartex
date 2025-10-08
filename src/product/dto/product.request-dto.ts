@@ -1,250 +1,197 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
-  IsEnum,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-  IsArray,
-  IsBoolean,
-  ValidateNested,
+IsArray,
+IsBoolean,
+IsNumber,
+IsOptional,
+IsString,
+ValidateNested,
+IsNotEmpty,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { ListingType } from '../product.entity';
 
 class TierPricingDto {
-  @ApiProperty({ example: '100-500', description: 'Quantity range for this price tier' })
-  @IsString({ message: 'Range must be a string' })
-  range: string;
+@ApiProperty({ example: '100-500', description: 'Quantity range for the price tier' })
+@IsString()
+range: string;
 
-  @ApiProperty({ example: 950, description: 'Unit price for the given range' })
-  @IsNumber({}, { message: 'Price must be a number' })
-  price: number;
+@ApiProperty({ example: 50, description: 'Price for the given range' })
+@IsNumber()
+price: number;
 }
 
 export class CreateProductDto {
-  @ApiProperty({ example: 'iPhone 15 Pro', description: 'Product title' })
-  @IsString()
-  @IsNotEmpty()
-  title: string;
+@ApiProperty({ example: 'Stainless Steel Water Bottle' })
+@IsString()
+@IsNotEmpty()
+title: string;
 
-  @ApiProperty({ example: 'seller-uuid', description: 'Seller ID' })
-  @IsString()
-  @IsNotEmpty()
-  sellerId: string;
+@ApiProperty({ example: 'uuid-of-seller' })
+@IsString()
+@IsNotEmpty()
+sellerId: string;
 
-  @ApiProperty({ example: 'company-uuid', description: 'Company ID' })
-  @IsString()
-  @IsOptional()
-  company_id?: string;
+@ApiProperty({ example: 'uuid-of-company-profile' })
+@IsString()
+@IsNotEmpty()
+companyProfileId: string;
 
-  @ApiProperty({ example: 'category-uuid', description: 'Category ID' })
-  @IsString()
-  @IsNotEmpty()
-  categoryId: string;
+@ApiProperty({ example: 'uuid-of-category' })
+@IsString()
+@IsNotEmpty()
+categoryId: string;
 
-  @ApiProperty({ example: 999, description: 'Product base price' })
-  @IsNumber({}, { message: 'Price must be a number' })
-  @IsOptional()
-  price?: number;
+// @ApiPropertyOptional({ example: 120 })
+// @IsNumber()
+// @IsOptional()
+// price?: number;
 
-  @ApiProperty({ type: [TierPricingDto], required: false })
-  @ValidateNested({ each: true })
-  @Type(() => TierPricingDto)
-  @IsOptional()
-  tier_pricing?: TierPricingDto[];
+@ApiProperty({ example: 'https://example.com/main-image.jpg' })
+@IsString()
+@IsNotEmpty()
+img: string;
 
-  @ApiProperty({ example: 'https://example.com/image.jpg', description: 'Main product image URL' })
-  @IsString()
-  @IsNotEmpty()
-  img: string;
+@ApiPropertyOptional({ example: ['https://example.com/img1.jpg', 'https://example.com/img2.jpg'] })
+@IsArray()
+@IsOptional()
+additional_images?: string[];
 
-  @ApiProperty({
-    example: ['https://example.com/1.jpg', 'https://example.com/2.jpg'],
-    description: 'Additional product images',
-    required: false,
-  })
-  @IsArray()
-  @IsString({ each: true })
-  @IsOptional()
-  additional_images?: string[];
+@ApiPropertyOptional({ example: 'AquaFresh' })
+@IsString()
+@IsOptional()
+hs_code?: string;
 
-  @ApiProperty({
-    enum: ListingType,
-    example: ListingType.B2B,
-    description: 'Listing type (b2b, wholesale, retail)',
-  })
-  @IsEnum(ListingType)
-  @IsNotEmpty()
-  listing_type: ListingType;
+@ApiPropertyOptional({ example: ['eco-friendly', 'reusable'] })
+@IsArray()
+@IsOptional()
+tags?: string[];
 
-  @ApiProperty({ example: ['electronics', 'smartphone'], required: false })
-  @IsArray()
-  @IsString({ each: true })
-  @IsOptional()
-  tags?: string[];
+@ApiPropertyOptional({ example: 'AquaPure' })
+@IsString()
+@IsOptional()
+brand_name?: string;
 
-  @ApiProperty({ example: 'Apple', required: false })
-  @IsString()
-  @IsOptional()
-  brand_name?: string;
+@ApiPropertyOptional({ example: 'High-quality stainless steel water bottle' })
+@IsString()
+@IsOptional()
+description?: string;
 
-  @ApiProperty({ example: 'HSN12345', required: false })
-  @IsString()
-  @IsOptional()
-  hs_code?: string;
+@ApiPropertyOptional({ example: 'Double-walled, leak-proof, BPA-free' })
+@IsString()
+@IsOptional()
+key_features?: string;
 
-  @ApiProperty({ example: 'Latest iPhone with A17 chip', required: false })
-  @IsString()
-  @IsOptional()
-  description?: string;
+@ApiPropertyOptional({ example: 'China' })
+@IsString()
+@IsOptional()
+origin_country?: string;
 
-  @ApiProperty({ example: 'Titanium frame, 256GB storage', required: false })
-  @IsString()
-  @IsOptional()
-  key_features?: string;
+@ApiPropertyOptional({ example: 'ISO 9001 Certified' })
+@IsString()
+@IsOptional()
+certifications?: string;
 
-  @ApiProperty({ example: 'https://example.com/video.mp4', required: false })
-  @IsString()
-  @IsOptional()
-  video_url?: string;
+@ApiPropertyOptional({ example: 'Stainless Steel' })
+@IsString()
+@IsOptional()
+material_type?: string;
 
-  @ApiProperty({ example: 'China', required: false })
-  @IsString()
-  @IsOptional()
-  origin_country?: string;
+@ApiPropertyOptional({ example: 'Outdoor, Travel, Sports' })
+@IsString()
+@IsOptional()
+usage_application?: string;
 
-  @ApiProperty({ example: 'ISO 9001, CE', required: false })
-  @IsString()
-  @IsOptional()
-  certifications?: string;
+@ApiPropertyOptional({ example: 'per piece' })
+@IsString()
+@IsOptional()
+price_unit?: string;
 
-  @ApiProperty({ example: 'Aluminum', required: false })
-  @IsString()
-  @IsOptional()
-  material_type?: string;
+@ApiPropertyOptional({ example: ['COD', 'Online', 'Bank Transfer'] })
+@IsArray()
+@IsOptional()
+payment_terms?: string[];
 
-  @ApiProperty({ example: 'Phone Manufacturing', required: false })
-  @IsString()
-  @IsOptional()
-  usage_application?: string;
+@ApiPropertyOptional({ example: 'Packed in cardboard boxes with bubble wrap' })
+@IsString()
+@IsOptional()
+packaging_details?: string;
 
-  @ApiProperty({ example: 100, required: false })
-  @IsNumber()
-  @IsOptional()
-  moq?: number;
+@ApiPropertyOptional({ example: 'FOB, CIF, EXW' })
+@IsString()
+@IsOptional()
+delivery_terms?: string;
 
-  @ApiProperty({ example: '500 units/month', required: false })
-  @IsString()
-  @IsOptional()
-  supply_ability?: string;
+@ApiPropertyOptional({ example: '30% advance, 70% on delivery' })
+@IsString()
+@IsOptional()
+trade_terms?: string;
 
-  @ApiProperty({ example: '7-10 business days', required: false })
-  @IsString()
-  @IsOptional()
-  lead_time?: string;
+@ApiPropertyOptional({ example: 'Return within 7 days if defective' })
+@IsString()
+@IsOptional()
+return_policy?: string;
 
-  @ApiProperty({ example: 'USD', required: false })
-  @IsString()
-  @IsOptional()
-  price_unit?: string;
+@ApiPropertyOptional({ example: '1-year manufacturer warranty' })
+@IsString()
+@IsOptional()
+warranty?: string;
 
-  @ApiProperty({ example: ['Online', 'Bank Transfer'], required: false })
-  @IsArray()
-  @IsString({ each: true })
-  @IsOptional()
-  payment_terms?: string[];
+@ApiPropertyOptional({ example: 500 })
+@IsNumber()
+@IsOptional()
+stock_quantity?: number;
 
-  @ApiProperty({ example: 'Eco-friendly packaging', required: false })
-  @IsString()
-  @IsOptional()
-  packaging_details?: string;
+@ApiPropertyOptional({ example: ['Red', 'Blue', 'Green'] })
+@IsArray()
+@IsOptional()
+colorVariants?: string[];
 
-  @ApiProperty({ example: 'Chittagong Port', required: false })
-  @IsString()
-  @IsOptional()
-  port_of_shipment?: string;
+@ApiPropertyOptional({ example: ['S', 'M', 'L'] })
+@IsArray()
+@IsOptional()
+available_sizes?: string[];
 
-  @ApiProperty({ example: true, required: false })
-  @IsBoolean()
-  @IsOptional()
-  sample_available?: boolean;
+@ApiPropertyOptional({ example: 25.5 })
+@IsNumber()
+@IsOptional()
+price_per_unit?: number;
 
-  @ApiProperty({ example: 25.5, required: false })
-  @IsNumber()
-  @IsOptional()
-  sample_cost?: number;
+@ApiPropertyOptional({ example: '3-5 business days' })
+@IsString()
+@IsOptional()
+shipping_time?: string;
 
-  @ApiProperty({ example: true, required: false })
-  @IsBoolean()
-  @IsOptional()
-  customization_available?: boolean;
+@ApiPropertyOptional({
+type: [TierPricingDto],
+example: [{ range: '100-500', price: 45 }, { range: '501-1000', price: 40 }],
+})
+@ValidateNested({ each: true })
+@Type(() => TierPricingDto)
+@IsOptional()
+tier_pricing?: TierPricingDto[];
 
-  @ApiProperty({ example: 'Color, Size', required: false })
-  @IsString()
-  @IsOptional()
-  customization_type?: string;
+@ApiPropertyOptional({ example: true })
+@IsBoolean()
+@IsOptional()
+is_active?: boolean;
 
-  @ApiProperty({ example: 'FOB', required: false })
-  @IsString()
-  @IsOptional()
-  delivery_terms?: string;
+@ApiPropertyOptional({ example: false })
+@IsBoolean()
+@IsOptional()
+is_b2b?: boolean;
 
-  @ApiProperty({ example: 'CIF', required: false })
-  @IsString()
-  @IsOptional()
-  trade_terms?: string;
+@ApiPropertyOptional()
+@IsBoolean()
+@IsOptional()
+is_wholesale?: boolean;
 
-  @ApiProperty({ example: '7-day return policy', required: false })
-  @IsString()
-  @IsOptional()
-  return_policy?: string;
+@ApiPropertyOptional()
+@IsBoolean()
+@IsOptional()
+is_retail?: boolean;
 
-  @ApiProperty({ example: '1 year warranty', required: false })
-  @IsString()
-  @IsOptional()
-  warranty?: string;
-
-  @ApiProperty({ example: 2000, required: false })
-  @IsNumber()
-  @IsOptional()
-  stock_quantity?: number;
-
-  @ApiProperty({ example: ['Black', 'Silver'], required: false })
-  @IsArray()
-  @IsString({ each: true })
-  @IsOptional()
-  colorVariants?: string[];
-
-  @ApiProperty({ example: ['S', 'M', 'L'], required: false })
-  @IsArray()
-  @IsString({ each: true })
-  @IsOptional()
-  available_sizes?: string[];
-
-  @ApiProperty({ example: 999.99, required: false })
-  @IsNumber()
-  @IsOptional()
-  price_per_unit?: number;
-
-  @ApiProperty({ example: 'Air, Sea, Courier', required: false })
-  @IsString()
-  @IsOptional()
-  shipping_methods?: string;
-
-  @ApiProperty({ example: 50, required: false })
-  @IsNumber()
-  @IsOptional()
-  shipping_cost?: number;
-
-  @ApiProperty({ example: '7 days', required: false })
-  @IsString()
-  @IsOptional()
-  shipping_time?: string;
-
-  @ApiProperty({ example: true, required: false, default: true })
-  @IsBoolean()
-  @IsOptional()
-  is_active?: boolean;
+@ApiPropertyOptional()
+@IsNumber()
+@IsOptional()
+moq?: number;
 }
-

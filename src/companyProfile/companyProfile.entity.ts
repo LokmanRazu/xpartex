@@ -1,3 +1,4 @@
+import { Product } from '../product/product.entity';
 import { User } from '../user/user.entity';
 import {
   Column,
@@ -5,6 +6,7 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -92,6 +94,9 @@ export class CompanyProfile {
   @ManyToOne(() => User, (user) => user.companyProfiles, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'createdBy' })
   createdBy: User;
+
+   @OneToMany(() => Product, (product) => product.company, { cascade: true })
+   product: Product[];
 
   @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date;
