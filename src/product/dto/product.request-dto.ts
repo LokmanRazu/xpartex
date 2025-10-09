@@ -256,4 +256,19 @@ export class CreateProductDto {
   @IsString()
   @IsOptional()
   customization_type?: string;
+
+  @ApiPropertyOptional({ example: 'USD 100 per customization', description: 'Cost associated with product customization.' })
+  @IsString()
+  @IsOptional()
+  customization_cost?: string;
+
+  @ApiPropertyOptional({ example: '100-500', description: 'Price range for the product.' })
+  @IsString()
+  @IsOptional()
+  price_range?:string
+
+  @ApiPropertyOptional({ example: 50, description: 'Discounted price for the product.' })
+  @IsNumber()
+  @IsOptional()
+  discount_price?: number
 }

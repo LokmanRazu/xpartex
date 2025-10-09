@@ -173,6 +173,12 @@ export class Product {
     @Column({ type: "varchar", length: 100, nullable: true })
     customization_type: string
 
+    @Column({ type: "varchar", length: 100, nullable: true })
+    price_range:string
+
+    @Column({ type: "int", nullable: true })
+    discount_price: number
+
 
     // Relations (same as before)
     @OneToMany(() => Cart, (cart) => cart.product, { cascade: true })

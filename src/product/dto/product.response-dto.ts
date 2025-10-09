@@ -233,6 +233,14 @@ export class ProductResponseDto {
   @Expose()
   customization_type?: string;
 
+  @ApiProperty({ example: '100-500' })
+  @Expose()
+  price_range?: string;
+
+  @ApiProperty({ example: 45 })
+  @Expose()
+  discount_price: number;
+
   @ApiProperty({ example: '2025-10-09T12:00:00Z' })
   @Expose()
   created_at: Date;

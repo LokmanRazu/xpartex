@@ -98,7 +98,7 @@ export class ProductService {
                 brand_name, description, key_features, origin_country, certifications, material_type, usage_application,
                 price_unit, payment_terms, packaging_details, delivery_terms, trade_terms, return_policy, warranty,
                 stock_quantity, colorVariants, available_sizes, price_per_unit, shipping_cost, shipping_methods, port_of_shipment, shipping_time, tier_pricing, is_active,
-                is_b2b, is_wholesale, is_retail, moq, sample_availability, supply_ability, sample_cost, lead_time, customization_availability, customization_type
+                is_b2b, is_wholesale, is_retail, moq, sample_availability, supply_ability, sample_cost, lead_time, customization_availability, customization_type,discount_price,price_range
             } = dto;
 
             // ----------------- Image Upload -----------------
