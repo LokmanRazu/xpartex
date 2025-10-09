@@ -10,6 +10,13 @@ import {
 import { Buyerpost } from '../buyerPost/buyerPost.entity';
 import { User } from '../user/user.entity';
 
+export enum BidOfferStatus {
+  OPEN = 'open',
+  PENDING = 'pending',
+  ACCEPTED = 'accepted',
+  REJECTED = 'rejected',
+}
+
 @Entity()
 export class PostBidOffer {
   @PrimaryGeneratedColumn('uuid')
@@ -27,13 +34,23 @@ export class PostBidOffer {
   @Column({ type: 'varchar', length: 255, nullable: true })
   attachment: string;
 
+  @Column({  type: 'enum',enum: BidOfferStatus, default: BidOfferStatus.OPEN})
+  status: BidOfferStatus;
+
   @ManyToOne(() => Buyerpost, (buyerpost) => buyerpost.id, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'buyerPostId' })
   buyerPost: Buyerpost;
 
-  @ManyToOne(() => User, (user) => user.id, { onDelete: 'CASCADE' })
+  @ManyToOne(() => User, (user) => user.postBidOffers, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'bidderId' })
   bidder: User;
+
+  @ManyToOne(() => User, (user) => user.postBidOffersbuyer, { onDelete: 'CASCADE' , nullable: true })
+  @JoinColumn({ name: 'buyerId' })
+  buyer: User;
+
+  @Column({ type: 'varchar',length: 30, nullable: true })
+  oldBidId:string
 
   @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;

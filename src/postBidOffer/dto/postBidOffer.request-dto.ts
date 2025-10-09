@@ -46,4 +46,19 @@ export class PostBidOfferRequestDto {
   @IsUUID('4', { message: 'bidderId must be a valid UUID' })
   @IsNotEmpty({ message: 'bidderId is required' })
   bidderId: string;
+
+  @ApiPropertyOptional({
+    example: 'c8d8a4a7-2f4e-41e7-a6f2-1234567890ab',
+    description: 'Buyer linked to this bid',
+  })
+  @IsUUID('4', { message: 'buyerId must be a valid UUID' })
+  @IsOptional()
+  buyerId: string
+
+  @ApiPropertyOptional({
+    example: 'c8d8a4a7-2f4e-41e7-a6f2-1234567890ab',
+    description: 'Old bid linked to this bid',
+  })
+  @IsOptional()
+  oldBidId: string
 }

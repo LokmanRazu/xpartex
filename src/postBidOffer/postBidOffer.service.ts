@@ -30,7 +30,7 @@ export class PostBidOfferService {
     file?: Express.Multer.File,
   ): Promise<PostBidOfferResponseDto> {
     try {
-      const { buyerPostId, bidderId, price, delivaryTime, shippingMetode, attachment } = dto;
+      const { buyerPostId, bidderId, price, delivaryTime, shippingMetode, attachment,oldBidId,buyerId } = dto;
 
       // ----------------- Upload file -----------------
       let uploadedFile: any = null;
@@ -48,9 +48,10 @@ export class PostBidOfferService {
       // ----------------- Create Post Bid Offer -----------------
       const postBidOffer = this.postBidOfferRepository.create({
         ...dto,
-        attachment: uploadedFile?.secure_url, // ⬅️ file URL saved here
+        attachment: uploadedFile?.secure_url, 
         buyerPost: { id: buyerPostId } as Buyerpost,
         bidder: { id: bidderId } as User,
+        buyer: buyerId ? ({ id: buyerId } as User) : null,
       });
 
       const savedPostBidOffer = await this.postBidOfferRepository.save(postBidOffer);
@@ -119,6 +120,39 @@ export class PostBidOfferService {
       throw error instanceof NotFoundException
         ? error
         : new InternalServerErrorException('Failed to fetch post bid offer');
+    }
+  }
+
+  async findByBuyerId(buyerId: string): Promise<PostBidOfferResponseDto[]> {
+    try {
+      const postBidOffers = await this.postBidOfferRepository.find({
+        where: { buyer: { id: buyerId } },
+        relations: ['buyerPost', 'bidder', 'buyer'],
+      });
+      return plainToInstance(PostBidOfferResponseDto, postBidOffers, {
+        enableImplicitConversion: true,
+        excludeExtraneousValues: true,
+      });
+    } catch (error) {
+      throw error instanceof NotFoundException
+        ? error
+        : new InternalServerErrorException('Failed to fetch post bid offer');
+    }
+  }
+
+  async confirmBid(id: string): Promise<PostBidOfferResponseDto> {
+    try {
+      const postBidOffer = await this.postBidOfferRepository.findOne({ where: { id }, relations: ['buyerPost', 'bidder','buyer'] });
+      if (!postBidOffer) throw new NotFoundException('Post bid offer not found');
+      postBidOffer.status === 'accepted';
+      return plainToInstance(PostBidOfferResponseDto,postBidOffer ,{
+        enableImplicitConversion: true,
+        excludeExtraneousValues: true,
+      });
+    } catch (error) {
+      throw error instanceof NotFoundException
+        ? error
+        : new InternalServerErrorException('Failed to find confirm bid');
     }
   }
 

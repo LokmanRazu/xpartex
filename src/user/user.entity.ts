@@ -38,139 +38,68 @@ export enum userRole {
 
 
 @Entity('user')
-
 export class User {
-
     @PrimaryGeneratedColumn('uuid')
-
     id: string;
 
-
-
     @Column()
-
     firstName: string;
 
-
-
     @Column()
-
     lastName: string;
 
-
-
     @Column()
-
     email: string;
 
-
-
     @Column()
-
     password: string;
 
-
-
     @Column()
-
     phoneNumber: string;
 
-
-
-    @OneToMany(() => Buyerpost, (buyerpost) => buyerpost.user, {
-
-        cascade: true,
-
-    })
-
+    @OneToMany(() => Buyerpost, (buyerpost) => buyerpost.user, { cascade: true, })
     buyerpost: Buyerpost
 
-
-
-    @OneToMany(() => Cart, (cart) => cart.user, {
-
-        cascade: true,
-
-    })
-
+    @OneToMany(() => Cart, (cart) => cart.user, { cascade: true, })
     cart: Cart;
 
 
 
-    @OneToMany(() => Product, (product) => product.seller, {
-
-        cascade: true,
-
-    })
-
+    @OneToMany(() => Product, (product) => product.seller, { cascade: true, })
     product: Product[];
 
-
-
-    @OneToMany(() => Rfq, (rfq) => rfq.buyer, {
-
-        cascade: true,
-
-    })
-
+    @OneToMany(() => Rfq, (rfq) => rfq.buyer, { cascade: true, })
     rfqForBuyer: Rfq[];
 
-
-
     @OneToOne(() => Order, (order) => order.user, { cascade: true })
-
     order: Order
 
-
-
     @OneToOne(() => Profile, (profile) => profile.user, { cascade: true })
-
     profile: Profile
 
-
-
     @OneToMany(() => BidOffer, (bidOffer) => bidOffer.seller, { cascade: true })
-
     bids: BidOffer[]
 
-
-
     @OneToMany(() => PostBidOffer, (postBidOffer) => postBidOffer.bidder, { cascade: true })
-
     postBidOffers: PostBidOffer[];
 
-
-
+    @OneToMany(() => PostBidOffer, (postBidOffer) => postBidOffer.buyer, { cascade: true })
+    postBidOffersbuyer: PostBidOffer[];
 
 
     @OneToMany(() => Inquiry, (inquiry) => inquiry.buyer, { cascade: true })
-
     inquiryes: Inquiry[]
 
-
-
     @OneToMany(() => SampleRequest, (sampleRequest) => sampleRequest.buyer, { cascade: true })
-
     sampleRequestBuyer: SampleRequest[]
 
-
-
     @OneToMany(() => CompanyProfile, (companyProfile) => companyProfile.createdBy, { cascade: true })
-
     companyProfiles: CompanyProfile[]
 
-
-
-
-
     @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-
     createdAt: Date;
 
-
-
     @UpdateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
-
     updatedAt: Date;
 
 }

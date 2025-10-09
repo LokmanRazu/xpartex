@@ -8,7 +8,7 @@ import {
   ValidateNested,
   IsNotEmpty,
 } from 'class-validator';
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 
 class TierPricingDto {
   @ApiProperty({ example: '100-500', description: 'Quantity range for the price tier' })
@@ -41,7 +41,7 @@ export class CreateProductDto {
   @IsNotEmpty()
   categoryId: string;
 
-  @ApiPropertyOptional({ example: 'uuid-of-sub-category' })
+  @ApiPropertyOptional({ example: 'uuid-of-sub-category' }) 
   @IsString()
   @IsOptional()
   subCategoryId?: string;
@@ -205,21 +205,25 @@ export class CreateProductDto {
   @ApiPropertyOptional({ example: true })
   @IsBoolean()
   @IsOptional()
+   @Transform(({ value }) => value === 'true' || value === true)
   is_active?: boolean;
 
   @ApiPropertyOptional({ example: false })
   @IsBoolean()
   @IsOptional()
+  @Transform(({ value }) => value === 'true' || value === true)
   is_b2b?: boolean;
 
   @ApiPropertyOptional()
   @IsBoolean()
   @IsOptional()
+  @Transform(({ value }) => value === 'true' || value === true)
   is_wholesale?: boolean;
 
   @ApiPropertyOptional()
   @IsBoolean()
   @IsOptional()
+  @Transform(({ value }) => value === 'true' || value === true)
   is_retail?: boolean;
 
   @ApiPropertyOptional()
@@ -230,6 +234,7 @@ export class CreateProductDto {
   @ApiPropertyOptional({ example: true, description: 'Indicates if a product sample is available for testing.' })
   @IsBoolean()
   @IsOptional()
+  @Transform(({ value }) => value === 'true' || value === true)
   sample_availability?: boolean;
 
   @ApiPropertyOptional({ example: '5000 units per month', description: 'Production or supply capacity of the product.' })
@@ -250,6 +255,7 @@ export class CreateProductDto {
   @ApiPropertyOptional({ example: true, description: 'Indicates if product customization is available.' })
   @IsBoolean()
   @IsOptional()
+  @Transform(({ value }) => value === 'true' || value === true)
   customization_availability?: boolean;
 
   @ApiPropertyOptional({ example: 'Logo printing, packaging design', description: 'Type or scope of customization options available.' })
@@ -265,7 +271,7 @@ export class CreateProductDto {
   @ApiPropertyOptional({ example: '100-500', description: 'Price range for the product.' })
   @IsString()
   @IsOptional()
-  price_range?:string
+  price_range?: string
 
   @ApiPropertyOptional({ example: 50, description: 'Discounted price for the product.' })
   @IsNumber()

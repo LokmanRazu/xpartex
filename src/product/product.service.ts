@@ -133,6 +133,7 @@ export class ProductService {
 
             // ----------------- Create Product -----------------
             const product = this.productRepository.create({
+                ...dto,
                 title,
                 img: uploadedMain?.secure_url,
                 seller: { id: sellerId } as User,
@@ -140,7 +141,14 @@ export class ProductService {
                 category: { id: categoryId } as Category,
                 subCategory: { id: subCategoryId } as SubCategory,
                 additional_images: uploadedAdditional,
-                ...dto,
+                is_active:dto.is_active,
+                is_b2b:dto.is_b2b,
+                is_wholesale:dto.is_wholesale,
+                is_retail:dto.is_retail,
+                customization_vailability:dto.customization_availability,
+                customization_type:dto.customization_type
+
+                
 
 
             });

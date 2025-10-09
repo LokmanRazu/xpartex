@@ -70,6 +70,20 @@ export class PostBidOfferController {
     return this.postBidOfferService.findByBidderId(req.user.id);
   }
 
+  @Get('buyer/:id')
+  @ApiOperation({ summary: 'Get all post bid offers by buyer id' })
+  @ApiOkResponse({ type: [PostBidOfferResponseDto] })
+  findByBuyerId(@Req() req) {
+    return this.postBidOfferService.findByBuyerId(req.user.id);
+  }
+
+  @Get('condirm/:id')
+  @ApiOperation({ summary: 'Confirm a post bid offer' })
+  @ApiOkResponse({ type: PostBidOfferResponseDto })
+  confirmBid(@Param('id') id: string) {
+    return this.postBidOfferService.confirmBid(id);
+  }
+
   @Patch(':id')
   @ApiOperation({ summary: 'Update a post bid offer' })
   @ApiOkResponse({ type: PostBidOfferResponseDto })
