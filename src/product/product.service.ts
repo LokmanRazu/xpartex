@@ -98,8 +98,9 @@ export class ProductService {
                 brand_name, description, key_features, origin_country, certifications, material_type, usage_application,
                 price_unit, payment_terms, packaging_details, delivery_terms, trade_terms, return_policy, warranty,
                 stock_quantity, colorVariants, available_sizes, price_per_unit, shipping_cost, shipping_methods, port_of_shipment, shipping_time, tier_pricing, is_active,
-                is_b2b, is_wholesale, is_retail, moq, sample_availability, supply_ability, sample_cost, lead_time, customization_availability, customization_type,discount_price,price_range
+                is_b2b, is_wholesale, is_retail, moq, sample_availability, supply_ability, sample_cost, lead_time, customization_availability, customization_type, discount_price, price_range
             } = dto;
+            console.log('dtoo==', dto)
 
             // ----------------- Image Upload -----------------
             let uploadedMain: any = null;
@@ -141,14 +142,12 @@ export class ProductService {
                 category: { id: categoryId } as Category,
                 subCategory: { id: subCategoryId } as SubCategory,
                 additional_images: uploadedAdditional,
-                is_active:dto.is_active,
-                is_b2b:dto.is_b2b,
-                is_wholesale:dto.is_wholesale,
-                is_retail:dto.is_retail,
-                customization_vailability:dto.customization_availability,
-                customization_type:dto.customization_type
-
-                
+                is_b2b: (dto.is_b2b as any) === 'true' || dto.is_b2b === true,
+                is_wholesale: (dto.is_wholesale as any) === 'true' || dto.is_wholesale === true,
+                is_retail: (dto.is_retail as any) === 'true' || dto.is_retail === true,
+                is_active: (dto.is_active as any) === 'true' || dto.is_active === true,
+                sample_availability: (dto.sample_availability as any) === 'true' || dto.sample_availability === true,
+                customization_availability: (dto.customization_availability as any) === 'true' || dto.customization_availability === true,
 
 
             });

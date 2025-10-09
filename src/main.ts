@@ -14,8 +14,8 @@ async function bootstrap() {
 
   //   app.useGlobalPipes(
   //   new ValidationPipe({
-  //     whitelist: true,              // strips unknown props
-  //     forbidNonWhitelisted: true,   // throws error if extra props are passed
+  //     // whitelist: true,              // strips unknown props
+  //     // forbidNonWhitelisted: true,   // throws error if extra props are passed
   //     transform: true,              // converts types (e.g. string → number)
   //   }),
   // );

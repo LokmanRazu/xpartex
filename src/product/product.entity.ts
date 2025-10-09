@@ -143,19 +143,19 @@ export class Product {
     @Column({ type: "boolean", default: true })
     is_active: boolean;
 
-    @Column({ type: "boolean", default: false })
+    @Column({ type: "boolean",})
     is_b2b: boolean;
 
-    @Column({ type: "boolean", default: false })
+    @Column({ type: "boolean",})
     is_wholesale: boolean;
 
-    @Column({ type: "boolean", default: false })
+    @Column({ type: "boolean", })
     is_retail: boolean;
 
     @Column({ type: "int", nullable: true })
     moq: number;
 
-    @Column({ type: "boolean", default: false, nullable: true })
+    @Column({ type: "boolean", nullable: true })
     sample_availability: boolean
 
     @Column({ type: "varchar", length: 100, nullable: true })
@@ -167,8 +167,8 @@ export class Product {
     @Column({ type: "varchar", length: 100, nullable: true })
     sample_cost: string
 
-    @Column({ type: "boolean", default: false, nullable: true })
-    customization_vailability: boolean
+    @Column({ type: "boolean", nullable: true })
+    customization_availability: boolean
 
     @Column({ type: "varchar", length: 100, nullable: true })
     customization_type: string
