@@ -24,6 +24,9 @@ export class PostBidOffer {
   @Column('simple-array')
   shippingMetode: string[];
 
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  attachment: string;
+
   @ManyToOne(() => Buyerpost, (buyerpost) => buyerpost.id, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'buyerPostId' })
   buyerPost: Buyerpost;

@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional, IsString, IsNumber, IsEnum, IsDateString } from 'class-validator';
 import { ProductStatus } from '../buyerPost.entity';
 
@@ -47,6 +47,11 @@ export class CreateBuyerPostDto {
   @IsDateString({}, { message: 'Deadline must be a valid date string (ISO format)' })
   @IsOptional()
   deadline?: Date;
+
+  @ApiPropertyOptional({ required: false, example: 'c8d8a4a7-2f4e-41e7-a6f2-1234567890ab' ,format:'binary'})
+  @IsString({ message: 'Attachment must be a string' })
+  @IsOptional()
+  attachment:string
 
   @ApiProperty({ required: false, enum: ProductStatus, example: ProductStatus.OPEN })
   @IsEnum(ProductStatus, { message: 'Status must be either open or closed' })

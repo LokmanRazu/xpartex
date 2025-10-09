@@ -1,5 +1,5 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsDateString, IsNotEmpty, IsNumber, IsString, IsUUID } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsArray, IsDateString, IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class PostBidOfferRequestDto {
   @ApiProperty({
@@ -25,6 +25,11 @@ export class PostBidOfferRequestDto {
   @IsArray()
   @IsNotEmpty()
   shippingMetode: string[];
+
+  @ApiPropertyOptional({ required: false, example: 'c8d8a4a7-2f4e-41e7-a6f2-1234567890ab', format: 'binary' })
+  @IsString({ message: 'Attachment must be a string' })
+  @IsOptional()
+  attachment: string
 
   @ApiProperty({
     example: 'c8d8a4a7-2f4e-41e7-a6f2-1234567890ab',

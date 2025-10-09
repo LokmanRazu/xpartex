@@ -1,10 +1,11 @@
-import { Controller, Get, Post, Patch, Delete, Param, Body, UseGuards, Req } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody, ApiBearerAuth } from '@nestjs/swagger';
+import { Controller, Get, Post, Patch, Delete, Param, Body, UseGuards, Req, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody, ApiBearerAuth, ApiConsumes } from '@nestjs/swagger';
 import { BuyerPostService } from './buyerPost.service';
 import { BuyerPostResponseDto } from './dto/buyerPost.response-dto';
 import { CreateBuyerPostDto } from './dto/buyerPost.request-dto';
 import { UpdateBuyerPostDto } from './dto/buyerPost.update-dto';
 import { AuthGuard } from '@nestjs/passport';
+import { SingleFileUploadInterceptor } from '../../utils/imageUpload';
 
 @ApiBearerAuth('JWT-auth')
 @ApiTags('BuyerPost')
@@ -37,12 +38,18 @@ export class BuyerPostController {
 
   @UseGuards(AuthGuard('jwt'))
   @Post()
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(SingleFileUploadInterceptor('attachment')) // same logic as RFQ
   @ApiOperation({ summary: 'Create a new buyer post' })
   @ApiBody({ type: CreateBuyerPostDto })
   @ApiResponse({ status: 201, description: 'Buyer post created', type: BuyerPostResponseDto })
-  async create(@Body() dto: CreateBuyerPostDto): Promise<BuyerPostResponseDto> {
-    return this.buyerPostService.create(dto);
+  async create(
+    @Body() dto: CreateBuyerPostDto,
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<BuyerPostResponseDto> {
+    return this.buyerPostService.create(dto, file);
   }
+
 
   @UseGuards(AuthGuard('jwt'))
   @Patch(':id')

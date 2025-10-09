@@ -45,7 +45,8 @@ export class Buyerpost {
     @Column({ type: 'date', nullable: true })
     deadline: Date;
 
-    
+    @Column({ type: 'varchar', length: 255, nullable: true })
+    attachment:string;
 
     @Column({ type: 'enum', enum: ProductStatus, default: ProductStatus.OPEN })
     status: ProductStatus;

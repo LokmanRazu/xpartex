@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
 import { ProductStatus } from '../buyerPost.entity';
 import { UserResponseDto } from '../../user/dto/user.response-dto';
@@ -27,6 +27,10 @@ export class BuyerPostResponseDto {
   @Type(() => CategoryResponseDto)
   @Expose()
   category: CategoryResponseDto;
+
+  @ApiPropertyOptional({ required: false, example: 'https://example.com/attachments.pdf' })
+  @Expose()
+  attachments: string;
 
   @ApiProperty({ required: false, example: 1000.50 })
   @Expose()

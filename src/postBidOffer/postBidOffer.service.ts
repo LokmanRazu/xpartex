@@ -12,8 +12,9 @@ import { PostBidOfferRequestDto } from './dto/postBidOffer.request-dto';
 import { UpdatePostBidOfferDto } from './dto/postBidOffer.update-dto';
 import { BuyerPostService } from '../buyerPost/buyerPost.service';
 import { UserService } from '../user/user.service';
-import { Buyerpost } from '../buyerPost/buyerPost.entity'; 
+import { Buyerpost } from '../buyerPost/buyerPost.entity';
 import { User } from '../user/user.entity';
+import { uploadImageToCloudinary } from '../../utils/imageUpload';
 
 @Injectable()
 export class PostBidOfferService {
@@ -22,27 +23,37 @@ export class PostBidOfferService {
     private postBidOfferRepository: Repository<PostBidOffer>,
     private buyerPostService: BuyerPostService,
     private userService: UserService,
-  ) {}
+  ) { }
 
   async create(
     dto: PostBidOfferRequestDto,
+    file?: Express.Multer.File,
   ): Promise<PostBidOfferResponseDto> {
     try {
-      const buyerPost = await this.buyerPostService.findOne(dto.buyerPostId);
+      const { buyerPostId, bidderId, price, delivaryTime, shippingMetode, attachment } = dto;
+
+      // ----------------- Upload file -----------------
+      let uploadedFile: any = null;
+      if (file) {
+        uploadedFile = await uploadImageToCloudinary(file.path);
+      }
+
+      // ----------------- Validate relations -----------------
+      const buyerPost = await this.buyerPostService.findOne(buyerPostId);
       if (!buyerPost) throw new NotFoundException('Buyer post not found');
 
-      const bidder = await this.userService.findOne(dto.bidderId);
+      const bidder = await this.userService.findOne(bidderId);
       if (!bidder) throw new NotFoundException('Bidder not found');
 
+      // ----------------- Create Post Bid Offer -----------------
       const postBidOffer = this.postBidOfferRepository.create({
         ...dto,
-        buyerPost: { id: dto.buyerPostId } as Buyerpost,
-        bidder: { id: dto.bidderId } as User,
+        attachment: uploadedFile?.secure_url, // ⬅️ file URL saved here
+        buyerPost: { id: buyerPostId } as Buyerpost,
+        bidder: { id: bidderId } as User,
       });
 
-      const savedPostBidOffer = await this.postBidOfferRepository.save(
-        postBidOffer,
-      );
+      const savedPostBidOffer = await this.postBidOfferRepository.save(postBidOffer);
 
       return plainToInstance(PostBidOfferResponseDto, savedPostBidOffer, {
         enableImplicitConversion: true,
@@ -54,6 +65,9 @@ export class PostBidOfferService {
       );
     }
   }
+
+
+
 
   async findAll(): Promise<PostBidOfferResponseDto[]> {
     try {
@@ -101,7 +115,7 @@ export class PostBidOfferService {
         enableImplicitConversion: true,
         excludeExtraneousValues: true,
       });
-    }  catch (error) {
+    } catch (error) {
       throw error instanceof NotFoundException
         ? error
         : new InternalServerErrorException('Failed to fetch post bid offer');

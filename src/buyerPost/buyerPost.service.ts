@@ -8,12 +8,17 @@ import { CreateBuyerPostDto } from './dto/buyerPost.request-dto';
 import { UpdateBuyerPostDto } from './dto/buyerPost.update-dto';
 import { User } from '../user/user.entity';
 import { Category } from '../category/category.entity';
+import { CategoryService } from '../category/category.service';
+import { uploadImageToCloudinary } from '../../utils/imageUpload';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class BuyerPostService {
   constructor(
     @InjectRepository(Buyerpost)
     private readonly buyerPostRepository: Repository<Buyerpost>,
+    private readonly categoryService: CategoryService,
+    private readonly userService: UserService
   ) { }
 
   async findAll(): Promise<BuyerPostResponseDto[]> {
@@ -58,25 +63,60 @@ export class BuyerPostService {
     }
   }
 
-  async create(dto: CreateBuyerPostDto): Promise<BuyerPostResponseDto> {
-    try {
-      const post = this.buyerPostRepository.create({
-        ...dto,
-        user: { id: dto.userId } as User,
-        category: { id: dto.categoryId } as Category
-      });
-      const savedPost = await this.buyerPostRepository.save(post);
+async create(
+  dto: CreateBuyerPostDto,
+  file?: Express.Multer.File,
 
-      return plainToInstance(BuyerPostResponseDto, savedPost, {
-        enableImplicitConversion: true,
-        excludeExtraneousValues: true,
-      });
-    } catch (error) {
-      throw error instanceof NotFoundException
-        ? error
-        : new InternalServerErrorException('Failed to update buyer post');
+): Promise<BuyerPostResponseDto> {
+  try {
+    const {
+      title,
+      description,
+      categoryId,
+      userId,
+      target_price,
+      location,
+      quantity,
+      deadline,
+      unit,
+      status,
+      attachment, // this will be replaced by uploaded file URL
+    } = dto;
+
+    // ----------------- Upload file -----------------
+    let uploadedFile: any = null;
+    if (file) {
+      uploadedFile = await uploadImageToCloudinary(file.path);
     }
+
+    // ----------------- Validate relations -----------------
+    const user = await this.userService.findOne(userId);
+    if (!user) throw new NotFoundException('User not found');
+
+    const category = await this.categoryService.findOne(categoryId);
+    if (!category) throw new NotFoundException('Category not found');
+
+    // ----------------- Create Buyer Post -----------------
+    const post = this.buyerPostRepository.create({
+      ...dto,
+      attachment: uploadedFile?.secure_url, // <-- file URL
+      user: { id: userId } as User,
+      category: { id: categoryId } as Category,
+    });
+
+    const savedPost = await this.buyerPostRepository.save(post);
+
+    return plainToInstance(BuyerPostResponseDto, savedPost, {
+      enableImplicitConversion: true,
+      excludeExtraneousValues: true,
+    });
+  } catch (error) {
+    throw new InternalServerErrorException(
+      'Failed to create buyer post: ' + error.message,
+    );
   }
+}
+
 
   async update(id: string, dto: UpdateBuyerPostDto): Promise<BuyerPostResponseDto> {
     try {

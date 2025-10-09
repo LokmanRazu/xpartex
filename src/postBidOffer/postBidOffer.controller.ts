@@ -7,19 +7,25 @@ import {
   Patch,
   Post,
   Req,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { PostBidOfferService } from './postBidOffer.service';
 import { PostBidOfferRequestDto } from './dto/postBidOffer.request-dto';
 import { UpdatePostBidOfferDto } from './dto/postBidOffer.update-dto';
 import {
   ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
   ApiOkResponse,
   ApiOperation,
+  ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
 import { PostBidOfferResponseDto } from './dto/postBidOffer.response-dto';
 import { AuthGuard } from '@nestjs/passport';
+import { SingleFileUploadInterceptor } from '../../utils/imageUpload';
 
 @ApiBearerAuth('JWT-auth')
 @UseGuards(AuthGuard('jwt'))
@@ -28,12 +34,20 @@ import { AuthGuard } from '@nestjs/passport';
 export class PostBidOfferController {
   constructor(private readonly postBidOfferService: PostBidOfferService) {}
 
+@UseGuards(AuthGuard('jwt'))
   @Post()
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(SingleFileUploadInterceptor('attachment')) // ⬅️ handles file
   @ApiOperation({ summary: 'Create a new post bid offer' })
-  @ApiOkResponse({ type: PostBidOfferResponseDto })
-  create(@Body() postBidOfferRequestDto: PostBidOfferRequestDto) {
-    return this.postBidOfferService.create(postBidOfferRequestDto);
+  @ApiBody({ type: PostBidOfferRequestDto })
+  @ApiResponse({ status: 201, description: 'Post bid offer created', type: PostBidOfferResponseDto })
+  async create(
+    @Body() dto: PostBidOfferRequestDto,
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<PostBidOfferResponseDto> {
+    return this.postBidOfferService.create(dto, file);
   }
+
 
   @Get()
   @ApiOperation({ summary: 'Get all post bid offers' })
