@@ -22,7 +22,7 @@ export class PostBidOfferResponseDto {
 
   @ApiPropertyOptional({ required: false, example: 'https://example.com/attachments.pdf' })
   @Expose()
-  attachments: string;
+  attachment: string;
 
   @ApiProperty({ type: () => BuyerPostResponseDto })
   @Expose()

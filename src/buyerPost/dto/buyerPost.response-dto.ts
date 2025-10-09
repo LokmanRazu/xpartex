@@ -30,7 +30,7 @@ export class BuyerPostResponseDto {
 
   @ApiPropertyOptional({ required: false, example: 'https://example.com/attachments.pdf' })
   @Expose()
-  attachments: string;
+  attachment: string;
 
   @ApiProperty({ required: false, example: 1000.50 })
   @Expose()
