@@ -59,7 +59,7 @@ export class Product {
     @Column({ type: "simple-array", nullable: true })
     additional_images?: string[];
 
-    @Column({type: "varchar",length: 255, nullable: true })
+    @Column({ type: "varchar", length: 255, nullable: true })
     video?: string;
 
     @Column({ nullable: true })
@@ -125,7 +125,7 @@ export class Product {
     @Column({ type: "decimal", precision: 10, scale: 2, nullable: true })
     price_per_unit?: number;
 
-    @Column({type: "varchar", length: 100, nullable: true })
+    @Column({ type: "varchar", length: 100, nullable: true })
     shipping_time?: Date;
 
     @Column("simple-array", { nullable: true })
@@ -154,6 +154,25 @@ export class Product {
 
     @Column({ type: "int", nullable: true })
     moq: number;
+
+    @Column({ type: "boolean", default: false, nullable: true })
+    sample_availability: boolean
+
+    @Column({ type: "varchar", length: 100, nullable: true })
+    supply_ablity: string;
+
+    @Column({ type: "varchar", length: 100, nullable: true })
+    lead_time: string
+
+    @Column({ type: "varchar", length: 100, nullable: true })
+    sample_cost: string
+
+    @Column({ type: "boolean", default: false, nullable: true })
+    customization_vailability: boolean
+
+    @Column({ type: "varchar", length: 100, nullable: true })
+    customization_type: string
+
 
     // Relations (same as before)
     @OneToMany(() => Cart, (cart) => cart.product, { cascade: true })

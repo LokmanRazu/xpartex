@@ -226,4 +226,34 @@ export class CreateProductDto {
   @IsNumber()
   @IsOptional()
   moq?: number;
+
+  @ApiPropertyOptional({ example: true, description: 'Indicates if a product sample is available for testing.' })
+  @IsBoolean()
+  @IsOptional()
+  sample_availability?: boolean;
+
+  @ApiPropertyOptional({ example: '5000 units per month', description: 'Production or supply capacity of the product.' })
+  @IsString()
+  @IsOptional()
+  supply_ability?: string;
+
+  @ApiPropertyOptional({ example: '15-30 days after order confirmation', description: 'Expected lead time for production or delivery.' })
+  @IsString()
+  @IsOptional()
+  lead_time?: string;
+
+  @ApiPropertyOptional({ example: 'USD 50 per sample', description: 'Cost associated with requesting a product sample.' })
+  @IsString()
+  @IsOptional()
+  sample_cost?: string;
+
+  @ApiPropertyOptional({ example: true, description: 'Indicates if product customization is available.' })
+  @IsBoolean()
+  @IsOptional()
+  customization_availability?: boolean;
+
+  @ApiPropertyOptional({ example: 'Logo printing, packaging design', description: 'Type or scope of customization options available.' })
+  @IsString()
+  @IsOptional()
+  customization_type?: string;
 }

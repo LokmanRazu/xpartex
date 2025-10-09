@@ -1,4 +1,4 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
 import { CompanyProfileResponseDto } from "../../companyProfile/dto/companyProfile.response-dto";
 import { UserResponseDto } from "../../user/dto/user.response-dto";
@@ -190,6 +190,48 @@ export class ProductResponseDto {
   @ApiProperty({ example: 25, required: false })
   @Expose()
   moq?: number;
+
+    @ApiPropertyOptional({
+    example: true,
+    description: 'Indicates if a product sample is available for testing.',
+  })
+  @Expose()
+  sample_availability?: boolean;
+
+  @ApiPropertyOptional({
+    example: '5000 units per month',
+    description: 'Production or supply capacity of the product.',
+  })
+  @Expose()
+  supply_ability?: string;
+
+  @ApiPropertyOptional({
+    example: '15-30 days after order confirmation',
+    description: 'Expected lead time for production or delivery.',
+  })
+  @Expose()
+  lead_time?: string;
+
+  @ApiPropertyOptional({
+    example: 'USD 50 per sample',
+    description: 'Cost associated with requesting a product sample.',
+  })
+  @Expose()
+  sample_cost?: string;
+
+  @ApiPropertyOptional({
+    example: true,
+    description: 'Indicates if product customization is available.',
+  })
+  @Expose()
+  customization_availability?: boolean;
+
+  @ApiPropertyOptional({
+    example: 'Logo printing, packaging design',
+    description: 'Type or scope of customization options available for the product.',
+  })
+  @Expose()
+  customization_type?: string;
 
   @ApiProperty({ example: '2025-10-09T12:00:00Z' })
   @Expose()
