@@ -12,6 +12,7 @@ import {
 } from "typeorm";
 import { Cart } from "../cart/cart.entity";
 import { CompanyProfile } from "../companyProfile/companyProfile.entity";
+import { SubCategory } from "../subCategory/subCategory.entity";
 
 // export enum ListingType {
 //     B2B = "b2b",
@@ -45,6 +46,10 @@ export class Product {
     @JoinColumn({ name: "categoryId" })
     category: Category;
 
+    @ManyToOne(() => SubCategory, (subCategory) => subCategory.product, { onDelete: "CASCADE", })
+    @JoinColumn({ name: "subCategoryId" })
+    subCategory: SubCategory;
+
     @Column({ type: "int", nullable: true })
     price: number;
 
@@ -53,6 +58,9 @@ export class Product {
 
     @Column({ type: "simple-array", nullable: true })
     additional_images?: string[];
+
+    @Column({type: "varchar",length: 255, nullable: true })
+    video?: string;
 
     @Column({ nullable: true })
     hs_code: string;
@@ -117,8 +125,17 @@ export class Product {
     @Column({ type: "decimal", precision: 10, scale: 2, nullable: true })
     price_per_unit?: number;
 
+    @Column({type: "varchar", length: 100, nullable: true })
+    shipping_time?: Date;
+
+    @Column("simple-array", { nullable: true })
+    shipping_methods: string[]
+
+    @Column({ type: "decimal", precision: 10, scale: 2, nullable: true })
+    shipping_cost: number;
+
     @Column({ type: "varchar", length: 100, nullable: true })
-    shipping_time?: string;
+    port_of_shipment: string
 
     @Column({ type: 'json', nullable: true })
     tier_pricing?: { range: string; price: number }[];
@@ -135,7 +152,7 @@ export class Product {
     @Column({ type: "boolean", default: false })
     is_retail: boolean;
 
-    @Column({type: "int", nullable: true })
+    @Column({ type: "int", nullable: true })
     moq: number;
 
     // Relations (same as before)

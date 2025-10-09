@@ -3,7 +3,7 @@ import { Expose, Type } from "class-transformer";
 import { CompanyProfileResponseDto } from "../../companyProfile/dto/companyProfile.response-dto";
 import { UserResponseDto } from "../../user/dto/user.response-dto";
 import { CategoryResponseDto } from "../../category/dto/category.response-dto";
-import { CreateDateColumn, UpdateDateColumn } from "typeorm";
+import { SubCategoryResponseDto } from "../../subCategory/dto/subCategory.response-dto";
 
 export class TierPricingResponseDto {
   @ApiProperty({ example: '100-500' })
@@ -39,9 +39,14 @@ export class ProductResponseDto {
   @Expose()
   category: CategoryResponseDto;
 
-  // @ApiProperty({ example: 120, nullable: true })
-  // @Expose()
-  // price?: number;
+  @ApiProperty({ description: 'Subcategory details', required: false })
+  @Type(() => SubCategoryResponseDto)
+  @Expose()
+  subCategory?: SubCategoryResponseDto;
+
+  @ApiProperty({ example: 120, required: false })
+  @Expose()
+  price?: number;
 
   @ApiProperty({ example: 'https://example.com/main.jpg' })
   @Expose()
@@ -54,13 +59,13 @@ export class ProductResponseDto {
   @Expose()
   additional_images?: string[];
 
-  @ApiProperty({ example: 'AquaFresh', required: false })
+  @ApiProperty({ example: 'https://example.com/video.mp4', required: false })
+  @Expose()
+  video?: string;
+
+  @ApiProperty({ example: 'HS123456', required: false })
   @Expose()
   hs_code?: string;
-
-  // @ApiProperty({ enum: ListingType, example: ListingType.B2B })
-  // @Expose()
-  // listing_type: ListingType;
 
   @ApiProperty({ example: ['eco-friendly', 'reusable'], required: false })
   @Expose()
@@ -142,6 +147,18 @@ export class ProductResponseDto {
   @Expose()
   shipping_time?: string;
 
+  @ApiProperty({ example: ['Air', 'Sea', 'Land'], required: false })
+  @Expose()
+  shipping_methods?: string[];
+
+  @ApiProperty({ example: 15.5, required: false })
+  @Expose()
+  shipping_cost?: number;
+
+  @ApiProperty({ example: 'Port of Shanghai', required: false })
+  @Expose()
+  port_of_shipment?: string;
+
   @ApiProperty({
     type: [TierPricingResponseDto],
     example: [
@@ -154,25 +171,31 @@ export class ProductResponseDto {
   @Expose()
   tier_pricing?: TierPricingResponseDto[];
 
-
-
   @ApiProperty({ example: true, default: true })
   @Expose()
   is_active: boolean;
+
+  @ApiProperty({ example: false })
+  @Expose()
+  is_b2b: boolean;
+
+  @ApiProperty({ example: false })
+  @Expose()
+  is_wholesale: boolean;
+
+  @ApiProperty({ example: false })
+  @Expose()
+  is_retail: boolean;
 
   @ApiProperty({ example: 25, required: false })
   @Expose()
   moq?: number;
 
-  @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @ApiProperty({ example: '2025-10-09T12:00:00Z' })
   @Expose()
   created_at: Date;
 
-  @UpdateDateColumn({
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP',
-    onUpdate: 'CURRENT_TIMESTAMP',
-  })
+  @ApiProperty({ example: '2025-10-09T12:00:00Z' })
   @Expose()
   updated_at: Date;
 }

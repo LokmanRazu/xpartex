@@ -12,12 +12,14 @@ import { B2b } from '../b2b/b2b.entity';
 import { Retail } from '../retail/retail.entity';
 import { RetailModule } from '../retail/retail.module';
 import { CompanyProfileModule } from '../companyProfile/companyProfile.module';
+import { SubCategoryModule } from '../subCategory/subCategory.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Product, Wholesale, B2b, Retail]),
     CategoryModule,
     CompanyProfileModule,
+    SubCategoryModule,
     UserModule,
     forwardRef(() => WholesaleModule),
     forwardRef(() => B2bModule),

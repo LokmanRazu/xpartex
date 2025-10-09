@@ -1,9 +1,14 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
 import { UserResponseDto } from '../../user/dto/user.response-dto';
+import { ProductResponseDto } from '../../product/dto/product.response-dto';
+import { CompanyBusineesType } from '../companyProfile.entity';
 
 export class CompanyProfileResponseDto {
-  @ApiProperty({ example: '123e4567-e89b-12d3-a456-426614174000', description: 'Unique company profile ID (UUID)' })
+  @ApiProperty({
+    example: '123e4567-e89b-12d3-a456-426614174000',
+    description: 'Unique company profile ID (UUID)',
+  })
   @Expose()
   id: string;
 
@@ -11,112 +16,207 @@ export class CompanyProfileResponseDto {
   @Expose()
   company_name: string;
 
-  @ApiProperty({ example: 'https://example.com/logo.png', description: 'Company logo (URL or file path)', required: false })
+  @ApiPropertyOptional({
+    example: 'https://example.com/logo.png',
+    description: 'Company logo (URL or file path)',
+  })
   @Expose()
   img?: string;
 
-  @ApiProperty({ example: 'Manufacturer', description: 'Business type of the company', required: false })
+  @ApiProperty({
+    example: CompanyBusineesType.MANUFACTURER,
+    enum: CompanyBusineesType,
+    description: 'Type of business',
+  })
   @Expose()
-  business_type?: string;
+  business_type: CompanyBusineesType;
 
-  @ApiProperty({ example: 'Textiles, Apparel', description: 'Industry focus', required: false })
+  @ApiPropertyOptional({
+    example: 'Textiles, Apparel',
+    description: 'Industry focus',
+  })
   @Expose()
   industry_focus?: string;
 
-  @ApiProperty({ example: 2005, description: 'Year company was established', required: false })
+  @ApiPropertyOptional({
+    example: 2005,
+    description: 'Year company was established',
+  })
   @Expose()
   year_established?: number;
 
-  @ApiProperty({ example: 250, description: 'Total number of employees', required: false })
+  @ApiPropertyOptional({
+    example: 250,
+    description: 'Total number of employees',
+  })
   @Expose()
   employee_count?: number;
 
-  @ApiProperty({ example: 'We specialize in textile and garment manufacturing.', description: 'Company description', required: false })
+  @ApiPropertyOptional({
+    example: 'We specialize in textile and garment manufacturing.',
+    description: 'Company description',
+  })
   @Expose()
   description?: string;
 
-  @ApiProperty({ example: 'https://abccorp.com', description: 'Company website URL', required: false })
+  @ApiPropertyOptional({
+    example: 'https://abccorp.com',
+    description: 'Company website URL',
+  })
   @Expose()
   website_url?: string;
 
-  @ApiProperty({ example: 'contact@abccorp.com', description: 'Company email address' })
+  @ApiProperty({
+    example: 'contact@abccorp.com',
+    description: 'Company email address',
+  })
   @Expose()
   email: string;
 
-  @ApiProperty({ example: '+1234567890', description: 'Company phone number' })
+  @ApiProperty({
+    example: '+1234567890',
+    description: 'Company phone number',
+  })
   @Expose()
   phone: string;
 
-  @ApiProperty({ example: '123 Main Street, New York, USA', description: 'Head office address', required: false })
+  @ApiPropertyOptional({
+    example: '123 Main Street, New York, USA',
+    description: 'Head office address',
+  })
   @Expose()
   address_head_office?: string;
 
-  @ApiProperty({ example: ['Branch 1 Address', 'Branch 2 Address'], description: 'Branch office locations', required: false, type: [String] })
+  @ApiPropertyOptional({
+    example: ['Branch 1 Address', 'Branch 2 Address'],
+    description: 'Branch office locations',
+    type: [String],
+  })
   @Expose()
   branch_locations?: string[];
 
-  @ApiProperty({ example: 'John Doe', description: 'Contact person name', required: false })
+  @ApiPropertyOptional({
+    example: 'John Doe',
+    description: 'Contact person name',
+  })
   @Expose()
   contact_person_name?: string;
 
-  @ApiProperty({ example: 'General Manager', description: 'Contact person position', required: false })
+  @ApiPropertyOptional({
+    example: 'General Manager',
+    description: 'Contact person position',
+  })
   @Expose()
   contact_person_position?: string;
 
-  @ApiProperty({ example: 'johndoe@abccorp.com', description: 'Contact person email', required: false })
+  @ApiPropertyOptional({
+    example: 'johndoe@abccorp.com',
+    description: 'Contact person email',
+  })
   @Expose()
   contact_person_email?: string;
 
-  @ApiProperty({ example: '+1234567891', description: 'Contact person phone number', required: false })
+  @ApiPropertyOptional({
+    example: '+1234567891',
+    description: 'Contact person phone number',
+  })
   @Expose()
   contact_person_phone?: string;
 
-  @ApiProperty({ example: { facebook: 'fb.com/abccorp', linkedin: 'linkedin.com/company/abccorp' }, description: 'Social media links', required: false })
+  @ApiPropertyOptional({
+    example: { facebook: 'fb.com/abccorp', linkedin: 'linkedin.com/company/abccorp' },
+    description: 'Social media links',
+  })
   @Expose()
   social_links?: Record<string, string>;
 
-  @ApiProperty({ example: ['ISO 9001', 'OEKO-TEX'], description: 'Certifications of the company', required: false, type: [String] })
+  @ApiPropertyOptional({
+    example: ['ISO 9001', 'OEKO-TEX'],
+    description: 'Certifications of the company',
+    type: [String],
+  })
   @Expose()
   certifications?: string[];
 
-  @ApiProperty({ example: 'Knitting, Dyeing, Sewing', description: 'Production capabilities of the company', required: false })
+  @ApiPropertyOptional({
+    example: 'Knitting, Dyeing, Sewing',
+    description: 'Production capabilities of the company',
+  })
   @Expose()
   production_capabilities?: string;
 
-  @ApiProperty({ example: ['Textiles', 'Garments'], description: 'Product categories', required: false, type: [String] })
+  @ApiPropertyOptional({
+    example: ['Textiles', 'Garments'],
+    description: 'Product categories',
+    type: [String],
+  })
   @Expose()
   product_categories?: string[];
 
-  @ApiProperty({ example: 500, description: 'Minimum order quantity (MOQ)', required: false })
+  @ApiPropertyOptional({
+    example: 500,
+    description: 'Minimum order quantity (MOQ)',
+  })
   @Expose()
   minimum_order_quantity?: number;
 
-  @ApiProperty({ example: ['USA', 'Europe', 'Asia'], description: 'Export markets', required: false, type: [String] })
+  @ApiPropertyOptional({
+    example: ['USA', 'Europe', 'Asia'],
+    description: 'Export markets',
+    type: [String],
+  })
   @Expose()
   export_markets?: string[];
 
-  @ApiProperty({ example: ['English', 'Spanish'], description: 'Languages spoken by company representatives', required: false, type: [String] })
+  @ApiPropertyOptional({
+    example: ['English', 'Spanish'],
+    description: 'Languages spoken by company representatives',
+    type: [String],
+  })
   @Expose()
   languages_spoken?: string[];
 
-  @ApiProperty({ example: 'Mon-Fri, 9AM-6PM', description: 'Operating hours of the company', required: false })
+  @ApiPropertyOptional({
+    example: 'Mon-Fri, 9AM-6PM',
+    description: 'Operating hours of the company',
+  })
   @Expose()
   operating_hours?: string;
 
-  @ApiProperty({ example: 'trade_license.pdf', description: 'File path or URL of trade license document', required: false })
+  @ApiPropertyOptional({
+    example: 'trade_license.pdf',
+    description: 'File path or URL of trade license document',
+  })
   @Expose()
   trade_license_file?: string;
 
-  @ApiProperty({ description: 'User who created the company profile', type: () => UserResponseDto })
+  @ApiProperty({
+    description: 'User who created the company profile',
+    type: () => UserResponseDto,
+  })
   @Expose()
   @Type(() => UserResponseDto)
   createdBy: UserResponseDto;
 
-  @ApiProperty({ example: '2025-10-06T10:00:00.000Z', description: 'Date when the profile was created' })
+  @ApiPropertyOptional({
+    description: 'List of products associated with the company',
+    type: () => [ProductResponseDto],
+  })
+  @Expose()
+  @Type(() => ProductResponseDto)
+  product?: ProductResponseDto[];
+
+  @ApiProperty({
+    example: '2025-10-06T10:00:00.000Z',
+    description: 'Date when the profile was created',
+  })
   @Expose()
   created_at: Date;
 
-  @ApiProperty({ example: '2025-10-06T10:00:00.000Z', description: 'Date when the profile was last updated' })
+  @ApiProperty({
+    example: '2025-10-06T10:00:00.000Z',
+    description: 'Date when the profile was last updated',
+  })
   @Expose()
   updated_at: Date;
 }

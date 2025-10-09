@@ -22,6 +22,8 @@ import { uploadImageToCloudinary } from '../../utils/imageUpload';
 import { CategoryService } from '../category/category.service';
 import { CompanyProfile } from '../companyProfile/companyProfile.entity';
 import { CompanyProfileService } from '../companyProfile/companyProfile.service';
+import { SubCategoryService } from '../subCategory/subCategory.service';
+import { SubCategory } from '../subCategory/subCategory.entity';
 
 @Injectable()
 export class ProductService {
@@ -36,13 +38,14 @@ export class ProductService {
         private retailRepository: Repository<Retail>,
         private categoryService: CategoryService,
         private userService: UserService,
-        private companyProfileService: CompanyProfileService 
+        private companyProfileService: CompanyProfileService ,
+        private subCategoryService:SubCategoryService,
     ) { }
 
     async findAll(): Promise<ProductResponseDto[]> {
         try {
             const products = await this.productRepository.find({
-                relations: ['category', 'seller', 'b2bs', 'wholesales', 'retails', 'inquiries', 'company'],
+                relations: ['category', 'seller', 'b2bs', 'wholesales', 'retails', 'inquiries', 'company','subCategory'],
             });
             return plainToInstance(ProductResponseDto, products, {
                 enableImplicitConversion: true,
@@ -58,7 +61,7 @@ export class ProductService {
             console.log('iddddddd===', id)
             const products = await this.productRepository.find({
                 where: { seller: { id } },
-                relations: ['category', 'seller', 'b2bs', 'wholesales', 'retails', 'company'],
+                relations: ['category', 'seller', 'b2bs', 'wholesales', 'retails', 'company','subCategory'],
             });
             return plainToInstance(ProductResponseDto, products, {
                 enableImplicitConversion: true,
@@ -71,7 +74,7 @@ export class ProductService {
 
     async findOne(id: string): Promise<ProductResponseDto> {
         try {
-            const product = await this.productRepository.findOne({ where: { id }, relations: ['category', 'seller', 'b2bs', 'wholesales', 'retails', 'cart', 'company'] });
+            const product = await this.productRepository.findOne({ where: { id }, relations: ['category', 'seller', 'b2bs', 'wholesales', 'retails', 'cart', 'company','subCategory'] });
             if (!product) throw new NotFoundException('Product not found');
 
             return plainToInstance(ProductResponseDto, product, {
@@ -91,12 +94,12 @@ export class ProductService {
     ): Promise<ProductResponseDto> {
         try {
             const {
-                title, sellerId, companyProfileId, categoryId, img, additional_images, hs_code, tags,
+                title, sellerId, companyProfileId, categoryId,subCategoryId,video,price, img, additional_images, hs_code, tags,
                 brand_name, description, key_features, origin_country, certifications, material_type, usage_application,
                 price_unit, payment_terms, packaging_details, delivery_terms, trade_terms, return_policy, warranty,
-                stock_quantity, colorVariants, available_sizes, price_per_unit, shipping_time, tier_pricing, is_active,
+                stock_quantity, colorVariants, available_sizes, price_per_unit,shipping_cost,shipping_methods,port_of_shipment, shipping_time, tier_pricing, is_active,
                 is_b2b, is_wholesale, is_retail, moq
-            } = dto;
+            } = dto; 
 
             // ----------------- Image Upload -----------------
             let uploadedMain: any = null;
@@ -125,6 +128,9 @@ export class ProductService {
             const companyProfile = await this.companyProfileService.findOne(companyProfileId);
             if (!companyProfile) throw new NotFoundException('Company profile not found');
 
+            const subCategory = await this.subCategoryService.findOne(subCategoryId);
+            if (!subCategory) throw new NotFoundException('Sub category not found');
+
             // ----------------- Create Product -----------------
             const product = this.productRepository.create({
                 title,
@@ -132,6 +138,7 @@ export class ProductService {
                 seller: { id: sellerId } as User,
                 company: { id: companyProfileId } as CompanyProfile,
                 category: { id: categoryId } as Category,
+                subCategory: { id: subCategoryId } as SubCategory,
                 additional_images: uploadedAdditional,
                 ...dto,
 

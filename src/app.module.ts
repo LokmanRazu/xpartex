@@ -5,7 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
-import { MailerModule } from '@nestjs-modules/mailer';  
+import { MailerModule } from '@nestjs-modules/mailer';
 import { BuyerPostModule } from './buyerPost/buyerPost.module';
 import { ProductModule } from './product/product.module';
 import { CartModule } from "./cart/cart.module";
@@ -24,6 +24,7 @@ import { UserProfileModule } from './userProfile/userProfile.module';
 import { CompanyProfileModule } from './companyProfile/companyProfile.module';
 import { PaymentModule } from './payment/payment.module';
 import { PostBidOfferModule } from './postBidOffer/postBidOffer.module';
+import { SubCategoryModule } from './subCategory/subCategory.module';
 
 @Module({
   imports: [
@@ -37,22 +38,22 @@ import { PostBidOfferModule } from './postBidOffer/postBidOffer.module';
       username: 'root',
       password: '',
       database: 'testxp',
-      autoLoadEntities: true,  
+      autoLoadEntities: true,
       synchronize: true,
     }),
 
     MailerModule.forRoot({
       transport: {
-        host: 'smtp.gmail.com', 
+        host: 'smtp.gmail.com',
         port: 465,
-        secure: true, 
+        secure: true,
         auth: {
-          user: 'xpartexofficial@gmail.com',  
-          pass: 'wbphwqgwbfzzycjn', 
+          user: 'xpartexofficial@gmail.com',
+          pass: 'wbphwqgwbfzzycjn',
         },
       },
       defaults: {
-        from: '"xpartexofficial" <xpartexofficial@gmail.com>',  
+        from: '"xpartexofficial" <xpartexofficial@gmail.com>',
       },
     }),
 
@@ -64,6 +65,7 @@ import { PostBidOfferModule } from './postBidOffer/postBidOffer.module';
     RetailModule,
     B2bModule,
     CategoryModule,
+    SubCategoryModule,
     CartModule,
     CartItemModule,
     OrderModule,
@@ -72,12 +74,13 @@ import { PostBidOfferModule } from './postBidOffer/postBidOffer.module';
     BidOfferModule,
     InquiryModule,
     SampleRequestModule,
-    UserProfileModule, 
+    UserProfileModule,
     CompanyProfileModule,
     PaymentModule,
-    PostBidOfferModule
+    PostBidOfferModule,
 
-    
+
+
   ],
   controllers: [AppController],
   providers: [AppService],

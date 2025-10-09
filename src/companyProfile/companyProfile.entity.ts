@@ -11,21 +11,27 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
+export enum CompanyBusineesType {
+  MANUFACTURER = 'manufacturer',
+  DISTRIBUTOR = 'distributor',
+  Supplier = 'supplier',
+}
+
 @Entity()
 export class CompanyProfile {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({type: 'varchar',length: 255, nullable: false})
   company_name: string;
 
   @Column({ type: 'text', nullable: true })
   img: string;
 
-  @Column({ nullable: true })
-  business_type: string;
+  @Column({type: 'enum', enum: CompanyBusineesType, nullable: false })
+  business_type: CompanyBusineesType;
 
-  @Column({ nullable: true })
+  @Column({type: 'varchar',length: 255, nullable: true })
   industry_focus: string;
 
   @Column({ type: 'int', nullable: true })
@@ -37,13 +43,13 @@ export class CompanyProfile {
   @Column({ type: 'text', nullable: true })
   description: string;
 
-  @Column({ nullable: true })
+  @Column({type: 'varchar',length: 100, nullable: true })
   website_url: string;
 
-  @Column()
+  @Column({type: 'varchar',length: 100, nullable: true})
   email: string;
 
-  @Column()
+  @Column({type: 'varchar',length: 100, nullable: true})
   phone: string;
 
   @Column({ type: 'text', nullable: true })
@@ -52,16 +58,16 @@ export class CompanyProfile {
   @Column({ type: 'simple-json', nullable: true })
   branch_locations: string[]; // JSON/Array
 
-  @Column({ nullable: true })
+  @Column({type: 'varchar',length: 100, nullable: true })
   contact_person_name: string;
 
-  @Column({ nullable: true })
+  @Column({type: 'varchar',length: 100, nullable: true })
   contact_person_position: string;
 
-  @Column({ nullable: true })
+  @Column({type: 'varchar',length: 100, nullable: true })
   contact_person_email: string;
 
-  @Column({ nullable: true })
+  @Column({type: 'varchar',length: 100, nullable: true })
   contact_person_phone: string;
 
   @Column({ type: 'simple-json', nullable: true })
@@ -85,7 +91,7 @@ export class CompanyProfile {
   @Column({ type: 'simple-json', nullable: true })
   languages_spoken: string[];
 
-  @Column({ nullable: true })
+  @Column({type: 'varchar',length: 100, nullable: true })
   operating_hours: string;
 
   @Column({ type: 'text', nullable: true })

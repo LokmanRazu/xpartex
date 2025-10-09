@@ -1,7 +1,8 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsArray,
   IsEmail,
+  IsEnum,
   IsInt,
   IsNotEmpty,
   IsOptional,
@@ -9,6 +10,7 @@ import {
   IsUUID,
   IsObject,
 } from 'class-validator';
+import { CompanyBusineesType } from '../companyProfile.entity';
 
 export class CompanyProfileRequestDto {
   @ApiProperty({ example: 'ABC Corporation', description: 'Name of the company' })
@@ -16,37 +18,41 @@ export class CompanyProfileRequestDto {
   @IsNotEmpty()
   company_name: string;
 
-  @ApiProperty({ example: 'https://example.com/logo.png', description: 'URL or path of the company logo',format: 'binary' })
+  @ApiPropertyOptional({ example: 'https://example.com/logo.png', description: 'URL or path of the company logo', format: 'binary' })
   @IsString()
   @IsOptional()
   img?: string;
 
-  @ApiProperty({ example: 'Manufacturer', description: 'Type of business' })
-  @IsString()
-  @IsOptional()
-  business_type?: string;
+  @ApiProperty({
+    example: CompanyBusineesType.MANUFACTURER,
+    enum: CompanyBusineesType,
+    description: 'Type of business',
+  })
+  @IsEnum(CompanyBusineesType)
+  @IsNotEmpty()
+  business_type: CompanyBusineesType;
 
-  @ApiProperty({ example: 'Textiles, Apparel', description: 'Industry focus of the company' })
+  @ApiPropertyOptional({ example: 'Textiles, Apparel', description: 'Industry focus of the company' })
   @IsString()
   @IsOptional()
   industry_focus?: string;
 
-  @ApiProperty({ example: 2005, description: 'Year the company was established' })
+  @ApiPropertyOptional({ example: 2005, description: 'Year the company was established' })
   @IsInt()
   @IsOptional()
   year_established?: number;
 
-  @ApiProperty({ example: 250, description: 'Number of employees' })
+  @ApiPropertyOptional({ example: 250, description: 'Number of employees' })
   @IsInt()
   @IsOptional()
   employee_count?: number;
 
-  @ApiProperty({ example: 'We specialize in high-quality textile production.', description: 'Company description' })
+  @ApiPropertyOptional({ example: 'We specialize in high-quality textile production.', description: 'Company description' })
   @IsString()
   @IsOptional()
   description?: string;
 
-  @ApiProperty({ example: 'https://abccorp.com', description: 'Company website URL' })
+  @ApiPropertyOptional({ example: 'https://abccorp.com', description: 'Company website URL' })
   @IsString()
   @IsOptional()
   website_url?: string;
@@ -61,77 +67,80 @@ export class CompanyProfileRequestDto {
   @IsNotEmpty()
   phone: string;
 
-  @ApiProperty({ example: '123 Main St, Anytown, USA', description: 'Head office address' })
+  @ApiPropertyOptional({ example: '123 Main St, Anytown, USA', description: 'Head office address' })
   @IsString()
   @IsOptional()
   address_head_office?: string;
 
-  @ApiProperty({ example: ['Branch 1 Address', 'Branch 2 Address'], description: 'Branch office locations' })
+  @ApiPropertyOptional({ example: ['Branch 1 Address', 'Branch 2 Address'], description: 'Branch office locations' })
   @IsArray()
   @IsOptional()
   branch_locations?: string[];
 
-  @ApiProperty({ example: 'John Doe', description: 'Contact person name' })
+  @ApiPropertyOptional({ example: 'John Doe', description: 'Contact person name' })
   @IsString()
   @IsOptional()
   contact_person_name?: string;
 
-  @ApiProperty({ example: 'General Manager', description: 'Contact person position' })
+  @ApiPropertyOptional({ example: 'General Manager', description: 'Contact person position' })
   @IsString()
   @IsOptional()
   contact_person_position?: string;
 
-  @ApiProperty({ example: 'johndoe@abccorp.com', description: 'Contact person email' })
+  @ApiPropertyOptional({ example: 'johndoe@abccorp.com', description: 'Contact person email' })
   @IsEmail()
   @IsOptional()
   contact_person_email?: string;
 
-  @ApiProperty({ example: '+1234567891', description: 'Contact person phone number' })
+  @ApiPropertyOptional({ example: '+1234567891', description: 'Contact person phone number' })
   @IsString()
   @IsOptional()
   contact_person_phone?: string;
 
-  @ApiProperty({ example: { facebook: 'fb.com/abccorp', linkedin: 'linkedin.com/company/abccorp' }, description: 'Social media links' })
+  @ApiPropertyOptional({
+    example: { facebook: 'fb.com/abccorp', linkedin: 'linkedin.com/company/abccorp' },
+    description: 'Social media links',
+  })
   @IsObject()
   @IsOptional()
   social_links?: Record<string, string>;
 
-  @ApiProperty({ example: ['ISO 9001', 'OEKO-TEX'], description: 'Certifications held by the company' })
+  @ApiPropertyOptional({ example: ['ISO 9001', 'OEKO-TEX'], description: 'Certifications held by the company' })
   @IsArray()
   @IsOptional()
   certifications?: string[];
 
-  @ApiProperty({ example: 'Knitting, Dyeing, Sewing', description: 'Production capabilities' })
+  @ApiPropertyOptional({ example: 'Knitting, Dyeing, Sewing', description: 'Production capabilities' })
   @IsString()
   @IsOptional()
   production_capabilities?: string;
 
-  @ApiProperty({ example: ['Textiles', 'Garments'], description: 'Product categories' })
+  @ApiPropertyOptional({ example: ['Textiles', 'Garments'], description: 'Product categories' })
   @IsArray()
   @IsOptional()
   product_categories?: string[];
 
-  @ApiProperty({ example: 500, description: 'Minimum order quantity (MOQ)' })
+  @ApiPropertyOptional({ example: 500, description: 'Minimum order quantity (MOQ)' })
   @IsInt()
   @IsOptional()
   minimum_order_quantity?: number;
 
-  @ApiProperty({ example: ['USA', 'Europe', 'Asia'], description: 'Export markets' })
+  @ApiPropertyOptional({ example: ['USA', 'Europe', 'Asia'], description: 'Export markets' })
   @IsArray()
   @IsOptional()
   export_markets?: string[];
 
-  @ApiProperty({ example: ['English', 'Spanish'], description: 'Languages spoken' })
+  @ApiPropertyOptional({ example: ['English', 'Spanish'], description: 'Languages spoken' })
   @IsArray()
   @IsOptional()
   languages_spoken?: string[];
 
-  @ApiProperty({ example: 'Mon-Fri, 9AM-6PM', description: 'Operating hours' })
+  @ApiPropertyOptional({ example: 'Mon-Fri, 9AM-6PM', description: 'Operating hours' })
   @IsString()
   @IsOptional()
   operating_hours?: string;
 
-  @ApiProperty({ example: 'trade_license.pdf', description: 'File path or URL of trade license document',format: 'binary' })
+  @ApiPropertyOptional({ example: 'trade_license.pdf', description: 'File path or URL of trade license document', format: 'binary' })
   @IsString()
   @IsOptional()
   trade_license_file?: string;
