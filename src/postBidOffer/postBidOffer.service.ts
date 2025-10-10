@@ -30,7 +30,7 @@ export class PostBidOfferService {
     file?: Express.Multer.File,
   ): Promise<PostBidOfferResponseDto> {
     try {
-      const { buyerPostId, bidderId, price, delivaryTime, shippingMetode, attachment,oldBidId,buyerId } = dto;
+      const { buyerPostId, bidderId, price,quantity, delivaryTime, shippingMetode, attachment,oldBidId,buyerId } = dto;
 
       // ----------------- Upload file -----------------
       let uploadedFile: any = null;

@@ -14,5 +14,6 @@ import { UserModule } from '../user/user.module';
   ],
   controllers: [PostBidOfferController],
   providers: [PostBidOfferService],
+  exports: [PostBidOfferService],
 })
 export class PostBidOfferModule {}

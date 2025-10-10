@@ -4,11 +4,13 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { Buyerpost } from '../buyerPost/buyerPost.entity';
 import { User } from '../user/user.entity';
+import { Order } from '../order/order.entity';
 
 export enum BidOfferStatus {
   OPEN = 'open',
@@ -22,13 +24,16 @@ export class PostBidOffer {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'int' })
+  @Column({ type: 'int',nullable: false })
   price: number;
 
-  @Column({ type: 'date' })
+  @Column({ type: 'int',nullable: false })
+  quantity: number;
+
+  @Column({ type: 'date', nullable: false })
   delivaryTime: Date;
 
-  @Column('simple-array')
+  @Column('simple-array', { nullable: true })
   shippingMetode: string[];
 
   @Column({ type: 'varchar', length: 255, nullable: true })
@@ -51,6 +56,9 @@ export class PostBidOffer {
 
   @Column({ type: 'varchar',length: 30, nullable: true })
   oldBidId:string
+
+  @OneToOne(() => Order, (order) => order.bids, { onDelete: 'CASCADE', nullable: true })
+  order: Order
 
   @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;

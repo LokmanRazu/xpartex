@@ -11,6 +11,14 @@ export class PostBidOfferRequestDto {
   price: number;
 
   @ApiProperty({
+    example: 5,
+    description: 'Quantity of the bid',
+  })
+  @IsNumber()
+  @IsNotEmpty()
+  quantity: number;
+
+  @ApiProperty({
     example: '2025-12-31',
     description: 'Delivery time of the bid',
   })

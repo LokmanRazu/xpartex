@@ -3,6 +3,7 @@ import { OrderItem } from "../orderItem/orderItem.entity";
 import { Product } from "../product/product.entity";
 import { User } from "../user/user.entity";
 import { Payment } from "../payment/payment.entity";
+import { PostBidOffer } from "../postBidOffer/postBidOffer.entity";
 
 export enum OrderStatus {
   PENDING = "pending",
@@ -37,6 +38,10 @@ export class Order {
 
   @OneToMany(() => Payment, (payment) => payment.order, { cascade: true })
   payments: Payment[];
+
+  @OneToOne(() => PostBidOffer, (postBidOffer) => postBidOffer.order, { onDelete: 'CASCADE' ,nullable: true})
+  @JoinColumn({ name: 'bidsId' })
+  bids:PostBidOffer
 
   // @OneToMany(() => OrderItem, (orderItems) => orderItems.order, { cascade: true })
   // orderItems: OrderItem[];

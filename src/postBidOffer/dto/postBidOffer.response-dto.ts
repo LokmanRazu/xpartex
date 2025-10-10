@@ -14,6 +14,10 @@ export class PostBidOfferResponseDto {
 
   @ApiProperty()
   @Expose()
+  quantity: number;
+
+  @ApiProperty()
+  @Expose()
   delivaryTime: Date;
 
   @ApiProperty()

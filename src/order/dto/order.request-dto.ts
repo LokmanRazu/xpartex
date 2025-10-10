@@ -1,5 +1,5 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { IsEnum, IsNotEmpty, IsNumber, IsUUID, Min } from "class-validator";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsUUID, Min } from "class-validator";
 import { OrderStatus } from "../order.entity";
 
 
@@ -38,5 +38,10 @@ export class CreateOrderDto {
   // @IsNumber({}, { message: 'Total amount must be a number' })
   // @Min(0, { message: 'Total amount must be at least 0' })
   // totalAmount: number;
+
+  @ApiPropertyOptional({ example: 'c8d8a4a7-2f4e-41e7-a6f2-1234567890ab', description: 'Bids linked to this order' })
+  @IsUUID('4', { message: 'BuyerId must be a valid UUID' })
+  @IsOptional({ message: 'BuyerId is not required' })
+  bidsId: string;
 
 }
